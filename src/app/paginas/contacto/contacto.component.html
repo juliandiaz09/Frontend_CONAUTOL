@@ -1,1 +1,68 @@
-<p>contacto works!</p>
+<section class="contacto-seccion">
+  <div class="info-empresa">
+    <div class="perfil">
+      <div class="avatar-placeholder"></div>
+      <div class="texto">
+        <h3>FUNDADOR</h3>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit, vulputate eu pharetra nec, mattis ac neque. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+      </div>
+    </div>
+    
+    <div class="perfil">
+      <div class="avatar-placeholder"></div>
+      <div class="texto">
+        <h3>NOMBRE EMPRESA</h3>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit, vulputate eu pharetra nec, mattis ac neque. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+      </div>
+    </div>
+    
+    <div class="ubicacion">
+      <h3>UBICACIÓN</h3>
+      <div class="mapa-placeholder"></div>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit, vulputate eu pharetra nec.</p>
+    </div>
+  </div>
+
+  <hr>
+
+  <h2 class="titulo-contacto">CONTACTANOS</h2>
+  
+  <div *ngIf="mensajeEstado" [ngClass]="['mensaje', claseEstado]">
+    {{ mensajeEstado }}
+  </div>
+
+  <form [formGroup]="contactoForm" (ngSubmit)="onSubmit()" class="contacto-form">
+    <div class="form-row">
+      <input type="text" placeholder="First Name" formControlName="firstName" [class.error]="contactoForm.get('firstName')?.invalid && contactoForm.get('firstName')?.touched">
+      <input type="text" placeholder="Last Name" formControlName="lastName" [class.error]="contactoForm.get('lastName')?.invalid && contactoForm.get('lastName')?.touched">
+    </div>
+    
+    <div class="form-row full-width">
+      <input type="text" placeholder="Address" formControlName="address" [class.error]="contactoForm.get('address')?.invalid && contactoForm.get('address')?.touched">
+    </div>
+    <div class="form-row full-width">
+      <input type="text" placeholder="Address 2" formControlName="address2">
+    </div>
+
+    <div class="form-row">
+      <select formControlName="country" [class.error]="contactoForm.get('country')?.invalid && contactoForm.get('country')?.touched">
+        <option value="" disabled>Country</option>
+        <option value="COL">Colombia</option>
+        <option value="MEX">México</option>
+      </select>
+      <input type="text" placeholder="City" formControlName="city" [class.error]="contactoForm.get('city')?.invalid && contactoForm.get('city')?.touched">
+    </div>
+    
+    <div class="form-row">
+      <input type="text" placeholder="Zip/Postal Code" formControlName="zipCode" [class.error]="contactoForm.get('zipCode')?.invalid && contactoForm.get('zipCode')?.touched">
+      <input type="text" placeholder="Phone Number" formControlName="phoneNumber" [class.error]="contactoForm.get('phoneNumber')?.invalid && contactoForm.get('phoneNumber')?.touched">
+    </div>
+    
+    <div class="form-actions">
+      <button type="submit" [disabled]="enviando" class="btn-enviar">
+        {{ enviando ? 'Enviando...' : 'Enviar' }}
+      </button>
+      <button type="button" (click)="onCancel()" class="btn-cancelar">Cancel</button>
+    </div>
+  </form>
+</section>

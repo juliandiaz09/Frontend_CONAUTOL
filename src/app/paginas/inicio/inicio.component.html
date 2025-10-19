@@ -1,1 +1,55 @@
-<p>inicio works!</p>
+<main class="home-page">
+  
+  <section class="banner-hero">
+    <div class="banner-text">
+      <h1>CONAUTOL</h1>
+      <h2>CALIDAD E INNOVACIÓN INDUSTRIAL</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit, vulputate eu pharetra nec, mattis ac neque.</p>
+      <button class="btn-primary" (click)="navegarAContacto()">Contáctanos</button>
+    </div>
+    <div class="banner-image-placeholder"></div>
+  </section>
+
+  <section class="acerca-de">
+    <div class="content">
+      <div class="text-info">
+        <h3>ACERCA DE NOSOTROS.</h3>
+        <p>{{ ceoInfo.descripcion }}</p>
+        <p class="ceo-signature">
+          <strong>{{ ceoInfo.nombre }}</strong> <br> {{ ceoInfo.cargo }}
+        </p>
+      </div>
+      <div class="image-ceo-placeholder">
+        
+      </div>
+    </div>
+  </section>
+
+  <section class="proyectos-home">
+    <h2 class="section-title">NUESTROS PROYECTOS</h2>
+    <div *ngIf="isLoading" class="loading">Cargando proyectos...</div>
+    
+    <div *ngIf="!isLoading && proyectosDestacados.length > 0" class="proyectos-grid">
+      <div *ngFor="let proyecto of proyectosDestacados" 
+           class="proyecto-card" 
+           (click)="verDetalleProyecto(proyecto.id)">
+        <img [src]="proyecto.imagenUrl" alt="{{ proyecto.nombre }}">
+        <div class="card-info">
+          <h4>{{ proyecto.nombre }}</h4>
+          <p>{{ proyecto.descripcionCorta }}</p>
+        </div>
+      </div>
+    </div>
+    
+    <button class="btn-secondary" routerLink="/proyectos">Ver todos los Proyectos</button>
+  </section>
+
+  <section class="catalogo-cta">
+    <div class="cta-content">
+      <h2>Catálogo de Servicios</h2>
+      <p>Explora nuestro catálogo completo de soluciones de automatización, tableros eléctricos y mantenimiento.</p>
+      <button class="btn-primary" routerLink="/brochure/flipbook">Ver Catálogo</button>
+    </div>
+  </section>
+
+</main>
