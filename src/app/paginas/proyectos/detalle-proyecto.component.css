@@ -1,13 +1,214 @@
-.detalle-proyecto {
-  padding: 16px;
+.detalle-proyecto-container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 28px 20px 60px;
 }
-.detalle-proyecto img {
-  max-width: 100%;
-  height: auto;
+
+.info-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 18px;
+}
+.info-top span {
+  font-weight: 700;
+  color: var(--color-primary);
+}
+.info-top .info {
+  color: var(--color-muted);
+  font-weight: 500;
+}
+
+.seccion-principal {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 28px;
+  align-items: start;
+}
+
+.galeria {
+  background: var(--color-surface);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 10px 30px rgba(2, 6, 23, 0.04);
+}
+.imagen-principal {
+  width: 100%;
+  height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 8px;
+}
+.imagen-principal img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.miniaturas {
+  display: flex;
+  gap: 10px;
   margin-top: 12px;
+  overflow-x: auto;
+  padding-bottom: 6px;
 }
-.galeria img {
+.miniatura {
   width: 80px;
-  height: auto;
-  margin-right: 8px;
+  height: 60px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+.miniatura img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.miniatura:hover,
+.miniatura.active {
+  border-color: var(--color-accent);
+  transform: translateY(-3px);
+  transition: all 0.18s ease;
+}
+
+.info-producto {
+  background: var(--color-surface);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(2, 6, 23, 0.04);
+}
+.info-producto h1 {
+  margin: 0 0 12px 0;
+  color: var(--color-primary);
+  font-size: 1.6rem;
+}
+
+.precio-variante {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.precio {
+  font-size: 1.6rem;
+  color: var(--color-accent);
+  font-weight: 800;
+}
+.precio-variante select {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: transparent;
+}
+
+.descripcion-corta {
+  color: var(--color-muted);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+.btn-contactar {
+  background: var(--color-accent);
+  color: white;
+  padding: 12px 18px;
+  border-radius: 8px;
+  border: 0;
+  cursor: pointer;
+  font-weight: 700;
+}
+.btn-contactar:hover {
+  filter: brightness(0.96);
+}
+
+.separador {
+  border: 0;
+  height: 1px;
+  background: var(--color-border);
+  margin: 30px 0;
+}
+
+.titulo-seccion {
+  color: var(--color-primary);
+  font-size: 1.4rem;
+  margin-bottom: 18px;
+}
+.productos-relacionados {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+}
+.tarjeta-producto {
+  background: var(--color-surface);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(2, 6, 23, 0.04);
+  cursor: pointer;
+  transition: transform 0.18s ease;
+}
+.tarjeta-producto:hover {
+  transform: translateY(-6px);
+}
+.tarjeta-producto .imagen-placeholder {
+  height: 140px;
+  width: 100%;
+  overflow: hidden;
+}
+.tarjeta-producto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.tarjeta-producto .texto-info {
+  padding: 12px;
+}
+
+.lista-comentarios {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.comentario-item {
+  background: var(--color-surface);
+  padding: 12px 14px;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(2, 6, 23, 0.04);
+}
+.autor-fecha {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin: 0 0 8px 0;
+  color: var(--color-primary);
+}
+.texto-comentario {
+  margin: 0;
+  color: var(--color-muted);
+}
+
+@media (max-width: 1000px) {
+  .seccion-principal {
+    grid-template-columns: 1fr;
+  }
+  .imagen-principal {
+    height: 320px;
+  }
+}
+
+@media (max-width: 600px) {
+  .imagen-principal {
+    height: 220px;
+  }
+  .miniatura {
+    width: 64px;
+    height: 48px;
+  }
+  .info-producto {
+    padding: 14px;
+  }
 }
