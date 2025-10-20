@@ -1,10 +1,13 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { Servicio } from '../../core/models/data.model';
 
 @Component({
   selector: 'app-proyectos',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './proyectos.component.html',
   styleUrls: ['./proyectos.component.css'],
 })
