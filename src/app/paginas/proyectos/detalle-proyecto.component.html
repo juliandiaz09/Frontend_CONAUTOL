@@ -1,7 +1,6 @@
 <div *ngIf="isLoading" class="loading">Cargando detalles del proyecto...</div>
 
 <div *ngIf="proyecto" class="detalle-proyecto-container">
-  
   <div class="info-top">
     <span>{{ proyecto.nombre }}</span>
     <span class="info">{{ proyecto.info }}</span>
@@ -10,43 +9,57 @@
   <div class="seccion-principal">
     <div class="galeria">
       <div class="imagen-principal">
-        <img [src]="imagenSeleccionada" alt="Imagen principal del proyecto">
+        <img [src]="imagenSeleccionada" alt="Imagen principal del proyecto" />
       </div>
       <div class="miniaturas">
-        <div class="miniatura" (click)="seleccionarImagen(proyecto.imagenPrincipalUrl)">
-          <img [src]="proyecto.imagenPrincipalUrl" alt="Miniatura 1">
+        <div
+          class="miniatura"
+          (click)="seleccionarImagen(proyecto.imagenPrincipalUrl || '')"
+        >
+          <img [src]="proyecto.imagenPrincipalUrl" alt="Miniatura 1" />
         </div>
-        <div *ngFor="let url of proyecto.imagenesSecundariasUrl" 
-             class="miniatura" 
-             (click)="seleccionarImagen(url)">
-          <img [src]="url" alt="Miniatura">
+        <div
+          *ngFor="let url of proyecto?.imagenesSecundariasUrl || []"
+          class="miniatura"
+          (click)="seleccionarImagen(url)"
+        >
+          <img [src]="url" alt="Miniatura" />
         </div>
       </div>
     </div>
-    
+
     <div class="info-producto">
       <h1>{{ proyecto.nombre }}</h1>
-      
+
       <div class="precio-variante">
-        <span class="precio">${{ proyecto.precio | number: '1.2-2' }}</span>
-        <select *ngIf="proyecto.variantes && proyecto.variantes.length > 0">
-          <option *ngFor="let variante of proyecto.variantes" [value]="variante">{{ variante }}</option>
+        <span class="precio">${{ proyecto.precio | number : "1.2-2" }}</span>
+        <select *ngIf="(proyecto.variantes?.length ?? 0) > 0">
+          <option
+            *ngFor="let variante of proyecto.variantes || []"
+            [value]="variante"
+          >
+            {{ variante }}
+          </option>
         </select>
       </div>
 
       <p class="descripcion-corta">{{ proyecto.descripcion }}</p>
-      
+
       <button class="btn-contactar" (click)="contactar()">Contactar</button>
     </div>
   </div>
 
-  <hr class="separador">
+  <hr class="separador" />
 
   <h2 class="titulo-seccion">Más Productos</h2>
   <div class="productos-relacionados">
-    <div *ngFor="let prod of proyecto.productosRelacionados" class="tarjeta-producto" (click)="cargarDetalleProyecto(prod.id)">
+    <div
+      *ngFor="let prod of proyecto.productosRelacionados || []"
+      class="tarjeta-producto"
+      (click)="cargarDetalleProyecto(prod.id)"
+    >
       <div class="imagen-placeholder">
-        <img [src]="prod.imageUrl" alt="{{ prod.name }}">
+        <img [src]="prod.imageUrl" alt="{{ prod.name }}" />
       </div>
       <div class="texto-info">
         <h3>{{ prod.name }}</h3>
@@ -55,15 +68,19 @@
     </div>
   </div>
 
-  <hr class="separador">
+  <hr class="separador" />
 
   <h2 class="titulo-seccion">Comentarios</h2>
   <div class="lista-comentarios">
-    <div *ngFor="let comentario of proyecto.comentarios" class="comentario-item">
+    <div
+      *ngFor="let comentario of proyecto.comentarios || []"
+      class="comentario-item"
+    >
       <p class="autor-fecha">
-        <strong>{{ comentario.usuario }}</strong> <span>{{ comentario.fecha }}</span>
+        <strong>{{ comentario.usuario }}</strong>
+        <span>{{ comentario.fecha }}</span>
       </p>
       <p class="texto-comentario">{{ comentario.texto }}</p>
     </div>
-    </div>
+  </div>
 </div>

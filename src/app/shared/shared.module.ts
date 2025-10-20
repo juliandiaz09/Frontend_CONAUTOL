@@ -4,8 +4,8 @@ import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
-  declarations: [HeaderComponent, FooterComponent],
-  imports: [CommonModule],
-  exports: [HeaderComponent, FooterComponent]
+  declarations: [],
+  imports: [CommonModule, HeaderComponent, FooterComponent],
+  exports: [HeaderComponent, FooterComponent],
 })
-export class SharedModule { }
+export class SharedModule {}

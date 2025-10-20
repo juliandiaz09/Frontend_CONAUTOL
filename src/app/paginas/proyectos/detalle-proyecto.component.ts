@@ -1,11 +1,13 @@
-
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { Proyecto, Comentario } from '../../core/models/data.model';
 
 @Component({
   selector: 'app-detalle-proyecto',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './detalle-proyecto.component.html',
   styleUrls: ['./detalle-proyecto.component.css'],
 })

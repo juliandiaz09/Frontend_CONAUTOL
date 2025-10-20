@@ -1,1 +1,83 @@
-<p>nosotros works!</p>
+<div class="nosotros-container">
+  <!-- Hero Section -->
+  <section class="nosotros-hero">
+    <div class="container">
+      <h1>Acerca de Nosotros</h1>
+      <p>CONAUTOL - Calidad e Innovación Industrial</p>
+    </div>
+  </section>
+
+  <!-- Historia Section -->
+  <section class="historia-section">
+    <div class="container">
+      <div class="historia-content">
+        <div class="historia-texto">
+          <h2>Nuestra Historia</h2>
+          <p>
+            CONAUTOL nace como una empresa tolimense enfocada en la mejora
+            continua y el progreso constante, la cual siempre buscará trabajar
+            con el mayor grado de calidad y satisfacción para nuestros clientes.
+          </p>
+          <p>
+            Ofrecemos soluciones integrales que generan un impacto positivo en
+            los procesos productivos, el bienestar de su personal y los costos
+            en su empresa.
+          </p>
+          <div class="ceo-info">
+            <strong>Daniel Fuentes</strong>
+            <span>CEO</span>
+          </div>
+        </div>
+        <div class="historia-imagen">
+          <!-- Aquí iría una imagen representativa -->
+          <div class="imagen-placeholder">
+            <span class="material-icons">business</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Valores Section -->
+  <section class="valores-section">
+    <div class="container">
+      <h2>Nuestros Valores</h2>
+      <div class="valores-grid">
+        <div *ngFor="let valor of valores" class="valor-card">
+          <div class="valor-icono">
+            <span class="material-icons">{{ valor.icono }}</span>
+          </div>
+          <h3>{{ valor.titulo }}</h3>
+          <p>{{ valor.descripcion }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Servicios Section -->
+  <section class="servicios-nosotros-section">
+    <div class="container">
+      <h2>Nuestros Servicios</h2>
+      <div class="servicios-lista">
+        <div
+          *ngFor="let servicio of serviciosPrincipales"
+          class="servicio-item"
+        >
+          <span class="material-icons">check_circle</span>
+          <span>{{ servicio }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="nosotros-cta">
+    <div class="container">
+      <h2>¿Listo para trabajar juntos?</h2>
+      <p>Contáctanos y descubre cómo podemos ayudarte con tus proyectos</p>
+      <button class="btn-primary" routerLink="/contacto">
+        Contactar Ahora
+      </button>
+    </div>
+  </section>
+</div>

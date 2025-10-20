@@ -1,6 +1,10 @@
 <header class="main-header">
   <div class="logo" (click)="navigateTo('/inicio')">
-    <img src="assets/images/logo-conautol.png" alt="CONAUTOL Logo" class="logo-img">
+    <img
+      src="assets/images/logo-conautol.png"
+      alt="CONAUTOL Logo"
+      class="logo-img"
+    />
   </div>
 
   <nav class="nav-menu" [class.open]="isMenuOpen">
@@ -17,6 +21,6 @@
   </nav>
 
   <button class="menu-toggle" (click)="toggleMenu()">
-    <span class="material-icons">{{ isMenuOpen ? 'close' : 'menu' }}</span>
+    <span class="material-icons">{{ isMenuOpen ? "close" : "menu" }}</span>
   </button>
 </header>

@@ -1,0 +1,236 @@
+.nosotros-container {
+  min-height: 100vh;
+}
+
+/* Hero Section */
+.nosotros-hero {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 80px 0;
+  text-align: center;
+}
+
+.nosotros-hero h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.nosotros-hero p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+/* Historia Section */
+.historia-section {
+  padding: 80px 0;
+}
+
+.historia-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.historia-texto h2 {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+.historia-texto p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+  color: #555;
+}
+
+.ceo-info {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-left: 4px solid #667eea;
+}
+
+.ceo-info strong {
+  display: block;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.ceo-info span {
+  color: #666;
+  font-style: italic;
+}
+
+.historia-imagen {
+  text-align: center;
+}
+
+.imagen-placeholder {
+  width: 200px;
+  height: 200px;
+  background: #667eea;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.imagen-placeholder .material-icons {
+  font-size: 4rem;
+  color: white;
+}
+
+/* Valores Section */
+.valores-section {
+  padding: 80px 0;
+  background: #f8f9fa;
+}
+
+.valores-section h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 3rem;
+  color: #333;
+}
+
+.valores-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.valor-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  transition: transform 0.3s;
+}
+
+.valor-card:hover {
+  transform: translateY(-5px);
+}
+
+.valor-icono {
+  width: 80px;
+  height: 80px;
+  background: #667eea;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+}
+
+.valor-icono .material-icons {
+  font-size: 2.5rem;
+  color: white;
+}
+
+.valor-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.valor-card p {
+  color: #666;
+  line-height: 1.6;
+}
+
+/* Servicios Section */
+.servicios-nosotros-section {
+  padding: 80px 0;
+}
+
+.servicios-nosotros-section h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 3rem;
+  color: #333;
+}
+
+.servicios-lista {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.servicio-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.servicio-item:last-child {
+  border-bottom: none;
+}
+
+.servicio-item .material-icons {
+  color: #28a745;
+  margin-right: 1rem;
+}
+
+.servicio-item span {
+  font-size: 1.1rem;
+  color: #555;
+}
+
+/* CTA Section */
+.nosotros-cta {
+  background: #333;
+  color: white;
+  padding: 80px 0;
+  text-align: center;
+}
+
+.nosotros-cta h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.nosotros-cta p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  opacity: 0.9;
+}
+
+.btn-primary {
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-primary:hover {
+  background: #5a6fd8;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .historia-content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .nosotros-hero h1 {
+    font-size: 2rem;
+  }
+  
+  .historia-texto h2 {
+    font-size: 2rem;
+  }
+  
+  .valores-grid {
+    grid-template-columns: 1fr;
+  }
+}

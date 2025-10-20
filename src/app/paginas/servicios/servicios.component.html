@@ -1,1 +1,36 @@
 <p>servicios works!</p>
+<div class="servicios-container">
+  <!-- Banner Section -->
+  <section class="servicios-banner">
+    <div class="banner-content">
+      <h1>Nuestros Servicios</h1>
+      <p>Soluciones integrales en electromecánica para el sector industrial</p>
+      <button class="btn-catalogo" routerLink="/brochure/flipbook">
+        Ver Catálogo Completo
+      </button>
+    </div>
+  </section>
+
+  <!-- Categorías de Servicios -->
+  <section class="categorias-section">
+    <div class="container">
+      <div *ngFor="let categoria of categoriasServicios" class="categoria-card">
+        <h3>{{ categoria.nombre }}</h3>
+        <ul>
+          <li *ngFor="let servicio of categoria.servicios">{{ servicio }}</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="servicios-cta">
+    <div class="container">
+      <h2>¿Necesitas alguno de nuestros servicios?</h2>
+      <p>Contáctanos para una cotización personalizada</p>
+      <button class="btn-primary" routerLink="/contacto">
+        Solicitar Cotización
+      </button>
+    </div>
+  </section>
+</div>

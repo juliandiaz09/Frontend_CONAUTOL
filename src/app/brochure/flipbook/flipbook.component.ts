@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { SafeUrlPipe } from '../../shared/pipes/safe-url.pipe';
 
 @Component({
   selector: 'app-flipbook',
+  standalone: true,
+  imports: [CommonModule, SafeUrlPipe],
   templateUrl: './flipbook.component.html',
   styleUrls: ['./flipbook.component.css'],
 })
