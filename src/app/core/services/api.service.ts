@@ -140,6 +140,13 @@ export class ApiService {
     return of({ token: 'mock-jwt-token-12345' }); // MOCK
   }
 
+  // Enviar email de recuperación de contraseña (mock)
+  recoverPassword(email: string): Observable<any> {
+    console.log('Solicitada recuperación de contraseña para:', email);
+    // Simular respuesta exitosa
+    return of({ success: true, message: 'Email de recuperación enviado.' });
+  }
+
   // Métodos de token y autenticación (sin cambios)
   setToken(token: string): void {
     localStorage.setItem('auth_token', token);

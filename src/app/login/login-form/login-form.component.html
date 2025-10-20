@@ -1,1 +1,62 @@
-<p>login-form works!</p>
+<div class="login-panel container">
+  <div class="card">
+    <h2>Iniciar sesión</h2>
+
+    <form [formGroup]="loginForm" (ngSubmit)="submit()">
+      <label>
+        Email
+        <input
+          type="email"
+          formControlName="email"
+          placeholder="tu@correo.com"
+        />
+      </label>
+      <div
+        class="error"
+        *ngIf="
+          loginForm.get('email')?.touched && loginForm.get('email')?.invalid
+        "
+      >
+        <small *ngIf="loginForm.get('email')?.errors?.['required']"
+          >El email es requerido.</small
+        >
+        <small *ngIf="loginForm.get('email')?.errors?.['email']"
+          >Email inválido.</small
+        >
+      </div>
+
+      <label>
+        Contraseña
+        <input
+          type="password"
+          formControlName="password"
+          placeholder="••••••••"
+        />
+      </label>
+      <div
+        class="error"
+        *ngIf="
+          loginForm.get('password')?.touched &&
+          loginForm.get('password')?.invalid
+        "
+      >
+        <small *ngIf="loginForm.get('password')?.errors?.['required']"
+          >La contraseña es requerida.</small
+        >
+        <small *ngIf="loginForm.get('password')?.errors?.['minlength']"
+          >La contraseña es muy corta.</small
+        >
+      </div>
+
+      <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+        {{ isLoading ? "Entrando..." : "Entrar" }}
+      </button>
+    </form>
+
+    <p class="help-links">
+      <a routerLink="/recuperar-password">¿Olvidaste tu contraseña?</a>
+    </p>
+
+    <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+  </div>
+</div>
