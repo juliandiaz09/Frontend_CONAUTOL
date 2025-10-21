@@ -11,7 +11,7 @@ import { SafeUrlPipe } from '../../shared/pipes/safe-url.pipe';
 })
 export class FlipbookComponent implements OnInit {
   // La URL del PDF que se va a cargar
-  brochureUrl: string = 'assets/Brochure servicios CONAUTOL.pdf';
+  brochureUrl: string = 'assets/Brochure_servicios_CONAUTOL.pdf';
 
   // Puedes usar una variable para controlar la visualización de carga
   isBrochureLoading: boolean = true;
