@@ -19,6 +19,13 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'servicios/:id',
+    loadComponent: () =>
+      import('./paginas/servicios/detalle-servicio.component').then(
+        (m) => m.DetalleServicioComponent
+      ),
+  },
+  {
     path: 'proyectos',
     loadComponent: () =>
       import('./paginas/proyectos/proyectos.component').then(

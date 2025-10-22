@@ -1,0 +1,17 @@
+<div class="detalle-servicio-page">
+  <div class="container">
+    <h2>{{ categoria?.nombre }}</h2>
+
+    <!-- Filtros -->
+    <div class="filtros-container">
+      <input type="text" placeholder="Buscar servicio..." #filtro (keyup)="aplicarFiltro(filtro.value)">
+    </div>
+
+    <!-- Lista de Servicios -->
+    <ul class="servicios-list">
+      <li *ngFor="let servicio of serviciosFiltrados">{{ servicio }}</li>
+    </ul>
+
+    <a routerLink="/servicios" class="btn-primary">Volver a Servicios</a>
+  </div>
+</div>

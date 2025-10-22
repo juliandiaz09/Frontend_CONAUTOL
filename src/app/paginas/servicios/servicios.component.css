@@ -1,109 +1,140 @@
-.servicios-container {
-  min-height: 100vh;
+/* General page styling */
+.servicios-page {
+  background-color: #ffffff;
+  font-family: 'Roboto', sans-serif;
 }
 
 /* Banner Section */
 .servicios-banner {
-  background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+  position: relative;
+  background: linear-gradient(rgba(0, 51, 102, 0.8), rgba(0, 51, 102, 0.8)), url('/assets/images/banner-servicios.jpg') no-repeat center center;
+  background-size: cover;
   color: white;
   padding: 80px 0;
   text-align: center;
 }
 
-.banner-content h1 {
-  font-size: 3rem;
-  margin-bottom: 1rem;
+.servicios-banner h1 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.banner-content p {
-  font-size: 1.2rem;
-  margin-bottom: 2rem;
-  opacity: 0.9;
+.servicios-banner p {
+  font-size: 1.25rem;
+  max-width: 600px;
+  margin: 0 auto 30px auto;
 }
 
-.btn-catalogo {
-  background: #ff6b35;
-  color: white;
-  border: none;
-  padding: 12px 30px;
-  border-radius: 5px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.3s;
+/* Services Section */
+.servicios-section {
+  padding: 80px 20px;
+  background-color: #f7f9fc;
 }
 
-.btn-catalogo:hover {
-  background: #e55a2b;
-}
-
-/* Categorías Section */
-.categorias-section {
-  padding: 80px 0;
-  background: #f8f9fa;
-}
-
-.categorias-section .container {
+.servicios-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.categoria-card {
-  background: white;
-  padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+.servicio-card {
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  padding: 35px;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-.categoria-card h3 {
-  color: #2c3e50;
-  font-size: 1.5rem;
-  margin-bottom: 1.5rem;
-  border-bottom: 2px solid #ff6b35;
-  padding-bottom: 0.5rem;
+.servicio-card:hover {
+  transform: translateY(-15px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
 }
 
-.categoria-card ul {
-  list-style: none;
-  padding: 0;
+.servicio-card .material-icons {
+  font-size: 4.5rem;
+  color: #0056b3; /* Darker blue for icon */
+  margin-bottom: 25px;
+  line-height: 1;
 }
 
-.categoria-card li {
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #eee;
-  color: #555;
+.servicio-card h3 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #333;
 }
 
-.categoria-card li:last-child {
-  border-bottom: none;
+.servicio-card p {
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.6;
+  flex-grow: 1;
+  margin-bottom: 25px;
 }
+
+.servicio-card .btn-primary {
+  align-self: center;
+}
+
 
 /* CTA Section */
 .servicios-cta {
-  background: #2c3e50;
+  background-color: #003366;
   color: white;
-  padding: 60px 0;
+  padding: 80px 20px;
   text-align: center;
 }
 
 .servicios-cta h2 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 20px;
 }
 
 .servicios-cta p {
   font-size: 1.1rem;
-  margin-bottom: 2rem;
-  opacity: 0.9;
+  margin-bottom: 30px;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .servicios-banner h1 {
-    font-size: 2rem;
-  }
-  
-  .categorias-section .container {
-    grid-template-columns: 1fr;
-  }
+/* Button Styles - Re-using and enhancing from global styles potentially */
+.btn-primary {
+  background-color: #0056b3;
+  color: white;
+  padding: 14px 28px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  display: inline-block;
+  border: 2px solid transparent;
+}
+
+.btn-primary:hover {
+  background-color: #004494;
+  transform: translateY(-3px);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: white;
+  padding: 12px 26px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  display: inline-block;
+  border: 2px solid white;
+}
+
+.btn-secondary:hover {
+  background-color: white;
+  color: #003366;
 }

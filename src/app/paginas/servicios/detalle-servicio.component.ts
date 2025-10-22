@@ -1,21 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-servicios',
+  selector: 'app-detalle-servicio',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  templateUrl: './servicios.component.html',
-  styleUrls: ['./servicios.component.css'],
+  templateUrl: './detalle-servicio.component.html',
+  styleUrls: ['./detalle-servicio.component.css'],
 })
-export class ServiciosComponent implements OnInit {
+export class DetalleServicioComponent implements OnInit {
+  categoria: any;
+  serviciosFiltrados: string[] = [];
+  filtroActual = '';
+
   categoriasServicios = [
     {
       id: 1,
       nombre: 'Optimización de Líneas de Producción',
-      descripcion: 'Mejoramos la eficiencia y seguridad de sus líneas de producción.',
-      icono: 'precision_manufacturing',
       servicios: [
         'Análisis y mejora de procesos',
         'Integración de sistemas de seguridad',
@@ -24,8 +26,6 @@ export class ServiciosComponent implements OnInit {
     {
       id: 2,
       nombre: 'Automatización Industrial',
-      descripcion: 'Soluciones de automatización para optimizar sus procesos.',
-      icono: 'memory',
       servicios: [
         'Diseño de control de procesos',
         'Integración sensórica',
@@ -37,8 +37,6 @@ export class ServiciosComponent implements OnInit {
     {
       id: 3,
       nombre: 'Tableros Eléctricos',
-      descripcion: 'Diseño y construcción de tableros eléctricos a medida.',
-      icono: 'electrical_services',
       servicios: [
         'Gabinetes de distribución',
         'Bancos de condensadores',
@@ -50,8 +48,6 @@ export class ServiciosComponent implements OnInit {
     {
       id: 4,
       nombre: 'Instalaciones Eléctricas',
-      descripcion: 'Instalaciones seguras y eficientes para su empresa.',
-      icono: 'power',
       servicios: [
         'Redes eléctricas baja tensión',
         'Motores eléctricos y servomotores',
@@ -61,8 +57,6 @@ export class ServiciosComponent implements OnInit {
     {
       id: 5,
       nombre: 'Pruebas Eléctricas',
-      descripcion: 'Verificación y diagnóstico de sus sistemas eléctricos.',
-      icono: 'handyman',
       servicios: [
         'Pruebas de resistencia de aislamiento',
         'Sistemas de puesta a tierra',
@@ -72,8 +66,6 @@ export class ServiciosComponent implements OnInit {
     {
       id: 6,
       nombre: 'Mantenimiento',
-      descripcion: 'Planes de mantenimiento preventivo y correctivo.',
-      icono: 'build',
       servicios: [
         'Mantenimiento de tableros eléctricos',
         'Mantenimiento de motores',
@@ -82,7 +74,20 @@ export class ServiciosComponent implements OnInit {
     },
   ];
 
-  constructor() {}
+  constructor(private route: ActivatedRoute) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.categoria = this.categoriasServicios.find(c => c.id === +id);
+      this.serviciosFiltrados = this.categoria.servicios;
+    }
+  }
+
+  aplicarFiltro(termino: string): void {
+    this.filtroActual = termino;
+    this.serviciosFiltrados = this.categoria.servicios.filter((servicio: string) =>
+      servicio.toLowerCase().includes(termino.toLowerCase())
+    );
+  }
 }

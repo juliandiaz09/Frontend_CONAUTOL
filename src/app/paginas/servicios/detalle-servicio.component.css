@@ -1,0 +1,27 @@
+.detalle-servicio-page {
+  padding: 40px 0;
+}
+
+.filtros-container {
+  margin-bottom: 20px;
+}
+
+.filtros-container input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.servicios-list {
+  list-style: none;
+  padding: 0;
+}
+
+.servicios-list li {
+  background-color: #f9f9f9;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}

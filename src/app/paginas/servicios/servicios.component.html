@@ -1,36 +1,33 @@
-<p>servicios works!</p>
-<div class="servicios-container">
-  <!-- Banner Section -->
+<div class="servicios-page">
+  <!-- Banner -->
   <section class="servicios-banner">
-    <div class="banner-content">
+    <div class="container">
       <h1>Nuestros Servicios</h1>
-      <p>Soluciones integrales en electromecánica para el sector industrial</p>
-      <button class="btn-catalogo" routerLink="/brochure/flipbook">
-        Ver Catálogo Completo
-      </button>
+      <p>Soluciones integrales para tus necesidades electromecánicas.</p>
+      <a routerLink="/brochure/flipbook" class="btn-primary">Ver Catálogo Completo</a>
     </div>
   </section>
 
   <!-- Categorías de Servicios -->
-  <section class="categorias-section">
+  <section class="servicios-section">
     <div class="container">
-      <div *ngFor="let categoria of categoriasServicios" class="categoria-card">
-        <h3>{{ categoria.nombre }}</h3>
-        <ul>
-          <li *ngFor="let servicio of categoria.servicios">{{ servicio }}</li>
-        </ul>
+      <div class="servicios-grid">
+        <div *ngFor="let categoria of categoriasServicios" class="servicio-card">
+          <span class="material-icons">{{ categoria.icono }}</span>
+          <h3>{{ categoria.nombre }}</h3>
+          <p>{{ categoria.descripcion }}</p>
+          <a class="btn-primary" [routerLink]="['/servicios', categoria.id]">Ver detalles</a>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- CTA Section -->
+  <!-- CTA -->
   <section class="servicios-cta">
     <div class="container">
-      <h2>¿Necesitas alguno de nuestros servicios?</h2>
-      <p>Contáctanos para una cotización personalizada</p>
-      <button class="btn-primary" routerLink="/contacto">
-        Solicitar Cotización
-      </button>
+      <h2>¿Listo para empezar?</h2>
+      <p>Contáctanos para obtener una cotización personalizada.</p>
+      <a routerLink="/contacto" class="btn-secondary">Contactar</a>
     </div>
   </section>
 </div>
