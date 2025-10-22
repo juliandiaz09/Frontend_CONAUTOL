@@ -1,5 +1,5 @@
 <header class="main-header">
-  <div class="logo" (click)="navigateTo('/inicio')">
+  <div class="logo" routerLink="/inicio" (click)="closeMenu()">
     <img
       src="assets/images/logo-conautol.png"
       alt="CONAUTOL Logo"
@@ -9,11 +9,11 @@
 
   <nav class="nav-menu" [class.open]="isMenuOpen">
     <ul>
-      <li (click)="navigateTo('/inicio')">INICIO</li>
-      <li (click)="navigateTo('/servicios')">SERVICIOS</li>
-      <li (click)="navigateTo('/proyectos')">PROYECTOS</li>
-      <li (click)="navigateTo('/nosotros')">NOSOTROS</li>
-      <li (click)="navigateTo('/contacto')">CONTACTO</li>
+      <li routerLink="/inicio" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}" (click)="closeMenu()">INICIO</li>
+      <li routerLink="/servicios" routerLinkActive="active-link" (click)="closeMenu()">SERVICIOS</li>
+      <li routerLink="/proyectos" routerLinkActive="active-link" (click)="closeMenu()">PROYECTOS</li>
+      <li routerLink="/nosotros" routerLinkActive="active-link" (click)="closeMenu()">NOSOTROS</li>
+      <li routerLink="/contacto" routerLinkActive="active-link" (click)="closeMenu()">CONTACTO</li>
     </ul>
   </nav>
 

@@ -40,10 +40,22 @@
   font-weight: 600;
   padding: 8px 10px;
   border-radius: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease; /* Added transition */
 }
 .nav-menu ul li:hover {
   background: rgba(15, 76, 129, 0.06);
 }
+
+/* Style for the active route link */
+.nav-menu ul li.active-link {
+  background-color: #0056b3; /* Professional blue */
+  color: #ffffff; /* White text */
+}
+
+.nav-menu ul li.active-link:hover {
+  background-color: #004085; /* Darker blue on hover */
+}
+
 .nav-menu ul li.login-btn {
   display: flex;
   align-items: center;
