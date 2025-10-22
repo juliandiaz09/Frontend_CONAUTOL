@@ -28,7 +28,7 @@
               "src/assets",
               {
                 "glob": "**/*",
-                "input": "node_modules/ngx-extended-pdf-viewer/assets/",
+                "input": "node_modules/ngx-extended-pdf-viewer/assets",
                 "output": "assets/"
               }
             ],
@@ -92,7 +92,7 @@
               "src/assets",
               {
                 "glob": "**/*",
-                "input": "node_modules/ngx-extended-pdf-viewer/assets/",
+                "input": "node_modules/ngx-extended-pdf-viewer/assets",
                 "output": "assets/"
               }
             ],
