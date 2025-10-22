@@ -1,17 +1,33 @@
-<div class="detalle-servicio-page">
+<div class="detalle-servicio-page" *ngIf="categoria">
   <div class="container">
-    <h2>{{ categoria?.nombre }}</h2>
-
-    <!-- Filtros -->
-    <div class="filtros-container">
-      <input type="text" placeholder="Buscar servicio..." #filtro (keyup)="aplicarFiltro(filtro.value)">
+    <!-- Header -->
+    <div class="detalle-header">
+      <span class="material-icons">{{ categoria.icono }}</span>
+      <h1>{{ categoria.nombre }}</h1>
+      <p class="descripcion">{{ categoria.descripcion }}</p>
     </div>
 
     <!-- Lista de Servicios -->
-    <ul class="servicios-list">
-      <li *ngFor="let servicio of serviciosFiltrados">{{ servicio }}</li>
-    </ul>
+    <div class="servicios-lista-container">
+      <h2>Servicios Incluidos</h2>
+      <ul class="servicios-list">
+        <li *ngFor="let servicio of serviciosFiltrados">
+          <span class="material-icons">check_circle_outline</span>
+          <span>{{ servicio }}</span>
+        </li>
+      </ul>
+    </div>
 
-    <a routerLink="/servicios" class="btn-primary">Volver a Servicios</a>
+    <!-- Botón de Volver -->
+    <div class="volver-container">
+      <a routerLink="/servicios" class="btn-primary">&larr; Volver a Servicios</a>
+    </div>
   </div>
+</div>
+
+<div class="detalle-servicio-page" *ngIf="!categoria">
+    <div class="container">
+        <p>Servicio no encontrado.</p>
+        <a routerLink="/servicios" class="btn-primary">Volver a Servicios</a>
+    </div>
 </div>

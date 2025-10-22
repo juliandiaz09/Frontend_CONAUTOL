@@ -1,27 +1,117 @@
-.detalle-servicio-page {
-  padding: 40px 0;
+:host {
+  display: block;
+  background-color: #f8f9fa;
+  padding: 60px 0;
 }
 
-.filtros-container {
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Header */
+.detalle-header {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+  margin-bottom: 40px;
+}
+
+.detalle-header .material-icons {
+  font-size: 5rem;
+  color: #0056b3;
   margin-bottom: 20px;
 }
 
-.filtros-container input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+.detalle-header h1 {
+  font-size: 2.8rem;
+  color: #343a40;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.detalle-header .descripcion {
+  font-size: 1.2rem;
+  color: #6c757d;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Services List */
+.servicios-lista-container {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+}
+
+.servicios-lista-container h2 {
+  font-size: 2rem;
+  color: #343a40;
+  font-weight: 600;
+  margin-bottom: 30px;
+  text-align: center;
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 15px;
 }
 
 .servicios-list {
-  list-style: none;
+  list-style-type: none;
   padding: 0;
+  margin: 0;
 }
 
 .servicios-list li {
-  background-color: #f9f9f9;
-  padding: 15px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  font-size: 1.1rem;
+  color: #495057;
+  padding: 15px 10px;
+  border-bottom: 1px solid #e9ecef;
+  transition: background-color 0.3s ease;
+}
+
+.servicios-list li:last-child {
+  border-bottom: none;
+}
+
+.servicios-list li:hover {
+  background-color: #f8f9fa;
+}
+
+.servicios-list .material-icons {
+  color: #28a745; /* Green checkmark */
+  margin-right: 15px;
+  font-size: 1.5rem;
+}
+
+/* Back Button */
+.volver-container {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.btn-primary {
+    background-color: #0056b3;
+    color: #ffffff;
+    padding: 12px 28px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: inline-block;
+}
+
+.btn-primary:hover {
+    background-color: #004085;
+    transform: scale(1.05);
+}
+
+/* Not Found State */
+.detalle-servicio-page[ng-reflect-ng-if="false"] .container {
+    text-align: center;
+    padding: 50px;
 }
