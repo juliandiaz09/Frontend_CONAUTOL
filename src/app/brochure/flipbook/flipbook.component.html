@@ -1,21 +1,15 @@
 <div class="flipbook-container">
-  
-  <div class="header-flipbook">
-    <h1>Catálogo de Servicios CONAUTOL</h1>
-    <button class="btn-download" (click)="descargarBrochure()">
-      <span class="material-icons">download</span> Descargar PDF
-    </button>
-  </div>
-
-  <div *ngIf="isBrochureLoading" class="loading-overlay">
-    Cargando catálogo interactivo...
-  </div>
-  
-  <iframe 
-    *ngIf="!isBrochureLoading"
-    [src]="brochureUrl | safeUrl" 
-    class="pdf-viewer"
-    title="Brochure de Servicios">
-  </iframe>
-  
-  </div>
+  <ngx-extended-pdf-viewer 
+    [src]="brochureUrl"
+    [textLayer]="true"
+    [showHandToolButton]="true"
+    [showPresentationModeButton]="true"
+    [showBookModeButton]="true"
+    [showOpenFileButton]="false"
+    [showPrintButton]="true"
+    [showDownloadButton]="true"
+    [showSecondaryToolbarButton]="true"
+    [showPagingButtons]="true"
+    height="80vh">
+  </ngx-extended-pdf-viewer>
+</div>
