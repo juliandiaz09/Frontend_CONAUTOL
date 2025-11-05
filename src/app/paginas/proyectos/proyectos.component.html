@@ -1,36 +1,28 @@
 <section class="servicios-banner">
   <div class="banner-content">
     <h1>Servicios</h1>
-    <button class="btn-catalogo" routerLink="/brochure/flipbook">Abrir catálogo</button>
+    <button class="btn-catalogo" routerLink="/brochure/flipbook">
+      Abrir catálogo
+    </button>
   </div>
 </section>
 
 <section class="proyectos-seccion">
   <h2 class="titulo-seccion">Proyectos</h2>
-  
-  <div class="carrusel-wrapper">
-    <button class="arrow-btn left" (click)="scrollProyectos('left')">
-        < 
-    </button>
-    
-    <div #proyectosCarrusel class="proyectos-carrusel">
-      <div *ngFor="let proyecto of proyectos; let i = index" 
-           class="tarjeta-proyecto" 
-           [class.grande]="i % 6 === 0 || i % 6 === 1" 
-           (click)="verDetalle(proyecto.id)">
-           
-        <div class="imagen-placeholder">
-          <img [src]="proyecto.imagenUrl" alt="{{ proyecto.nombre }}">
-        </div>
-        <div class="texto-info">
-          <h3>{{ proyecto.nombre }}</h3>
-          <p>{{ proyecto.descripcionCorta }}</p>
-        </div>
+
+  <div class="proyectos-grid">
+    <div
+      *ngFor="let proyecto of proyectos"
+      class="tarjeta-proyecto"
+      (click)="verDetalle(proyecto.id)"
+    >
+      <div class="imagen-placeholder">
+        <img [src]="proyecto.imagenUrl" alt="{{ proyecto.nombre }}" />
+      </div>
+      <div class="texto-info">
+        <h3>{{ proyecto.nombre }}</h3>
+        <p>{{ proyecto.descripcionCorta }}</p>
       </div>
     </div>
-    
-    <button class="arrow-btn right" (click)="scrollProyectos('right')">
-      >
-    </button>
   </div>
 </section>

@@ -32,6 +32,75 @@
     </div>
   </section>
 
+  <!-- Proyectos Destacados -->
+  <section class="proyectos-section">
+    <div class="container">
+      <h2>Proyectos Destacados</h2>
+      <div class="carrusel-container" *ngIf="!cargando">
+        <button class="arrow-btn left" (click)="scrollProyectos('left')">
+          <span class="material-icons">chevron_left</span>
+        </button>
+
+        <div #proyectosCarrusel class="proyectos-carrusel">
+          <div
+            *ngFor="let proyecto of proyectosDestacados"
+            class="proyecto-card"
+            (click)="verDetalleProyecto(proyecto.id)"
+          >
+            <div class="imagen-container">
+              <img [src]="proyecto.imagenUrl" [alt]="proyecto.nombre" />
+            </div>
+            <div class="proyecto-info">
+              <h3>{{ proyecto.nombre }}</h3>
+              <p>{{ proyecto.descripcionCorta }}</p>
+            </div>
+          </div>
+        </div>
+
+        <button class="arrow-btn right" (click)="scrollProyectos('right')">
+          <span class="material-icons">chevron_right</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Proyectos Destacados -->
+  <section class="proyectos-section">
+    <div class="container">
+      <h2>Nuestros Proyectos</h2>
+      <div class="carrusel-container" *ngIf="!cargando">
+        <button class="arrow-btn left" (click)="scrollProyectos('left')">
+          <span class="material-icons">chevron_left</span>
+        </button>
+
+        <div #proyectosCarrusel class="proyectos-carrusel">
+          <div
+            *ngFor="let proyecto of proyectosDestacados"
+            class="proyecto-card"
+            (click)="verDetalleProyecto(proyecto.id)"
+          >
+            <div class="imagen-container">
+              <img [src]="proyecto.imagenUrl" [alt]="proyecto.nombre" />
+            </div>
+            <div class="proyecto-info">
+              <h3>{{ proyecto.nombre }}</h3>
+              <p>{{ proyecto.descripcionCorta }}</p>
+            </div>
+          </div>
+        </div>
+
+        <button class="arrow-btn right" (click)="scrollProyectos('right')">
+          <span class="material-icons">chevron_right</span>
+        </button>
+      </div>
+
+      <div class="loading" *ngIf="cargando">
+        <span class="material-icons rotating">refresh</span>
+        Cargando proyectos...
+      </div>
+    </div>
+  </section>
+
   <!-- CTA Section -->
   <section class="cta-section">
     <div class="container">
