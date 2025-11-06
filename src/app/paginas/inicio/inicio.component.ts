@@ -7,7 +7,6 @@ import { ApiService } from '../../core/services/api.service';
   selector: 'app-inicio',
   standalone: true,
   imports: [CommonModule],
-  providers: [ApiService],
   templateUrl: './inicio.component.html',
   styleUrls: ['./inicio.component.css'],
 })
