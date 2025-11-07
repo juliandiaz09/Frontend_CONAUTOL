@@ -75,7 +75,7 @@ export class PanelInicioComponent implements OnInit {
         };
         this.proyectos.push(resumen);
         this.isSubmittingProyecto = false;
-        this.navegarA('/admin/proyectos');
+        this.navegarA('/admin/proyectos/nuevo');
       },
       error: (error) => {
         this.error = 'Error al crear el proyecto';
@@ -101,7 +101,7 @@ export class PanelInicioComponent implements OnInit {
         };
         this.proyectos = this.proyectos.map((p) => (p.id === id ? resumen : p));
         this.isSubmittingProyecto = false;
-        this.navegarA('/admin/proyectos');
+        this.navegarA('/admin/proyectos/editar/' + proyecto.id);
       },
       error: (error) => {
         this.error = 'Error al editar el proyecto';
@@ -127,7 +127,7 @@ export class PanelInicioComponent implements OnInit {
         };
         this.servicios.push(resumen);
         this.isSubmittingServicio = false;
-        this.navegarA('/admin/servicios');
+        this.navegarA('/admin/servicios/nuevo');
       },
       error: (error) => {
         this.error = 'Error al crear el servicio';
@@ -153,7 +153,7 @@ export class PanelInicioComponent implements OnInit {
         };
         this.servicios = this.servicios.map((s) => (s.id === id ? resumen : s));
         this.isSubmittingServicio = false;
-        this.navegarA('/admin/servicios');
+        this.navegarA('/admin/servicios/editar/' + servicio.id);
       },
       error: (error) => {
         this.error = 'Error al editar el servicio';

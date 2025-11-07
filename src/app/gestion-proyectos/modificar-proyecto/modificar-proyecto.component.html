@@ -1,1 +1,165 @@
-<p>modificar-proyecto works!</p>
+<div class="container mx-auto p-4">
+  <div class="max-w-2xl mx-auto">
+    <h1 class="text-2xl font-bold mb-6">Modificar Proyecto</h1>
+
+    <form [formGroup]="proyectoForm" (ngSubmit)="onSubmit()" class="space-y-4">
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">Nombre del Proyecto</span>
+        </label>
+        <input
+          type="text"
+          formControlName="nombre"
+          class="input input-bordered w-full"
+          [class.input-error]="
+            proyectoForm.get('nombre')?.touched &&
+            proyectoForm.get('nombre')?.invalid
+          "
+        />
+        <div
+          *ngIf="
+            proyectoForm.get('nombre')?.touched &&
+            proyectoForm.get('nombre')?.invalid
+          "
+          class="text-red-500 text-sm mt-1"
+        >
+          <span *ngIf="proyectoForm.get('nombre')?.errors?.['required']"
+            >El nombre es requerido</span
+          >
+          <span *ngIf="proyectoForm.get('nombre')?.errors?.['minlength']"
+            >El nombre debe tener al menos 3 caracteres</span
+          >
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">Descripción</span>
+        </label>
+        <textarea
+          formControlName="descripcion"
+          class="textarea textarea-bordered h-24"
+          [class.textarea-error]="
+            proyectoForm.get('descripcion')?.touched &&
+            proyectoForm.get('descripcion')?.invalid
+          "
+        ></textarea>
+        <div
+          *ngIf="
+            proyectoForm.get('descripcion')?.touched &&
+            proyectoForm.get('descripcion')?.invalid
+          "
+          class="text-red-500 text-sm mt-1"
+        >
+          La descripción es requerida
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">Cliente</span>
+        </label>
+        <input
+          type="text"
+          formControlName="cliente"
+          class="input input-bordered w-full"
+          [class.input-error]="
+            proyectoForm.get('cliente')?.touched &&
+            proyectoForm.get('cliente')?.invalid
+          "
+        />
+        <div
+          *ngIf="
+            proyectoForm.get('cliente')?.touched &&
+            proyectoForm.get('cliente')?.invalid
+          "
+          class="text-red-500 text-sm mt-1"
+        >
+          El cliente es requerido
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">Estado</span>
+        </label>
+        <select formControlName="estado" class="select select-bordered w-full">
+          <option value="activo">Activo</option>
+          <option value="inactivo">Inactivo</option>
+          <option value="completado">Completado</option>
+        </select>
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">Presupuesto</span>
+        </label>
+        <input
+          type="number"
+          formControlName="presupuesto"
+          class="input input-bordered w-full"
+          min="0"
+        />
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Fecha de Inicio</span>
+          </label>
+          <input
+            type="date"
+            formControlName="fecha_inicio"
+            class="input input-bordered w-full"
+          />
+        </div>
+
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Fecha de Fin</span>
+          </label>
+          <input
+            type="date"
+            formControlName="fecha_fin"
+            class="input input-bordered w-full"
+          />
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">URL de la Imagen</span>
+        </label>
+        <input
+          type="url"
+          formControlName="imagen_url"
+          class="input input-bordered w-full"
+        />
+      </div>
+
+      <div
+        *ngIf="error"
+        class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
+      >
+        {{ error }}
+      </div>
+
+      <div class="flex justify-end space-x-2">
+        <button
+          type="button"
+          routerLink="/admin/proyectos"
+          class="btn btn-ghost"
+        >
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="isSubmitting || proyectoForm.invalid"
+        >
+          {{ isSubmitting ? "Actualizando..." : "Actualizar Proyecto" }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

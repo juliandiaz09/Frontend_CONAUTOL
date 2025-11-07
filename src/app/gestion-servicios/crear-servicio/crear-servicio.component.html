@@ -1,1 +1,176 @@
-<p>crear-servicio works!</p>
+<div class="container mx-auto p-4">
+  <div class="max-w-2xl mx-auto">
+    <h1 class="text-2xl font-bold mb-6">Crear Nuevo Servicio</h1>
+
+    <form [formGroup]="servicioForm" (ngSubmit)="onSubmit()" class="space-y-4">
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">Nombre del Servicio</span>
+        </label>
+        <input
+          type="text"
+          formControlName="nombre"
+          class="input input-bordered w-full"
+          [class.input-error]="
+            servicioForm.get('nombre')?.touched &&
+            servicioForm.get('nombre')?.invalid
+          "
+        />
+        <div
+          *ngIf="
+            servicioForm.get('nombre')?.touched &&
+            servicioForm.get('nombre')?.invalid
+          "
+          class="text-red-500 text-sm mt-1"
+        >
+          <span *ngIf="servicioForm.get('nombre')?.errors?.['required']"
+            >El nombre es requerido</span
+          >
+          <span *ngIf="servicioForm.get('nombre')?.errors?.['minlength']"
+            >El nombre debe tener al menos 3 caracteres</span
+          >
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">Descripción</span>
+        </label>
+        <textarea
+          formControlName="descripcion"
+          class="textarea textarea-bordered h-24"
+          [class.textarea-error]="
+            servicioForm.get('descripcion')?.touched &&
+            servicioForm.get('descripcion')?.invalid
+          "
+        ></textarea>
+        <div
+          *ngIf="
+            servicioForm.get('descripcion')?.touched &&
+            servicioForm.get('descripcion')?.invalid
+          "
+          class="text-red-500 text-sm mt-1"
+        >
+          La descripción es requerida
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">Categoría</span>
+        </label>
+        <input
+          type="text"
+          formControlName="categoria"
+          class="input input-bordered w-full"
+        />
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">Estado</span>
+        </label>
+        <select formControlName="estado" class="select select-bordered w-full">
+          <option value="activo">Activo</option>
+          <option value="inactivo">Inactivo</option>
+        </select>
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">Icono (Material Icons)</span>
+        </label>
+        <input
+          type="text"
+          formControlName="icono"
+          class="input input-bordered w-full"
+          placeholder="Ej: build, code, settings"
+        />
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">Características</span>
+        </label>
+        <div class="space-y-2">
+          <div class="flex gap-2">
+            <input
+              type="text"
+              class="input input-bordered flex-1"
+              placeholder="Agregar característica"
+              #caracteristicaInput
+            />
+            <button
+              type="button"
+              class="btn btn-outline"
+              (click)="agregarCaracteristica($event)"
+            >
+              Agregar
+            </button>
+          </div>
+          <div class="flex flex-wrap gap-2 mt-2">
+            <span
+              *ngFor="let carac of servicioForm.get('caracteristicas')?.value; let i = index"
+              class="badge badge-outline gap-1"
+            >
+              {{ carac }}
+              <button
+                type="button"
+                class="text-xs"
+                (click)="eliminarCaracteristica(i)"
+              >
+                ×
+              </button>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">URL de la Imagen</span>
+        </label>
+        <input
+          type="url"
+          formControlName="imagen_url"
+          class="input input-bordered w-full"
+        />
+      </div>
+
+      <div class="form-control">
+        <label class="label cursor-pointer">
+          <span class="label-text">Activo</span>
+          <input
+            type="checkbox"
+            formControlName="activo"
+            class="checkbox"
+          />
+        </label>
+      </div>
+
+      <div
+        *ngIf="error"
+        class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
+      >
+        {{ error }}
+      </div>
+
+      <div class="flex justify-end space-x-2">
+        <button
+          type="button"
+          routerLink="/admin/servicios"
+          class="btn btn-ghost"
+        >
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="isSubmitting || servicioForm.invalid"
+        >
+          {{ isSubmitting ? "Guardando..." : "Guardar Servicio" }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
