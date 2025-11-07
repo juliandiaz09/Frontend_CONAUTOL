@@ -44,7 +44,7 @@ export class LoginFormComponent {
       next: (res) => {
         this.api.setToken(res.token);
         this.isLoading = false;
-        this.router.navigate(['/administrador']);
+        this.router.navigate(['/admin/panel']);
       },
       error: (err) => {
         this.isLoading = false;

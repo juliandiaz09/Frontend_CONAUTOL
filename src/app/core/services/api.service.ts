@@ -5,10 +5,14 @@ import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import {
   Proyecto,
+  ProyectoCreate,
+  ProyectoUpdate,
+} from '../models/proyecto.model';
+import {
   Servicio,
-  ContactoForm,
-  Comentario,
-} from '../models/data.model';
+  ServicioCreate,
+  ServicioUpdate,
+} from '../models/servicio.model';
 
 @Injectable({
   providedIn: 'root',
@@ -21,22 +25,108 @@ export class ApiService {
 
   // --- LÓGICA PÚBLICA DE PROYECTOS Y SERVICIOS ---
 
-  getProyectos(): Observable<Servicio[]> {
-    // Llamada real al backend
-    return this.http.get<Servicio[]>(`${this.baseUrl}/api/proyectos`).pipe(
-      catchError((err) => {
-        console.error('Error fetching proyectos:', err);
-        return throwError(() => err);
+  // Proyectos
+  getProyectos(): Observable<Proyecto[]> {
+    return this.http.get<Proyecto[]>(`${this.baseUrl}/api/proyectos`).pipe(
+      catchError((error: any) => {
+        console.error('Error fetching proyectos:', error);
+        return throwError(() => error);
       })
     );
   }
 
-  getDetalleProyecto(id: number): Observable<Proyecto> {
-    // Llamada real al backend
+  getProyecto(id: number): Observable<Proyecto> {
     return this.http.get<Proyecto>(`${this.baseUrl}/api/proyectos/${id}`).pipe(
-      catchError((err) => {
-        console.error(`Error fetching proyecto ${id}:`, err);
-        return throwError(() => err);
+      catchError((error: any) => {
+        console.error(`Error fetching proyecto ${id}:`, error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  crearProyecto(proyecto: Proyecto): Observable<Proyecto> {
+    return this.http
+      .post<Proyecto>(`${this.baseUrl}/api/proyectos`, proyecto)
+      .pipe(
+        catchError((error: any) => {
+          console.error('Error creating proyecto:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  actualizarProyecto(
+    id: number,
+    proyecto: ProyectoUpdate
+  ): Observable<Proyecto> {
+    return this.http
+      .put<Proyecto>(`${this.baseUrl}/api/proyectos/${id}`, proyecto)
+      .pipe(
+        catchError((error: any) => {
+          console.error(`Error updating proyecto ${id}:`, error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  eliminarProyecto(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/api/proyectos/${id}`).pipe(
+      catchError((error: any) => {
+        console.error(`Error deleting proyecto ${id}:`, error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  // Servicios
+  getServicios(): Observable<Servicio[]> {
+    return this.http.get<Servicio[]>(`${this.baseUrl}/api/servicios`).pipe(
+      catchError((error: any) => {
+        console.error('Error fetching servicios:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  getServicio(id: number): Observable<Servicio> {
+    return this.http.get<Servicio>(`${this.baseUrl}/api/servicios/${id}`).pipe(
+      catchError((error: any) => {
+        console.error(`Error fetching servicio ${id}:`, error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  crearServicio(servicio: ServicioCreate): Observable<Servicio> {
+    return this.http
+      .post<Servicio>(`${this.baseUrl}/api/servicios`, servicio)
+      .pipe(
+        catchError((error: any) => {
+          console.error('Error creating servicio:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  actualizarServicio(
+    id: number,
+    servicio: ServicioUpdate
+  ): Observable<Servicio> {
+    return this.http
+      .put<Servicio>(`${this.baseUrl}/api/servicios/${id}`, servicio)
+      .pipe(
+        catchError((error: any) => {
+          console.error(`Error updating servicio ${id}:`, error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  eliminarServicio(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/api/servicios/${id}`).pipe(
+      catchError((error: any) => {
+        console.error(`Error deleting servicio ${id}:`, error);
+        return throwError(() => error);
       })
     );
   }
