@@ -27,9 +27,7 @@
     >
       <div class="flex justify-between items-start">
         <div class="flex items-center space-x-3">
-          <i class="material-icons text-3xl text-blue-500">{{
-            servicio.icono || "build"
-          }}</i>
+          <i class="material-icons text-3xl text-blue-500">build</i>
           <h2 class="text-xl font-semibold">{{ servicio.nombre }}</h2>
         </div>
         <button
@@ -40,30 +38,29 @@
         </button>
       </div>
 
-      <p class="text-gray-600 mt-3">{{ servicio.descripcion }}</p>
-
       <div class="mt-4">
-        <span class="text-sm font-medium text-gray-500">Características:</span>
-        <ul class="list-disc list-inside mt-2">
-          <li
-            *ngFor="let caracteristica of servicio.caracteristicas"
-            class="text-gray-600"
-          >
-            {{ caracteristica }}
-          </li>
-        </ul>
+        <p class="text-gray-600">{{ servicio.descripcionCorta }}</p>
+      </div>
+
+      <!-- Imagen del servicio si está disponible -->
+      <div *ngIf="servicio.imagenUrl" class="mt-4">
+        <img
+          [src]="servicio.imagenUrl"
+          [alt]="servicio.nombre"
+          class="w-full h-48 object-cover rounded"
+        />
       </div>
 
       <div class="mt-4">
         <span
           class="px-2 py-1 rounded text-sm"
           [class]="
-            servicio.activo
+            servicio.estado === 'activo'
               ? 'bg-green-100 text-green-800'
               : 'bg-gray-100 text-gray-800'
           "
         >
-          {{ servicio.activo ? "Activo" : "Inactivo" }}
+          {{ servicio.estado }}
         </span>
       </div>
 

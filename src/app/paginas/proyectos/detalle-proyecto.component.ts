@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
-import { Proyecto, Comentario } from '../../core/models/data.model';
+import { ProyectoDetalle } from '../../core/models/data.model';
+import { Comentario } from '../../core/models/data.model';
 
 @Component({
   selector: 'app-detalle-proyecto',
@@ -12,7 +13,7 @@ import { Proyecto, Comentario } from '../../core/models/data.model';
   styleUrls: ['./detalle-proyecto.component.css'],
 })
 export class DetalleProyectoComponent implements OnInit {
-  proyecto: Proyecto | undefined;
+  proyecto: ProyectoDetalle | undefined;
   isLoading: boolean = true;
   imagenSeleccionada: string = ''; // Imagen mostrada en grande
 
@@ -30,13 +31,13 @@ export class DetalleProyectoComponent implements OnInit {
   cargarDetalleProyecto(id: number): void {
     this.isLoading = true;
     this.apiService.getDetalleProyecto(id).subscribe({
-      next: (data) => {
+      next: (data: ProyectoDetalle) => {
         this.proyecto = data;
         this.imagenSeleccionada = data.imagenPrincipalUrl;
         this.isLoading = false;
       },
-      error: (err) => {
-        console.error('Error al cargar detalle del proyecto', err);
+      error: (error: any) => {
+        console.error('Error al cargar detalle del proyecto', error);
         this.isLoading = false;
         // Lógica de manejo de error o 404
       },

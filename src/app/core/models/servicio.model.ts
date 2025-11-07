@@ -5,6 +5,8 @@ export interface ServicioBase {
   activo: boolean;
   icono?: string | null;
   caracteristicas?: string[] | null;
+  imagen_url?: string | null;
+  estado?: 'activo' | 'inactivo';
 }
 
 export interface ServicioCreate extends ServicioBase {}

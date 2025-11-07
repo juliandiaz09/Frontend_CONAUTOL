@@ -13,6 +13,12 @@ import {
   ServicioCreate,
   ServicioUpdate,
 } from '../models/servicio.model';
+import {
+  ProyectoDetalle,
+  ProyectoResumen,
+  ServicioResumen,
+  ContactoForm,
+} from '../models/data.model';
 
 @Injectable({
   providedIn: 'root',
@@ -26,8 +32,20 @@ export class ApiService {
   // --- LÓGICA PÚBLICA DE PROYECTOS Y SERVICIOS ---
 
   // Proyectos
-  getProyectos(): Observable<Proyecto[]> {
+  getProyectos(): Observable<ProyectoResumen[]> {
     return this.http.get<Proyecto[]>(`${this.baseUrl}/api/proyectos`).pipe(
+      map((proyectos: Proyecto[]) =>
+        proyectos.map((p) => ({
+          id: p.id || 0,
+          nombre: p.nombre,
+          descripcion: p.descripcion || '',
+          descripcionCorta: p.descripcion
+            ? p.descripcion.substring(0, 100) + '...'
+            : '',
+          imagenUrl: p.imagen_url || '',
+          estado: p.estado || 'activo',
+        }))
+      ),
       catchError((error: any) => {
         console.error('Error fetching proyectos:', error);
         return throwError(() => error);
@@ -42,6 +60,17 @@ export class ApiService {
         return throwError(() => error);
       })
     );
+  }
+
+  getDetalleProyecto(id: number): Observable<ProyectoDetalle> {
+    return this.http
+      .get<ProyectoDetalle>(`${this.baseUrl}/api/proyectos/${id}/detalle`)
+      .pipe(
+        catchError((error: any) => {
+          console.error(`Error fetching detalle proyecto ${id}:`, error);
+          return throwError(() => error);
+        })
+      );
   }
 
   crearProyecto(proyecto: Proyecto): Observable<Proyecto> {
@@ -79,8 +108,20 @@ export class ApiService {
   }
 
   // Servicios
-  getServicios(): Observable<Servicio[]> {
+  getServicios(): Observable<ServicioResumen[]> {
     return this.http.get<Servicio[]>(`${this.baseUrl}/api/servicios`).pipe(
+      map((servicios: Servicio[]) =>
+        servicios.map((s) => ({
+          id: s.id || 0,
+          nombre: s.nombre,
+          descripcion: s.descripcion || '',
+          descripcionCorta: s.descripcion
+            ? s.descripcion.substring(0, 100) + '...'
+            : '',
+          imagenUrl: s.imagen_url || '',
+          estado: s.estado || 'activo',
+        }))
+      ),
       catchError((error: any) => {
         console.error('Error fetching servicios:', error);
         return throwError(() => error);

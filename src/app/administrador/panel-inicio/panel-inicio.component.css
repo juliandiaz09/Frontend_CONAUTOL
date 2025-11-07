@@ -1,0 +1,41 @@
+.card {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  background-color: #f8f9fa;
+}
+
+.badge {
+  padding: 8px 12px;
+  font-size: 0.875rem;
+}
+
+.table {
+  margin-bottom: 0;
+}
+
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+.btn-info {
+  color: #fff;
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+}
+
+.btn-info:hover {
+  background-color: #138496;
+  border-color: #117a8b;
+}
+
+.table-responsive {
+  margin-bottom: 0;
+  border-radius: 0.25rem;
+}
+
+.alert {
+  margin-bottom: 1rem;
+}

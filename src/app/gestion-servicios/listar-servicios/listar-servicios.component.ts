@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
-import { Servicio } from '../../core/models/servicio.model';
+import { ServicioResumen } from '../../core/models/data.model';
 
 @Component({
   selector: 'app-listar-servicios',
@@ -12,7 +12,7 @@ import { Servicio } from '../../core/models/servicio.model';
   styleUrl: './listar-servicios.component.css',
 })
 export class ListarServiciosComponent implements OnInit {
-  servicios: Servicio[] = [];
+  servicios: ServicioResumen[] = [];
   isLoading = false;
   error: string | null = null;
 

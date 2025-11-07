@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
-import { Servicio } from '../../core/models/data.model';
+import { ProyectoResumen } from '../../core/models/data.model';
 
 @Component({
   selector: 'app-proyectos',
@@ -12,7 +12,7 @@ import { Servicio } from '../../core/models/data.model';
   styleUrls: ['./proyectos.component.css'],
 })
 export class ProyectosComponent implements OnInit {
-  proyectos: Servicio[] = [];
+  proyectos: ProyectoResumen[] = [];
   isLoading: boolean = true;
 
   // Referencia al contenedor de carrusel en el HTML
