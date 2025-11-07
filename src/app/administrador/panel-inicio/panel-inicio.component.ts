@@ -16,11 +16,17 @@ export class PanelInicioComponent implements OnInit {
   error: string | null = null;
   proyectos: ProyectoResumen[] = [];
   servicios: ServicioResumen[] = [];
+  isSubmittingProyecto = false;
+  isSubmittingServicio = false;
 
   constructor(private apiService: ApiService, private router: Router) {}
 
   ngOnInit(): void {
     this.cargarDatos();
+  }
+
+  navegarA(ruta: string): void {
+    this.router.navigate([ruta]);
   }
 
   cargarDatos(): void {
@@ -53,8 +59,108 @@ export class PanelInicioComponent implements OnInit {
     });
   }
 
-  navegarA(ruta: string): void {
-    this.router.navigate([ruta]);
+  crearProyecto(proyecto: any): void {
+    this.isSubmittingProyecto = true;
+    this.apiService.crearProyecto(proyecto).subscribe({
+      next: (nuevo) => {
+        const resumen = {
+          id: nuevo.id,
+          nombre: nuevo.nombre,
+          descripcion: nuevo.descripcion || '',
+          descripcionCorta: nuevo.descripcion
+            ? nuevo.descripcion.substring(0, 100) + '...'
+            : '',
+          imagenUrl: nuevo.imagen_url || '',
+          estado: nuevo.estado || 'activo',
+        };
+        this.proyectos.push(resumen);
+        this.isSubmittingProyecto = false;
+        this.navegarA('/admin/proyectos');
+      },
+      error: (error) => {
+        this.error = 'Error al crear el proyecto';
+        this.isSubmittingProyecto = false;
+        console.error('Error al crear el proyecto:', error);
+      },
+    });
+  }
+
+  editarProyecto(id: number, proyecto: any): void {
+    this.isSubmittingProyecto = true;
+    this.apiService.actualizarProyecto(id, proyecto).subscribe({
+      next: (actualizado) => {
+        const resumen = {
+          id: actualizado.id,
+          nombre: actualizado.nombre,
+          descripcion: actualizado.descripcion || '',
+          descripcionCorta: actualizado.descripcion
+            ? actualizado.descripcion.substring(0, 100) + '...'
+            : '',
+          imagenUrl: actualizado.imagen_url || '',
+          estado: actualizado.estado || 'activo',
+        };
+        this.proyectos = this.proyectos.map((p) => (p.id === id ? resumen : p));
+        this.isSubmittingProyecto = false;
+        this.navegarA('/admin/proyectos');
+      },
+      error: (error) => {
+        this.error = 'Error al editar el proyecto';
+        this.isSubmittingProyecto = false;
+        console.error('Error al editar el proyecto:', error);
+      },
+    });
+  }
+
+  crearServicio(servicio: any): void {
+    this.isSubmittingServicio = true;
+    this.apiService.crearServicio(servicio).subscribe({
+      next: (nuevo) => {
+        const resumen = {
+          id: nuevo.id,
+          nombre: nuevo.nombre,
+          descripcion: nuevo.descripcion || '',
+          descripcionCorta: nuevo.descripcion
+            ? nuevo.descripcion.substring(0, 100) + '...'
+            : '',
+          imagenUrl: nuevo.imagen_url || '',
+          estado: nuevo.estado || 'activo',
+        };
+        this.servicios.push(resumen);
+        this.isSubmittingServicio = false;
+        this.navegarA('/admin/servicios');
+      },
+      error: (error) => {
+        this.error = 'Error al crear el servicio';
+        this.isSubmittingServicio = false;
+        console.error('Error al crear el servicio:', error);
+      },
+    });
+  }
+
+  editarServicio(id: number, servicio: any): void {
+    this.isSubmittingServicio = true;
+    this.apiService.actualizarServicio(id, servicio).subscribe({
+      next: (actualizado) => {
+        const resumen = {
+          id: actualizado.id,
+          nombre: actualizado.nombre,
+          descripcion: actualizado.descripcion || '',
+          descripcionCorta: actualizado.descripcion
+            ? actualizado.descripcion.substring(0, 100) + '...'
+            : '',
+          imagenUrl: actualizado.imagen_url || '',
+          estado: actualizado.estado || 'activo',
+        };
+        this.servicios = this.servicios.map((s) => (s.id === id ? resumen : s));
+        this.isSubmittingServicio = false;
+        this.navegarA('/admin/servicios');
+      },
+      error: (error) => {
+        this.error = 'Error al editar el servicio';
+        this.isSubmittingServicio = false;
+        console.error('Error al editar el servicio:', error);
+      },
+    });
   }
 
   eliminarProyecto(id: number): void {
@@ -62,6 +168,7 @@ export class PanelInicioComponent implements OnInit {
       this.apiService.eliminarProyecto(id).subscribe({
         next: () => {
           this.proyectos = this.proyectos.filter((p) => p.id !== id);
+          this.cargarDatos();
         },
         error: (error) => {
           console.error('Error al eliminar el proyecto:', error);
@@ -76,6 +183,7 @@ export class PanelInicioComponent implements OnInit {
       this.apiService.eliminarServicio(id).subscribe({
         next: () => {
           this.servicios = this.servicios.filter((s) => s.id !== id);
+          this.cargarDatos();
         },
         error: (error) => {
           console.error('Error al eliminar el servicio:', error);
