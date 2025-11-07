@@ -1,3 +1,4 @@
+
 <div class="container mt-4">
   <div class="row">
     <div class="col-12">
@@ -17,7 +18,7 @@
           <h2>Proyectos</h2>
           <button
             class="btn btn-primary"
-            (click)="navegarA('/admin/proyectos/crear')"
+            (click)="navegarA('/admin/proyectos/nuevo')"
           >
             Nuevo Proyecto
           </button>
@@ -51,7 +52,7 @@
                     <button
                       class="btn btn-sm btn-info me-2"
                       (click)="
-                        navegarA('/admin/proyectos/modificar/' + proyecto.id)
+                        navegarA('/admin/proyectos/editar/' + proyecto.id)
                       "
                     >
                       Editar
@@ -78,7 +79,7 @@
           <h2>Servicios</h2>
           <button
             class="btn btn-primary"
-            (click)="navegarA('/admin/servicios/crear')"
+            (click)="navegarA('/admin/servicios/nuevo')"
           >
             Nuevo Servicio
           </button>
@@ -111,7 +112,7 @@
                     <button
                       class="btn btn-sm btn-info me-2"
                       (click)="
-                        navegarA('/admin/servicios/modificar/' + servicio.id)
+                        navegarA('/admin/servicios/editar/' + servicio.id)
                       "
                     >
                       Editar
@@ -132,3 +133,4 @@
     </div>
   </div>
 </div>
+
