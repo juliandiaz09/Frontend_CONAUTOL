@@ -24,12 +24,85 @@ import {
   providedIn: 'root',
 })
 export class ApiService {
-  // Normalize baseUrl to avoid double slashes
+  // Normaliza baseUrl para evitar dobles slashes
   private baseUrl = environment.apiUrl.replace(/\/$/, '');
 
   constructor(private http: HttpClient) {}
 
-  // --- LÓGICA PÚBLICA DE PROYECTOS Y SERVICIOS ---
+  /** ----------------- Helpers internos ----------------- */
+
+  // Lee el token desde localStorage
+  getToken(): string | null {
+    return localStorage.getItem('auth_token');
+  }
+
+  // Construye headers con Authorization si hay token
+  private authHeaderOnly(): HttpHeaders | undefined {
+    const token = this.getToken();
+    return token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
+  }
+
+  /**
+   * Opciones HTTP para JSON (agrega Content-Type) o para FormData (no fija Content-Type).
+   * Siempre incluye Authorization si hay token.
+   */
+  private buildOptions({ isFormData = false }: { isFormData?: boolean } = {}): { headers?: HttpHeaders } {
+    const auth = this.authHeaderOnly();
+    if (isFormData) {
+      // No fijar Content-Type para que el navegador añada el boundary correcto
+      return auth ? { headers: auth } : {};
+    } else {
+      // JSON por defecto
+      const base = new HttpHeaders({ 'Content-Type': 'application/json' });
+      const headers = auth ? base.set('Authorization', `Bearer ${this.getToken()}`!) : base;
+      return { headers };
+    }
+  }
+
+  /**
+   * Convierte un objeto plano a FormData.
+   * - Arrays/objetos anidados se serializan con JSON.stringify (salvo File/Blob).
+   * - Ignora null/undefined.
+   * - Mantiene File/Blob tal cual.
+   */
+  private toFormData(data: any): FormData {
+    const fd = new FormData();
+    const append = (key: string, value: any) => {
+      if (value === null || value === undefined) return;
+      // Permite File/Blob sin stringify
+      if (value instanceof Blob || value instanceof File) {
+        fd.append(key, value);
+        return;
+      }
+      // Arrays
+      if (Array.isArray(value)) {
+        value.forEach((v, i) => {
+          if (v instanceof Blob || v instanceof File) {
+            fd.append(`${key}[${i}]`, v);
+          } else if (typeof v === 'object' && v !== null) {
+            fd.append(`${key}[${i}]`, JSON.stringify(v));
+          } else {
+            fd.append(`${key}[${i}]`, String(v));
+          }
+        });
+        return;
+      }
+      // Objetos
+      if (typeof value === 'object') {
+        fd.append(key, JSON.stringify(value));
+        return;
+      }
+      // Primitivos
+      fd.append(key, String(value));
+    };
+
+    if (data && typeof data === 'object' && !(data instanceof FormData)) {
+      Object.keys(data).forEach((k) => append(k, (data as any)[k]));
+    }
+    return fd;
+  }
+
+  /** --------------- LÓGICA PÚBLICA DE PROYECTOS Y SERVICIOS --------------- */
 
   // Proyectos
   getProyectos(): Observable<ProyectoResumen[]> {
@@ -39,9 +112,7 @@ export class ApiService {
           id: p.id || 0,
           nombre: p.nombre,
           descripcion: p.descripcion || '',
-          descripcionCorta: p.descripcion
-            ? p.descripcion.substring(0, 100) + '...'
-            : '',
+          descripcionCorta: p.descripcion ? p.descripcion.substring(0, 100) + '...' : '',
           imagenUrl: p.imagen_url || '',
           estado: p.estado || 'activo',
         }))
@@ -73,9 +144,16 @@ export class ApiService {
       );
   }
 
-  crearProyecto(proyecto: Proyecto): Observable<Proyecto> {
+  /**
+   * NOTA: Para compatibilidad con backends que usan multer/archivos,
+   * enviamos multipart/form-data por defecto (conversión automática),
+   * salvo que ya nos pasen un FormData.
+   */
+  crearProyecto(proyecto: ProyectoCreate | Proyecto | FormData): Observable<Proyecto> {
+    const isFD = proyecto instanceof FormData;
+    const body = isFD ? (proyecto as FormData) : this.toFormData(proyecto);
     return this.http
-      .post<Proyecto>(`${this.baseUrl}/api/proyectos`, proyecto)
+      .post<Proyecto>(`${this.baseUrl}/api/proyectos`, body, this.buildOptions({ isFormData: true }))
       .pipe(
         catchError((error: any) => {
           console.error('Error creating proyecto:', error);
@@ -84,12 +162,11 @@ export class ApiService {
       );
   }
 
-  actualizarProyecto(
-    id: number,
-    proyecto: ProyectoUpdate
-  ): Observable<Proyecto> {
+  actualizarProyecto(id: number, proyecto: ProyectoUpdate | FormData): Observable<Proyecto> {
+    const isFD = proyecto instanceof FormData;
+    const body = isFD ? (proyecto as FormData) : this.toFormData(proyecto);
     return this.http
-      .put<Proyecto>(`${this.baseUrl}/api/proyectos/${id}`, proyecto)
+      .put<Proyecto>(`${this.baseUrl}/api/proyectos/${id}`, body, this.buildOptions({ isFormData: true }))
       .pipe(
         catchError((error: any) => {
           console.error(`Error updating proyecto ${id}:`, error);
@@ -99,12 +176,14 @@ export class ApiService {
   }
 
   eliminarProyecto(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/api/proyectos/${id}`).pipe(
-      catchError((error: any) => {
-        console.error(`Error deleting proyecto ${id}:`, error);
-        return throwError(() => error);
-      })
-    );
+    return this.http
+      .delete<void>(`${this.baseUrl}/api/proyectos/${id}`, this.buildOptions())
+      .pipe(
+        catchError((error: any) => {
+          console.error(`Error deleting proyecto ${id}:`, error);
+          return throwError(() => error);
+        })
+      );
   }
 
   // Servicios
@@ -115,9 +194,7 @@ export class ApiService {
           id: s.id || 0,
           nombre: s.nombre,
           descripcion: s.descripcion || '',
-          descripcionCorta: s.descripcion
-            ? s.descripcion.substring(0, 100) + '...'
-            : '',
+          descripcionCorta: s.descripcion ? s.descripcion.substring(0, 100) + '...' : '',
           imagenUrl: s.imagen_url || '',
           estado: s.estado || 'activo',
         }))
@@ -138,23 +215,27 @@ export class ApiService {
     );
   }
 
-  crearServicio(servicio: ServicioCreate): Observable<Servicio> {
-    return this.http
-      .post<Servicio>(`${this.baseUrl}/api/servicios`, servicio)
-      .pipe(
-        catchError((error: any) => {
-          console.error('Error creating servicio:', error);
-          return throwError(() => error);
-        })
-      );
+  /**
+   * Crear Servicio: envía multipart/form-data (auto a partir de objeto) o usa el FormData recibido.
+   */
+  crearServicio(body: FormData) {
+    const token = localStorage.getItem('auth_token');
+    const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
+
+    // Usa tu baseUrl real:
+    return this.http.post<any>(`${this.baseUrl}/api/servicios`, body, { headers });
   }
 
-  actualizarServicio(
-    id: number,
-    servicio: ServicioUpdate
-  ): Observable<Servicio> {
+
+  /**
+   * Actualizar Servicio: envía multipart/form-data para que el backend reciba campos con multer.
+   * Esto corrige el 400 "No se proporcionaron datos" cuando antes se mandaba JSON.
+   */
+  actualizarServicio(id: number, servicio: ServicioUpdate | FormData): Observable<Servicio> {
+    const isFD = servicio instanceof FormData;
+    const body = isFD ? (servicio as FormData) : this.toFormData(servicio);
     return this.http
-      .put<Servicio>(`${this.baseUrl}/api/servicios/${id}`, servicio)
+      .put<Servicio>(`${this.baseUrl}/api/servicios/${id}`, body, this.buildOptions({ isFormData: true }))
       .pipe(
         catchError((error: any) => {
           console.error(`Error updating servicio ${id}:`, error);
@@ -164,25 +245,24 @@ export class ApiService {
   }
 
   eliminarServicio(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/api/servicios/${id}`).pipe(
-      catchError((error: any) => {
-        console.error(`Error deleting servicio ${id}:`, error);
-        return throwError(() => error);
-      })
-    );
+    return this.http
+      .delete<void>(`${this.baseUrl}/api/servicios/${id}`, this.buildOptions())
+      .pipe(
+        catchError((error: any) => {
+          console.error(`Error deleting servicio ${id}:`, error);
+          return throwError(() => error);
+        })
+      );
   }
 
-  // --- LÓGICA DE CONTACTO ---
+  /** ------------------------- LÓGICA DE CONTACTO ------------------------- */
 
   enviarContacto(data: ContactoForm): Observable<any> {
     // Intentar usar el endpoint del backend; si no existe, mantener un fallback mock
-    return this.http.post<any>(`${this.baseUrl}/api/contacto`, data).pipe(
+    return this.http.post<any>(`${this.baseUrl}/api/contacto`, data, this.buildOptions()).pipe(
       catchError((err) => {
-        // Si el backend no implementa /contacto, sólo logueamos y devolvemos mock
         if (err && err.status === 404) {
-          console.warn(
-            'Contacto endpoint no encontrado en backend, usando fallback mock.'
-          );
+          console.warn('Contacto endpoint no encontrado en backend, usando fallback mock.');
           console.log('Datos de contacto enviados (MOCK):', data);
           return of({ success: true });
         }
@@ -192,20 +272,16 @@ export class ApiService {
     );
   }
 
-  // --- LÓGICA DE AUTENTICACIÓN (ADMIN) ---
+  /** ---------------- LÓGICA DE AUTENTICACIÓN (ADMIN) ---------------- */
 
-  // Lógica de login (sin cambios respecto al paso anterior)
   login(credentials: any): Observable<any> {
     return this.http
-      .post<any>(`${this.baseUrl}/api/admin/login`, credentials)
+      .post<any>(`${this.baseUrl}/api/admin/login`, credentials, this.buildOptions())
       .pipe(
         map((resp: any) => {
           const token = resp?.data?.access_token || null;
           const user = resp?.data?.user || null;
-          if (token) {
-            this.setToken(token);
-          }
-          // Mantener compatibilidad: devolver { token, user }
+          if (token) this.setToken(token);
           return { token, user, raw: resp };
         }),
         catchError((err) => {
@@ -215,54 +291,30 @@ export class ApiService {
       );
   }
 
-  // Enviar email de recuperación de contraseña (mock)
   recoverPassword(email: string): Observable<any> {
-    // Intentar llamar a un endpoint de recuperación (si existe)
     return this.http
-      .post<any>(`${this.baseUrl}/api/admin/recover`, { email })
+      .post<any>(`${this.baseUrl}/api/admin/recover`, { email }, this.buildOptions())
       .pipe(
         catchError((err) => {
-          // Fallback al comportamiento mock si no existe
-          console.warn(
-            'recoverPassword endpoint no disponible, usando fallback mock.'
-          );
+          console.warn('recoverPassword endpoint no disponible, usando fallback mock.');
           console.log('Solicitada recuperación de contraseña para:', email);
-          return of({
-            success: true,
-            message: 'Email de recuperación enviado (mock).',
-          });
+          return of({ success: true, message: 'Email de recuperación enviado (mock).' });
         })
       );
   }
 
-  // Métodos de token y autenticación (sin cambios)
   setToken(token: string): void {
     localStorage.setItem('auth_token', token);
   }
-  getToken(): string | null {
-    return localStorage.getItem('auth_token');
-  }
+
   isLoggedIn(): boolean {
     return !!this.getToken();
   }
+
   logout(): void {
-    // Intentar cerrar sesión en backend (si endpoint existe)
-    const token = this.getToken();
-    if (token) {
-      const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
-      this.http
-        .post(`${this.baseUrl}/api/admin/logout`, {}, { headers })
-        .subscribe({
-          next: () => {
-            localStorage.removeItem('auth_token');
-          },
-          error: () => {
-            // aunque falle la llamada, removemos el token localmente
-            localStorage.removeItem('auth_token');
-          },
-        });
-    } else {
-      localStorage.removeItem('auth_token');
-    }
+    this.http.post(`${this.baseUrl}/api/admin/logout`, {}, this.buildOptions()).subscribe({
+      next: () => localStorage.removeItem('auth_token'),
+      error: () => localStorage.removeItem('auth_token'),
+    });
   }
 }

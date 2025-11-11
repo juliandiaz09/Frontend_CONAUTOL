@@ -127,16 +127,10 @@
       </div>
 
       <div class="form-control">
-        <label class="label">
-          <span class="label-text">URL de la Imagen</span>
-        </label>
-        <input
-          type="url"
-          formControlName="imagen_url"
-          class="input input-bordered w-full"
-        />
+        <input type="file" (change)="onFile($event)" accept="image/*" />
       </div>
-
+  <!-- input de archivo -->
+    
       <div class="form-control">
         <label class="label cursor-pointer">
           <span class="label-text">Activo</span>

@@ -20,6 +20,8 @@ export class CrearServicioComponent {
   servicioForm: FormGroup;
   isSubmitting = false;
   error: string | null = null;
+  file?: File;
+
 
   constructor(
     private fb: FormBuilder,
@@ -38,31 +40,59 @@ export class CrearServicioComponent {
     });
   }
 
-  onSubmit(): void {
-    if (this.servicioForm.invalid) {
-      this.servicioForm.markAllAsTouched();
-      return;
-    }
-
-    this.isSubmitting = true;
-    this.error = null;
-
-    const formValue = this.servicioForm.value;
-    const servicioData = {
-      ...formValue,
-      caracteristicas: formValue.caracteristicas || [],
-    };
-
-    this.api.crearServicio(servicioData).subscribe({
-      next: () => {
-        this.router.navigate(['/admin/servicios']);
-      },
-      error: (err) => {
-        this.error = 'Error al crear el servicio';
-        this.isSubmitting = false;
-      },
-    });
+  onFile(ev: Event) {
+    const input = ev.target as HTMLInputElement;
+    const f = input.files && input.files[0];
+    if (f) this.file = f;
   }
+ // === Reemplaza solo este método ===
+onSubmit(): void {
+  if (this.servicioForm.invalid) {
+    this.servicioForm.markAllAsTouched();
+    return;
+  }
+
+  this.isSubmitting = true;
+  this.error = null;
+
+  const v = this.servicioForm.value;
+
+  // Normaliza campos y asegura array en caracteristicas
+  const servicioData = {
+    nombre: v.nombre,
+    descripcion: v.descripcion,
+    categoria: v.categoria || '',
+    activo: v.activo ?? true,
+    icono: v.icono || '',
+    caracteristicas: Array.isArray(v.caracteristicas) ? v.caracteristicas : [],
+    // NO mandamos imagen_url cuando subimos archivo; el back la generará.
+    // Si quieres conservarla cuando no hay archivo, puedes agregarla aquí.
+  };
+
+  // Siempre multipart/form-data (para que el back tenga request.form['data'])
+  const fd = new FormData();
+  fd.append('data', JSON.stringify(servicioData));
+  if (this.file) {
+    fd.append('imagen', this.file);
+  }
+
+  // (debug temporal) ver lo que realmente se envía
+  const out: Record<string, any> = {};
+   fd.forEach((val, key) => out[key] = val instanceof File ? {name: val.name, size: val.size, type: val.type} : val);
+   console.log('FormData ->', out);
+
+  this.api.crearServicio(fd).subscribe({
+    next: () => {
+      this.isSubmitting = false;
+      this.router.navigate(['/admin/servicios']);
+    },
+    error: (err) => {
+      console.error('Error al crear el servicio', err);
+      this.error = err?.error?.error || 'Error al crear el servicio';
+      this.isSubmitting = false;
+    },
+  });
+}
 
   agregarCaracteristica(event: any): void {
     event.preventDefault();
