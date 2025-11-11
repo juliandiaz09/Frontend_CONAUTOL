@@ -189,22 +189,22 @@ export class ApiService {
   // Servicios
   getServicios(): Observable<ServicioResumen[]> {
     return this.http.get<Servicio[]>(`${this.baseUrl}/api/servicios`).pipe(
-      map((servicios: Servicio[]) =>
-        servicios.map((s) => ({
-          id: s.id || 0,
-          nombre: s.nombre,
-          descripcion: s.descripcion || '',
-          descripcionCorta: s.descripcion ? s.descripcion.substring(0, 100) + '...' : '',
-          imagenUrl: s.imagen_url || '',
-          estado: s.estado || 'activo',
-        }))
-      ),
-      catchError((error: any) => {
-        console.error('Error fetching servicios:', error);
-        return throwError(() => error);
-      })
+      map<Servicio[], ServicioResumen[]>((servicios) =>
+        servicios.map<ServicioResumen>((s) => {
+          return {
+            id: s.id || 0,
+            nombre: s.nombre,
+            descripcion: s.descripcion || '',
+            descripcionCorta: s.descripcion ? s.descripcion.substring(0, 100) + '...' : '',
+            imagenUrl: s.imagen_url || '',
+            estado: (s.activo ? 'activo' : 'inactivo') as 'activo' | 'inactivo'
+          };
+        })
+      )
     );
   }
+
+
 
   getServicio(id: number): Observable<Servicio> {
     return this.http.get<Servicio>(`${this.baseUrl}/api/servicios/${id}`).pipe(

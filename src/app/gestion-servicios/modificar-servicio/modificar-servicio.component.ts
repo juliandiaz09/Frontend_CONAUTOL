@@ -22,6 +22,7 @@ export class ModificarServicioComponent implements OnInit {
   isSubmitting = false;
   error: string | null = null;
   servicioId!: number;
+  file?: File;
 
   constructor(
     private fb: FormBuilder,
@@ -33,11 +34,10 @@ export class ModificarServicioComponent implements OnInit {
       nombre: ['', [Validators.required, Validators.minLength(3)]],
       descripcion: ['', Validators.required],
       categoria: [''],
-      activo: [true],
+      estado: ['activo', Validators.required], // solo este campo controla el estado
       icono: [''],
       caracteristicas: [[]],
       imagen_url: [''],
-      estado: ['activo', Validators.required],
     });
   }
 
@@ -53,17 +53,22 @@ export class ModificarServicioComponent implements OnInit {
           nombre: servicio.nombre,
           descripcion: servicio.descripcion,
           categoria: servicio.categoria,
-          activo: servicio.activo,
+          estado: servicio.activo ? 'activo' : 'inactivo',
           icono: servicio.icono,
           caracteristicas: servicio.caracteristicas || [],
           imagen_url: servicio.imagen_url,
-          estado: servicio.estado || 'activo',
         });
       },
-      error: (err) => {
+      error: () => {
         this.error = 'Error al cargar el servicio';
       },
     });
+  }
+
+  onFile(ev: Event) {
+    const input = ev.target as HTMLInputElement;
+    const f = input.files && input.files[0];
+    if (f) this.file = f;
   }
 
   onSubmit(): void {
@@ -75,18 +80,34 @@ export class ModificarServicioComponent implements OnInit {
     this.isSubmitting = true;
     this.error = null;
 
-    const formValue = this.servicioForm.value;
+    const v = this.servicioForm.value;
+
+    // Convertir "estado" (string) → "activo" (boolean)
     const servicioData = {
-      ...formValue,
-      caracteristicas: formValue.caracteristicas || [],
+      nombre: v.nombre,
+      descripcion: v.descripcion,
+      categoria: v.categoria || '',
+      activo: v.estado === 'activo', // <-- backend espera bool
+      icono: v.icono || '',
+      caracteristicas: Array.isArray(v.caracteristicas) ? v.caracteristicas : [],
+      ...(this.file ? {} : { imagen_url: v.imagen_url || '' }),
     };
 
-    this.api.actualizarServicio(this.servicioId, servicioData).subscribe({
+    // Enviar multipart/form-data
+    const fd = new FormData();
+    fd.append('data', JSON.stringify(servicioData));
+    if (this.file) {
+      fd.append('imagen', this.file);
+    }
+
+    this.api.actualizarServicio(this.servicioId, fd).subscribe({
       next: () => {
+        this.isSubmitting = false;
         this.router.navigate(['/admin/servicios']);
       },
       error: (err) => {
-        this.error = 'Error al actualizar el servicio';
+        console.error('Error al actualizar el servicio', err);
+        this.error = err?.error?.error || 'Error al actualizar el servicio';
         this.isSubmitting = false;
       },
     });

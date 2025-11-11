@@ -127,25 +127,13 @@
       </div>
 
       <div class="form-control">
-        <label class="label">
-          <span class="label-text">URL de la Imagen</span>
-        </label>
-        <input
-          type="url"
-          formControlName="imagen_url"
-          class="input input-bordered w-full"
-        />
-      </div>
-
-      <div class="form-control">
-        <label class="label cursor-pointer">
-          <span class="label-text">Activo</span>
-          <input
-            type="checkbox"
-            formControlName="activo"
-            class="checkbox"
-          />
-        </label>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Nueva imagen (opcional)</span>
+          </label>
+          <input type="file" (change)="onFile($event)" accept="image/*" class="file-input file-input-bordered w-full" />
+          <small class="text-gray-500">Si no seleccionas una imagen, se conservará la actual.</small>
+        </div>
       </div>
 
       <div
