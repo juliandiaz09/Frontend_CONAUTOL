@@ -3,6 +3,7 @@
     <h1 class="text-2xl font-bold mb-6">Modificar Proyecto</h1>
 
     <form [formGroup]="proyectoForm" (ngSubmit)="onSubmit()" class="space-y-4">
+      <!-- Nombre -->
       <div class="form-control">
         <label class="label">
           <span class="label-text">Nombre del Proyecto</span>
@@ -23,15 +24,16 @@
           "
           class="text-red-500 text-sm mt-1"
         >
-          <span *ngIf="proyectoForm.get('nombre')?.errors?.['required']"
-            >El nombre es requerido</span
-          >
-          <span *ngIf="proyectoForm.get('nombre')?.errors?.['minlength']"
-            >El nombre debe tener al menos 3 caracteres</span
-          >
+          <span *ngIf="proyectoForm.get('nombre')?.errors?.['required']">
+            El nombre es requerido
+          </span>
+          <span *ngIf="proyectoForm.get('nombre')?.errors?.['minlength']">
+            El nombre debe tener al menos 3 caracteres
+          </span>
         </div>
       </div>
 
+      <!-- Descripción -->
       <div class="form-control">
         <label class="label">
           <span class="label-text">Descripción</span>
@@ -55,6 +57,7 @@
         </div>
       </div>
 
+      <!-- Cliente -->
       <div class="form-control">
         <label class="label">
           <span class="label-text">Cliente</span>
@@ -79,6 +82,7 @@
         </div>
       </div>
 
+      <!-- Estado -->
       <div class="form-control">
         <label class="label">
           <span class="label-text">Estado</span>
@@ -90,6 +94,7 @@
         </select>
       </div>
 
+      <!-- Presupuesto -->
       <div class="form-control">
         <label class="label">
           <span class="label-text">Presupuesto</span>
@@ -102,6 +107,7 @@
         />
       </div>
 
+      <!-- Fechas -->
       <div class="grid grid-cols-2 gap-4">
         <div class="form-control">
           <label class="label">
@@ -126,17 +132,37 @@
         </div>
       </div>
 
-      <div class="form-control">
+      <!-- Imagen actual (preview si existe) -->
+      <div class="form-control" *ngIf="proyectoForm.get('imagen_url')?.value">
         <label class="label">
-          <span class="label-text">URL de la Imagen</span>
+          <span class="label-text">Imagen actual</span>
         </label>
-        <input
-          type="url"
-          formControlName="imagen_url"
-          class="input input-bordered w-full"
+        <img
+          [src]="proyectoForm.get('imagen_url')?.value"
+          alt="Imagen actual del proyecto"
+          class="rounded border w-full max-h-64 object-contain"
+          referrerpolicy="no-referrer"
         />
       </div>
 
+      <!-- Nueva imagen (archivo) -->
+      <div class="form-control">
+        <label class="label">
+          <span class="label-text">Nueva imagen (opcional)</span>
+        </label>
+        <input
+          type="file"
+          (change)="onFile($event)"
+          accept="image/*"
+          class="file-input file-input-bordered w-full"
+        />
+        <small class="text-gray-500">
+          Si seleccionas una nueva imagen, el backend generará la URL y se
+          ignorará la URL manual.
+        </small>
+      </div>
+
+      <!-- Error general -->
       <div
         *ngIf="error"
         class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
@@ -144,6 +170,7 @@
         {{ error }}
       </div>
 
+      <!-- Acciones -->
       <div class="flex justify-end space-x-2">
         <button
           type="button"

@@ -20,6 +20,7 @@ export class CrearProyectoComponent {
   proyectoForm: FormGroup;
   isSubmitting = false;
   error: string | null = null;
+  file?: File;
 
   constructor(
     private fb: FormBuilder,
@@ -38,6 +39,13 @@ export class CrearProyectoComponent {
     });
   }
 
+  onFile(ev: Event) {
+    const input = ev.target as HTMLInputElement;
+    const f = input.files && input.files[0];
+    if (f) this.file = f;
+  }
+
+  // === Nuevo método unificado, igual al de servicios ===
   onSubmit(): void {
     if (this.proyectoForm.invalid) {
       this.proyectoForm.markAllAsTouched();
@@ -47,12 +55,44 @@ export class CrearProyectoComponent {
     this.isSubmitting = true;
     this.error = null;
 
-    this.api.crearProyecto(this.proyectoForm.value).subscribe({
+    const v = this.proyectoForm.value;
+
+    // Normalización de los datos antes de enviar
+    const proyectoData = {
+      nombre: v.nombre,
+      descripcion: v.descripcion,
+      estado: v.estado || 'activo',
+      cliente: v.cliente,
+      presupuesto: v.presupuesto ?? 0,
+      fecha_inicio: v.fecha_inicio || null,
+      fecha_fin: v.fecha_fin || null,
+      // No mandamos imagen_url si hay archivo; el back la generará.
+    };
+
+    // Enviamos siempre como multipart/form-data para compatibilidad con el back
+    const fd = new FormData();
+    fd.append('data', JSON.stringify(proyectoData));
+    if (this.file) {
+      fd.append('imagen', this.file);
+    }
+
+    // (Debug opcional) muestra lo que se envía
+    const out: Record<string, any> = {};
+    fd.forEach((val, key) => 
+      out[key] = val instanceof File
+        ? { name: val.name, size: val.size, type: val.type }
+        : val
+    );
+    console.log('FormData ->', out);
+
+    this.api.crearProyecto(fd).subscribe({
       next: () => {
+        this.isSubmitting = false;
         this.router.navigate(['/admin/proyectos']);
       },
       error: (err) => {
-        this.error = 'Error al crear el proyecto';
+        console.error('Error al crear el proyecto', err);
+        this.error = err?.error?.error || 'Error al crear el proyecto';
         this.isSubmitting = false;
       },
     });

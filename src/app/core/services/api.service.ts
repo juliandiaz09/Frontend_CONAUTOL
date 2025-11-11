@@ -149,22 +149,34 @@ export class ApiService {
    * enviamos multipart/form-data por defecto (conversión automática),
    * salvo que ya nos pasen un FormData.
    */
-  crearProyecto(proyecto: ProyectoCreate | Proyecto | FormData): Observable<Proyecto> {
-    const isFD = proyecto instanceof FormData;
-    const body = isFD ? (proyecto as FormData) : this.toFormData(proyecto);
-    return this.http
-      .post<Proyecto>(`${this.baseUrl}/api/proyectos`, body, this.buildOptions({ isFormData: true }))
-      .pipe(
-        catchError((error: any) => {
-          console.error('Error creating proyecto:', error);
-          return throwError(() => error);
-        })
-      );
-  }
+crearProyecto(proyecto: ProyectoCreate | Proyecto | FormData): Observable<Proyecto> {
+  const body = proyecto instanceof FormData
+    ? proyecto
+    : (() => {
+        const fd = new FormData();
+        fd.append('data', JSON.stringify(proyecto));
+        return fd;
+      })();
+
+  return this.http
+    .post<Proyecto>(`${this.baseUrl}/api/proyectos`, body, this.buildOptions({ isFormData: true }))
+    .pipe(
+      catchError((error: any) => {
+        console.error('Error creating proyecto:', error);
+        return throwError(() => error);
+      })
+    );
+}
 
   actualizarProyecto(id: number, proyecto: ProyectoUpdate | FormData): Observable<Proyecto> {
-    const isFD = proyecto instanceof FormData;
-    const body = isFD ? (proyecto as FormData) : this.toFormData(proyecto);
+    const body = proyecto instanceof FormData
+      ? proyecto
+      : (() => {
+          const fd = new FormData();
+          fd.append('data', JSON.stringify(proyecto));
+          return fd;
+        })();
+
     return this.http
       .put<Proyecto>(`${this.baseUrl}/api/proyectos/${id}`, body, this.buildOptions({ isFormData: true }))
       .pipe(
