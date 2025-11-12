@@ -30,7 +30,7 @@ export class ProyectosComponent implements OnInit {
     this.apiService.getProyectos().subscribe({
       next: (data) => {
         // Duplicamos los datos para simular un carrusel más largo
-        this.proyectos = [...data, ...data];
+        this.proyectos = data;
         this.isLoading = false;
       },
       error: (err) => {
