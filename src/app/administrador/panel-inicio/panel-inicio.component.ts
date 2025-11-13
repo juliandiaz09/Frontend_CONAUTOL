@@ -70,8 +70,12 @@ export class PanelInicioComponent implements OnInit {
           descripcionCorta: nuevo.descripcion
             ? nuevo.descripcion.substring(0, 100) + '...'
             : '',
+          // 👇 importante para que cumpla ProyectoResumen
+          imagen_url: nuevo.imagen_url || '',
+          // opcional, por si luego usas camelCase
           imagenUrl: nuevo.imagen_url || '',
           estado: nuevo.estado || 'activo',
+          cliente: nuevo.cliente || '',
         };
         this.proyectos.push(resumen);
         this.isSubmittingProyecto = false;
@@ -96,8 +100,10 @@ export class PanelInicioComponent implements OnInit {
           descripcionCorta: actualizado.descripcion
             ? actualizado.descripcion.substring(0, 100) + '...'
             : '',
+          imagen_url: actualizado.imagen_url || '',
           imagenUrl: actualizado.imagen_url || '',
           estado: actualizado.estado || 'activo',
+          cliente: actualizado.cliente || '',
         };
         this.proyectos = this.proyectos.map((p) => (p.id === id ? resumen : p));
         this.isSubmittingProyecto = false;
@@ -122,6 +128,7 @@ export class PanelInicioComponent implements OnInit {
           descripcionCorta: nuevo.descripcion
             ? nuevo.descripcion.substring(0, 100) + '...'
             : '',
+          imagen_url: nuevo.imagen_url || '',
           imagenUrl: nuevo.imagen_url || '',
           estado: nuevo.estado || 'activo',
         };
@@ -148,6 +155,7 @@ export class PanelInicioComponent implements OnInit {
           descripcionCorta: actualizado.descripcion
             ? actualizado.descripcion.substring(0, 100) + '...'
             : '',
+          imagen_url: actualizado.imagen_url || '',
           imagenUrl: actualizado.imagen_url || '',
           estado: actualizado.estado || 'activo',
         };

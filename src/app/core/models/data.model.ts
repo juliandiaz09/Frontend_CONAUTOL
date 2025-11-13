@@ -11,9 +11,17 @@ export interface ProyectoResumen {
   nombre: string;
   descripcion: string;
   descripcionCorta: string;
-  imagenUrl: string;
+
+  // la que ya existía y está causando el error
+  imagen_url: string;
+
+  // opcional, para ir usando camelCase donde quieras
+  imagenUrl?: string;
+
   estado: 'activo' | 'inactivo' | 'completado';
+  cliente?: string;
 }
+
 
 export interface Comentario {
   id: number;
@@ -36,6 +44,9 @@ export interface ServicioResumen {
   nombre: string;
   descripcion: string;
   descripcionCorta: string;
-  imagenUrl: string;
-  estado: 'activo' | 'inactivo';
+
+  imagen_url: string;
+  imagenUrl?: string;
+
+  estado: 'activo' | 'inactivo' | 'completado';
 }

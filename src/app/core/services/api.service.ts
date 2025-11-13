@@ -106,25 +106,28 @@ export class ApiService {
 
   /** --------------- LÓGICA PÚBLICA DE PROYECTOS Y SERVICIOS --------------- */
 
-  // Proyectos
-  getProyectos(): Observable<ProyectoResumen[]> {
-    return this.http.get<Proyecto[]>(`${this.baseUrl}/api/proyectos`).pipe(
-      map((proyectos: Proyecto[]) =>
-        proyectos.map((p) => ({
-          id: p.id || 0,
-          nombre: p.nombre,
-          descripcion: p.descripcion || '',
-          descripcionCorta: p.descripcion ? p.descripcion.substring(0, 100) + '...' : '',
-          imagenUrl: p.imagen_url || '',
-          estado: p.estado || 'activo',
-        }))
-      ),
-      catchError((error: any) => {
-        console.error('Error fetching proyectos:', error);
-        return throwError(() => error);
-      })
-    );
-  }
+getProyectos(): Observable<ProyectoResumen[]> {
+  return this.http.get<ProyectoResumen[]>(`${this.baseUrl}/api/proyectos`).pipe(
+    map((proyectos: ProyectoResumen[]) =>
+      proyectos.map((p): ProyectoResumen => ({
+        id: p.id ?? 0,
+        nombre: p.nombre,
+        descripcion: p.descripcion ?? '',
+        descripcionCorta: p.descripcion
+          ? p.descripcion.substring(0, 100) + '...'
+          : '',
+        // 👇 esta es la obligatoria según la interfaz
+        imagen_url: p.imagen_url ?? '',
+        // 👇 esta es la “bonita” para usar en otros lados
+        imagenUrl: p.imagen_url ?? '',
+        estado: p.estado ?? 'activo',
+        cliente: p.cliente ?? '',
+      }))
+    )
+  );
+}
+
+
 
   getProyecto(id: number): Observable<Proyecto> {
     return this.http.get<Proyecto>(`${this.baseUrl}/api/proyectos/${id}`).pipe(
@@ -210,7 +213,11 @@ crearProyecto(proyecto: ProyectoCreate | Proyecto | FormData): Observable<Proyec
             nombre: s.nombre,
             descripcion: s.descripcion || '',
             descripcionCorta: s.descripcion ? s.descripcion.substring(0, 100) + '...' : '',
-            imagenUrl: s.imagen_url || '',
+            // 👇 esta es la obligatoria según la interfaz
+            imagen_url: s.imagen_url ?? '',
+            // 👇 esta es la “bonita” para usar en otros lados
+            imagenUrl: s.imagen_url ?? '',
+
             estado: (s.activo ? 'activo' : 'inactivo') as 'activo' | 'inactivo'
           };
         })
