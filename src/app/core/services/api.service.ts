@@ -3,6 +3,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { jwtDecode } from 'jwt-decode';
+
 import {
   Proyecto,
   ProyectoCreate,
@@ -319,14 +321,41 @@ crearProyecto(proyecto: ProyectoCreate | Proyecto | FormData): Observable<Proyec
     localStorage.setItem('auth_token', token);
   }
 
-  isLoggedIn(): boolean {
-    return !!this.getToken();
+isLoggedIn(): boolean {
+    const token = this.getToken();
+    if (!token) return false;
+
+    try {
+      const decoded: any = jwtDecode(token);
+      const exp = decoded?.exp;
+
+      if (!exp) return true; // si por lo que sea no trae exp, lo consideramos válido
+
+      const now = Math.floor(Date.now() / 1000); // en segundos
+      if (exp < now) {
+        // Token caducado -> limpiar y devolver false
+        this.logoutClientSide();
+        return false;
+      }
+
+      return true;
+    } catch (e) {
+      // Token inválido -> limpiar y devolver false
+      this.logoutClientSide();
+      return false;
+    }
+  }
+
+  /** Logout solo del lado cliente (sin llamar al backend) */
+  logoutClientSide(): void {
+    localStorage.removeItem('auth_token');
   }
 
   logout(): void {
     this.http.post(`${this.baseUrl}/api/admin/logout`, {}, this.buildOptions()).subscribe({
-      next: () => localStorage.removeItem('auth_token'),
-      error: () => localStorage.removeItem('auth_token'),
+      next: () => this.logoutClientSide(),
+      error: () => this.logoutClientSide(),
     });
   }
+
 }
