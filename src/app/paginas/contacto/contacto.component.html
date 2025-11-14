@@ -173,6 +173,10 @@
             </button>
           </form>
 
+          <div *ngIf="errorMessage && !enviado" class="error-message" style="margin-top: 1rem; padding: 1rem; background: #f8d7da; color: #721c24; border-radius: 5px; text-align: center;">
+            <p>{{ errorMessage }}</p>
+          </div>
+
           <div *ngIf="enviado" class="success-message">
             <h3>¡Mensaje enviado con éxito!</h3>
             <p>Nos pondremos en contacto contigo pronto.</p>
