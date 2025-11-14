@@ -158,3 +158,62 @@
     justify-content: center;
   }
 }
+
+/* Agregar al crear-proyecto.component.css */
+
+/* Estilos para la lista de archivos */
+.file-input {
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background-color: white;
+}
+
+.file-input:focus {
+  outline: none;
+  border-color: #0f4c81;
+  box-shadow: 0 0 0 3px rgba(15, 76, 129, 0.1);
+}
+
+/* Estilos para los items de archivo */
+.bg-base-200 {
+  background-color: #f3f4f6;
+}
+
+/* Botón de eliminar */
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+.text-error {
+  color: #ef4444;
+}
+
+.hover\:bg-error:hover {
+  background-color: #ef4444;
+}
+
+.hover\:text-error-content:hover {
+  color: white;
+}
+
+/* Preview de imágenes */
+.object-cover {
+  object-fit: cover;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .flex.items-center.justify-between {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .flex.items-center.space-x-3 {
+    width: 100%;
+  }
+}
