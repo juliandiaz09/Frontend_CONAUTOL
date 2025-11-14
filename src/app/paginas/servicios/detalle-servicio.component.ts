@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 
+import { ApiService } from '../../core/services/api.service';
+import { Servicio } from '../../core/models/servicio.model';
+
 @Component({
   selector: 'app-detalle-servicio',
   standalone: true,
@@ -10,84 +13,51 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
   styleUrls: ['./detalle-servicio.component.css'],
 })
 export class DetalleServicioComponent implements OnInit {
-  categoria: any;
-  serviciosFiltrados: string[] = [];
+  servicio: Servicio | null = null;        // 👉 Servicio completo desde la API
+  serviciosFiltrados: string[] = [];       // 👉 características filtradas
   filtroActual = '';
+  isLoading = true;
 
-  categoriasServicios = [
-    {
-      id: 1,
-      nombre: 'Optimización de Líneas de Producción',
-      servicios: [
-        'Análisis y mejora de procesos',
-        'Integración de sistemas de seguridad',
-      ],
-    },
-    {
-      id: 2,
-      nombre: 'Automatización Industrial',
-      servicios: [
-        'Diseño de control de procesos',
-        'Integración sensórica',
-        'Sistemas de medición y metrología',
-        'Programación de PLCs',
-        'Sistemas SCADA y HMI',
-      ],
-    },
-    {
-      id: 3,
-      nombre: 'Tableros Eléctricos',
-      servicios: [
-        'Gabinetes de distribución',
-        'Bancos de condensadores',
-        'Tableros de control eléctrico',
-        'Centros de control de motores',
-        'Consolas de control',
-      ],
-    },
-    {
-      id: 4,
-      nombre: 'Instalaciones Eléctricas',
-      servicios: [
-        'Redes eléctricas baja tensión',
-        'Motores eléctricos y servomotores',
-        'Estructuras metálicas',
-      ],
-    },
-    {
-      id: 5,
-      nombre: 'Pruebas Eléctricas',
-      servicios: [
-        'Pruebas de resistencia de aislamiento',
-        'Sistemas de puesta a tierra',
-        'Termografía',
-      ],
-    },
-    {
-      id: 6,
-      nombre: 'Mantenimiento',
-      servicios: [
-        'Mantenimiento de tableros eléctricos',
-        'Mantenimiento de motores',
-        'Mantenimiento de plantas eléctricas',
-      ],
-    },
-  ];
-
-  constructor(private route: ActivatedRoute) {}
+  constructor(
+    private route: ActivatedRoute,
+    private apiService: ApiService
+  ) {}
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.categoria = this.categoriasServicios.find(c => c.id === +id);
-      this.serviciosFiltrados = this.categoria.servicios;
+    const idParam = this.route.snapshot.paramMap.get('id');
+
+    if (!idParam) {
+      console.error('No se recibió ID de servicio en la ruta');
+      this.isLoading = false;
+      return;
     }
+
+    const id = Number(idParam);
+
+    this.apiService.getServicio(id).subscribe({
+      next: (servicio: Servicio) => {
+        this.servicio = servicio;
+        // Usamos las características como “lista de servicios” de antes
+        this.serviciosFiltrados = servicio.caracteristicas ?? [];
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error al cargar servicio', err);
+        this.isLoading = false;
+      },
+    });
   }
 
   aplicarFiltro(termino: string): void {
     this.filtroActual = termino;
-    this.serviciosFiltrados = this.categoria.servicios.filter((servicio: string) =>
-      servicio.toLowerCase().includes(termino.toLowerCase())
+
+    if (!this.servicio || !this.servicio.caracteristicas) {
+      this.serviciosFiltrados = [];
+      return;
+    }
+
+    this.serviciosFiltrados = this.servicio.caracteristicas.filter((item: string) =>
+      item.toLowerCase().includes(termino.toLowerCase())
     );
   }
 }

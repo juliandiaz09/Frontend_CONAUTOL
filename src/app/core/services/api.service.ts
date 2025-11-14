@@ -206,25 +206,28 @@ crearProyecto(proyecto: ProyectoCreate | Proyecto | FormData): Observable<Proyec
   // Servicios
   getServicios(): Observable<ServicioResumen[]> {
     return this.http.get<Servicio[]>(`${this.baseUrl}/api/servicios`).pipe(
-      map<Servicio[], ServicioResumen[]>((servicios) =>
-        servicios.map<ServicioResumen>((s) => {
-          return {
-            id: s.id || 0,
-            nombre: s.nombre,
-            descripcion: s.descripcion || '',
-            descripcionCorta: s.descripcion ? s.descripcion.substring(0, 100) + '...' : '',
-            // 👇 esta es la obligatoria según la interfaz
-            imagen_url: s.imagen_url ?? '',
-            // 👇 esta es la “bonita” para usar en otros lados
-            imagenUrl: s.imagen_url ?? '',
-
-            estado: (s.activo ? 'activo' : 'inactivo') as 'activo' | 'inactivo'
-          };
-        })
+      map((servicios: Servicio[]) =>
+        servicios.map<ServicioResumen>((s) => ({
+          id: s.id ?? 0,
+          nombre: s.nombre,
+          descripcion: s.descripcion ?? '',
+          descripcionCorta: s.descripcion
+            ? s.descripcion.substring(0, 100) + '...'
+            : '',
+          imagen_url: s.imagen_url ?? '',
+          imagenUrl: s.imagen_url ?? '',
+          estado:
+            s.activo === true
+              ? 'activo'
+              : s.activo === false
+              ? 'inactivo'
+              : 'completado',
+          icono: s.icono ?? null,
+          categoria: s.categoria ?? null,
+        }))
       )
     );
   }
-
 
 
   getServicio(id: number): Observable<Servicio> {

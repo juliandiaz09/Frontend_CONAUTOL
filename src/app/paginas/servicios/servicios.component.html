@@ -8,17 +8,46 @@
     </div>
   </section>
 
-  <!-- Categorías de Servicios -->
+  <!-- Servicios desde la API -->
   <section class="servicios-section">
     <div class="container">
-      <div class="servicios-grid">
-        <div *ngFor="let categoria of categoriasServicios" class="servicio-card">
-          <span class="material-icons">{{ categoria.icono }}</span>
-          <h3>{{ categoria.nombre }}</h3>
-          <p>{{ categoria.descripcion }}</p>
-          <a class="btn-primary" [routerLink]="['/servicios', categoria.id]">Ver detalles</a>
+
+      <!-- Mientras carga -->
+      <ng-container *ngIf="!isLoading; else loadingTpl">
+        <div class="servicios-grid">
+          <!-- 👇 ahora iteramos sobre 'servicios' -->
+          <div *ngFor="let servicio of servicios" class="servicio-card">
+            <div class="servicio-icono" *ngIf="servicio.icono">
+              <span class="material-icons">{{ servicio.icono }}</span>
+            </div>
+
+            <!-- Título y descripción -->
+            <h3>{{ servicio.nombre }}</h3>
+            <p>{{ servicio.descripcionCorta || servicio.descripcion }}</p>
+
+            <!-- Estado (opcional) -->
+            <span
+              class="badge"
+              [ngClass]="{
+                'badge-activo': servicio.estado === 'activo',
+                'badge-inactivo': servicio.estado === 'inactivo'
+              }"
+            >
+              {{ servicio.estado | uppercase }}
+            </span>
+
+            <!-- Enlace a detalle -->
+            <!-- deja la ruta como la tengas definida en el router -->
+            <a class="btn-primary" [routerLink]="['/servicios', servicio.id]">
+              Ver detalles
+            </a>
+          </div>
         </div>
-      </div>
+      </ng-container>
+
+      <ng-template #loadingTpl>
+        <p>Cargando servicios...</p>
+      </ng-template>
     </div>
   </section>
 
@@ -32,7 +61,7 @@
   </section>
 </div>
 
-<!-- AGREGAR ESTO AL FINAL DEL BODY -->
+<!-- CHATBOT -->
 <button id="chatbot-toggle" class="chatbot-toggle-hidden">
   <span class="chatbot-icon">💬</span>
   <span class="close-icon">✕</span>

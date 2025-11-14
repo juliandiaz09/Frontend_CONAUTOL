@@ -22,8 +22,17 @@ export interface ServicioUpdate {
   caracteristicas?: string[] | null;
 }
 
-export interface Servicio extends ServicioBase {
+export interface Servicio {
   id: number;
-  created_at?: string; // ISO date string
-  updated_at?: string; // ISO date string
+  nombre: string;
+  descripcion?: string | null;
+  categoria?: string | null;
+  activo?: boolean | null;
+  icono?: string | null;
+  caracteristicas?: string[] | null;
+  imagen_url?: string | null;
+  imagenUrl?: string;
+  estado: 'activo' | 'inactivo' | 'completado';
+
 }
+

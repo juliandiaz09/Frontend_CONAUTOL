@@ -44,9 +44,9 @@ export interface ServicioResumen {
   nombre: string;
   descripcion: string;
   descripcionCorta: string;
-
   imagen_url: string;
-  imagenUrl?: string;
-
+  imagenUrl: string;
   estado: 'activo' | 'inactivo' | 'completado';
+  icono?: string | null;
+  categoria?: string | null;
 }

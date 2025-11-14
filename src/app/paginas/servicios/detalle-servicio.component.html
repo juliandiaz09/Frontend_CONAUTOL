@@ -1,19 +1,65 @@
-<div class="detalle-servicio-page" *ngIf="categoria">
+<!-- ESTADO: cargando -->
+<div class="detalle-servicio-page" *ngIf="isLoading">
+  <div class="container">
+    <p>Cargando servicio...</p>
+  </div>
+</div>
+
+<!-- ESTADO: servicio cargado -->
+<div class="detalle-servicio-page" *ngIf="!isLoading && servicio; else notFoundTpl">
   <div class="container">
     <!-- Header -->
     <div class="detalle-header">
-      <span class="material-icons">{{ categoria.icono }}</span>
-      <h1>{{ categoria.nombre }}</h1>
-      <p class="descripcion">{{ categoria.descripcion }}</p>
+      <!-- Icono / logo del servicio -->
+      <div class="detalle-icono" *ngIf="servicio.icono">
+        <span class="material-icons">{{ servicio.icono }}</span>
+      </div>
+
+      <div class="detalle-titulos">
+        <h1>{{ servicio.nombre }}</h1>
+
+        <!-- Descripción principal -->
+        <p class="descripcion">
+          {{ servicio.descripcion }}
+        </p>
+
+        <!-- Meta: categoría y estado -->
+        <div class="detalle-meta">
+          <span *ngIf="servicio.categoria" class="badge badge-categoria">
+            {{ servicio.categoria }}
+          </span>
+
+          <span
+            class="badge"
+            [ngClass]="{
+              'badge-activo': servicio.estado === 'activo',
+              'badge-inactivo': servicio.estado === 'inactivo',
+              'badge-completado': servicio.estado === 'completado'
+            }"
+          >
+            {{ servicio.estado | uppercase }}
+          </span>
+        </div>
+      </div>
     </div>
 
-    <!-- Lista de Servicios -->
-    <div class="servicios-lista-container">
-      <h2>Servicios Incluidos</h2>
-      <ul class="servicios-list">
-        <li *ngFor="let servicio of serviciosFiltrados">
+    <!-- Imagen (opcional, si usas imagenUrl o imagen_url) -->
+    <div class="detalle-imagen" *ngIf="servicio.imagenUrl || servicio.imagen_url">
+      <img
+        [src]="servicio.imagenUrl || servicio.imagen_url"
+        [alt]="servicio.nombre"
+      />
+    </div>
+
+
+    <!-- Lista de Servicios / Características -->
+    <div class="servicios-lista-container" *ngIf="servicio.caracteristicas?.length">
+      <h2>Servicios incluidos / Características</h2>
+
+      <ul class="servicios-list" *ngIf="serviciosFiltrados.length; else noResultadosTpl">
+        <li *ngFor="let item of serviciosFiltrados">
           <span class="material-icons">check_circle_outline</span>
-          <span>{{ servicio }}</span>
+          <span>{{ item }}</span>
         </li>
       </ul>
     </div>
@@ -25,9 +71,17 @@
   </div>
 </div>
 
-<div class="detalle-servicio-page" *ngIf="!categoria">
+<!-- TEMPLATE: servicio no encontrado -->
+<ng-template #notFoundTpl>
+  <div class="detalle-servicio-page">
     <div class="container">
-        <p>Servicio no encontrado.</p>
-        <a routerLink="/servicios" class="btn-primary">Volver a Servicios</a>
+      <p>Servicio no encontrado.</p>
+      <a routerLink="/servicios" class="btn-primary">Volver a Servicios</a>
     </div>
-</div>
+  </div>
+</ng-template>
+
+<!-- TEMPLATE: sin resultados para el filtro -->
+<ng-template #noResultadosTpl>
+  <p>No se encontraron características que coincidan con el filtro.</p>
+</ng-template>
