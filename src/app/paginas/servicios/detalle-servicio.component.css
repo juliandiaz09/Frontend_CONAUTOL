@@ -1,7 +1,7 @@
 :host {
   display: block;
-  background-color: #f8f9fa;
-  padding: 60px 0;
+  background-color: var(--color-bg); /* Use global background color */
+  padding: 40px 0;
 }
 
 .container {
@@ -10,108 +10,158 @@
   padding: 0 20px;
 }
 
-/* Header */
-.detalle-header {
-  background-color: #ffffff;
-  padding: 40px;
-  border-radius: 12px;
+.detalle-title {
+  font-size: 3rem;
+  color: var(--color-primary);
   text-align: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
-  margin-bottom: 40px;
-}
-
-.detalle-header .material-icons {
-  font-size: 5rem;
-  color: #0056b3;
-  margin-bottom: 20px;
-}
-
-.detalle-header h1 {
-  font-size: 2.8rem;
-  color: #343a40;
-  font-weight: 700;
-  margin-bottom: 15px;
-}
-
-.detalle-header .descripcion {
-  font-size: 1.2rem;
-  color: #6c757d;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-/* Services List */
-.servicios-lista-container {
-  background-color: #ffffff;
-  padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
-}
-
-.servicios-lista-container h2 {
-  font-size: 2rem;
-  color: #343a40;
-  font-weight: 600;
   margin-bottom: 30px;
-  text-align: center;
-  border-bottom: 2px solid #e9ecef;
-  padding-bottom: 15px;
+  font-weight: 700;
 }
 
-.servicios-list {
+.detalle-imagen {
+  margin-bottom: 30px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.detalle-imagen img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.detalle-section {
+  background-color: var(--color-surface);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+  margin-bottom: 30px;
+}
+
+.detalle-section h2 {
+  font-size: 1.8rem;
+  color: var(--color-primary);
+  font-weight: 600;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 10px;
+}
+
+.descripcion {
+  font-size: 1.1rem;
+  color: #495057;
+  line-height: 1.6;
+}
+
+.caracteristicas-list {
   list-style-type: none;
   padding: 0;
   margin: 0;
 }
 
-.servicios-list li {
+.caracteristicas-list li {
   display: flex;
   align-items: center;
   font-size: 1.1rem;
   color: #495057;
-  padding: 15px 10px;
-  border-bottom: 1px solid #e9ecef;
-  transition: background-color 0.3s ease;
+  padding: 10px 0;
+  border-bottom: 1px dashed #e9ecef;
 }
 
-.servicios-list li:last-child {
+.caracteristicas-list li:last-child {
   border-bottom: none;
 }
 
-.servicios-list li:hover {
-  background-color: #f8f9fa;
-}
-
-.servicios-list .material-icons {
+.caracteristicas-list .material-icons {
   color: #28a745; /* Green checkmark */
-  margin-right: 15px;
-  font-size: 1.5rem;
+  margin-right: 10px;
+  font-size: 1.3rem;
 }
 
-/* Back Button */
+.detalle-meta-container {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.5em 0.8em;
+  font-size: 0.85em;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+  margin: 0 5px;
+}
+
+.badge-categoria {
+  background-color: var(--color-accent);
+  color: white;
+}
+
+.badge-activo {
+  background-color: #28a745; /* Green */
+  color: white;
+}
+
+.badge-inactivo {
+  background-color: #dc3545; /* Red */
+  color: white;
+}
+
+.badge-completado {
+  background-color: #007bff; /* Blue */
+  color: white;
+}
+
 .volver-container {
   text-align: center;
   margin-top: 40px;
 }
 
 .btn-primary {
-    background-color: #0056b3;
-    color: #ffffff;
-    padding: 12px 28px;
-    border-radius: 50px;
-    text-decoration: none;
-    font-weight: 600;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    display: inline-block;
+  background-color: var(--color-primary);
+  color: #ffffff;
+  padding: 12px 28px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  display: inline-block;
 }
 
 .btn-primary:hover {
-    background-color: #004085;
-    transform: scale(1.05);
+  background-color: darken(var(--color-primary), 10%);
+  transform: scale(1.02);
 }
 
 /* Not Found State */
 .detalle-servicio-page[ng-reflect-ng-if="false"] .container {
-    text-align: center;
-    padding: 50px;
+  text-align: center;
+  padding: 50px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .detalle-title {
+    font-size: 2.2rem;
+  }
+  .detalle-section {
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .detalle-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+  }
+  .descripcion, .caracteristicas-list li {
+    font-size: 1rem;
+  }
+  .btn-primary {
+    padding: 10px 20px;
+  }
 }
