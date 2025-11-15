@@ -1,29 +1,34 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
   Validators,
+  FormControl,
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 
 import { BackButtonComponent } from '../../shared/back-button/back-button.component';
+import * as iconData from '@iconify-json/material-symbols/icons.json';
 
 @Component({
   selector: 'app-crear-servicio',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule, BackButtonComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './crear-servicio.component.html',
   styleUrl: './crear-servicio.component.css',
 })
-export class CrearServicioComponent {
+export class CrearServicioComponent implements OnInit {
   servicioForm: FormGroup;
   isSubmitting = false;
   error: string | null = null;
   file?: File;
-
+  icons: string[] = [];
+  filteredIcons: string[] = [];
+  iconSearch = new FormControl('');
 
   constructor(
     private fb: FormBuilder,
@@ -40,6 +45,21 @@ export class CrearServicioComponent {
       imagen_url: [''],
       estado: ['activo', Validators.required],
     });
+  }
+
+  ngOnInit(): void {
+    this.icons = Object.keys(iconData.icons);
+    this.filteredIcons = this.icons.slice(0, 100); // Show first 100 icons by default
+    this.iconSearch.valueChanges.subscribe((value: string | null) => {
+      const filterValue = (value || '').toLowerCase();
+      this.filteredIcons = this.icons
+        .filter((icon) => icon.toLowerCase().includes(filterValue))
+        .slice(0, 100); // Limit results for performance
+    });
+  }
+
+  selectIcon(icon: string): void {
+    this.servicioForm.patchValue({ icono: icon });
   }
 
   onFile(ev: Event) {

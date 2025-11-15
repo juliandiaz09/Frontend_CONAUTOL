@@ -64,14 +64,28 @@
 
           <!-- Icono -->
           <div class="form-group">
-            <label for="icono">Icono (Material Icons)</label>
+            <label for="icono-search">Buscar Icono (Material Symbols)</label>
             <input
               type="text"
-              id="icono"
-              formControlName="icono"
+              id="icono-search"
+              [formControl]="iconSearch"
               class="form-control"
-              placeholder="Ej: build, code, settings"
+              placeholder="Buscar por nombre..."
             />
+            <div class="icon-grid mt-3">
+              <div
+                *ngFor="let icon of filteredIcons"
+                class="icon-item"
+                (click)="selectIcon(icon)"
+                [class.selected]="servicioForm.get('icono')?.value === icon"
+              >
+                <iconify-icon
+                  [icon]="'material-symbols:' + icon"
+                ></iconify-icon>
+                <span class="icon-name">{{ icon }}</span>
+              </div>
+            </div>
+            <input type="hidden" formControlName="icono" />
           </div>
 
           <!-- Características -->
