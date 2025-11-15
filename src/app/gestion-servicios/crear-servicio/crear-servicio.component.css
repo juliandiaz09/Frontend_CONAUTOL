@@ -1,14 +1,146 @@
+/* General form container styling */
+.form-container {
+  padding: 20px;
+  background-color: var(--color-surface); /* Use global surface color */
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Subtle shadow for depth */
+}
+
+/* Card styling for a cleaner look */
+.card {
+  border: none; /* Remove default Bootstrap card border */
+  box-shadow: none; /* Remove default Bootstrap card shadow */
+}
+
+.card-body {
+  padding: 30px; /* Increase padding for better spacing */
+}
+
+.card-footer {
+  background-color: transparent; /* Make footer background transparent */
+  border-top: 1px solid var(--color-border); /* Subtle border at the top */
+  padding: 20px 30px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px; /* Space between buttons */
+}
+
+/* Form group spacing */
+.form-group {
+  margin-bottom: 20px; /* Increase space between form groups */
+}
+
+/* Form control styling */
+.form-control {
+  border: 1px solid var(--color-border);
+  border-radius: 6px; /* Slightly more rounded corners */
+  padding: 10px 15px; /* More padding */
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus {
+  border-color: var(--color-primary); /* Highlight on focus */
+  box-shadow: 0 0 0 0.2rem rgba(var(--color-primary-rgb), 0.25); /* Subtle focus shadow */
+  outline: none;
+}
+
+/* Labels */
+label {
+  font-weight: 600; /* Make labels slightly bolder */
+  color: #333;
+  margin-bottom: 8px; /* Space between label and input */
+  display: block; /* Ensure label takes full width */
+}
+
+/* Buttons */
+.btn {
+  border-radius: 6px; /* Match form control border-radius */
+  padding: 10px 20px;
+  font-weight: 500;
+}
+
+.btn-primary {
+  background-color: var(--color-primary); /* Use primary color */
+  border-color: var(--color-primary);
+}
+
+.btn-primary:hover {
+  background-color: darken(var(--color-primary), 5%); /* Darken on hover */
+  border-color: darken(var(--color-primary), 5%);
+}
+
+.btn-secondary {
+  background-color: #e0e0e0; /* Lighter secondary button */
+  border-color: #e0e0e0;
+  color: #333;
+}
+
+.btn-secondary:hover {
+  background-color: darken(#e0e0e0, 5%);
+  border-color: darken(#e0e0e0, 5%);
+}
+
+/* Header styling */
+.section-header {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.section-header h1 {
+  font-size: 2.5rem;
+  color: var(--color-primary);
+  margin-bottom: 10px;
+}
+
+.section-header p.muted {
+  font-size: 1.1rem;
+}
+
+/* Tags for characteristics */
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.tag {
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.9rem;
+}
+
+.tag-close {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0;
+}
+
+.tag-close:hover {
+  color: #333;
+}
+
+/* Icon grid adjustments */
 .icon-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-  gap: 1rem;
-  border: 1px solid #ced4da; /* Bootstrap input border color */
-  border-radius: 0.25rem; /* Bootstrap border-radius */
-  padding: 0.375rem 0.75rem; /* Bootstrap input padding */
-  margin-top: 0.5rem; /* Space from search input */
-  background-color: #fff;
-  max-height: 200px; /* Limit height */
-  overflow-y: auto; /* Enable scrolling */
+  display: grid; /* Ensure it's a grid */
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); /* Smaller min width for more icons per row */
+  gap: 0.5rem; /* Reduce gap between icons */
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 10px;
+  max-height: 180px; /* Slightly reduce max height */
+  overflow-y: auto; /* Re-enable vertical scrolling */
+  margin-top: 0.5rem; /* Add some top margin */
+  background-color: var(--color-surface); /* Consistent background */
 }
 
 .icon-item {
@@ -17,7 +149,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  padding: 0.5rem;
+  padding: 0.3rem; /* Reduce padding */
   border-radius: 4px;
   transition: background-color 0.2s;
 }
@@ -27,17 +159,21 @@
 }
 
 .icon-item.selected {
-  background-color: #e0e0e0;
-  font-weight: bold;
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.icon-item.selected iconify-icon {
+  color: white;
 }
 
 .icon-item iconify-icon {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+  font-size: 1.8rem; /* Slightly smaller icon size */
+  margin-bottom: 0.3rem; /* Reduce margin */
 }
 
 .icon-name {
-  font-size: 0.75rem;
+  font-size: 0.7rem; /* Slightly smaller font size */
   text-align: center;
   word-break: break-all;
 }

@@ -1,120 +1,141 @@
-.admin-section {
-  padding: 40px 20px;
+/* General form container styling */
+.form-container {
+  padding: 20px;
+  background-color: var(--color-surface); /* Use global surface color */
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Subtle shadow for depth */
+  max-width: 800px; /* Keep max-width for form container */
+  margin: 0 auto; /* Center the form container */
 }
 
+/* Card styling for a cleaner look */
+.card {
+  border: none; /* Remove default Bootstrap card border */
+  box-shadow: none; /* Remove default Bootstrap card shadow */
+  border-radius: 8px; /* Consistent border-radius with form-container */
+}
+
+.card-body {
+  padding: 30px; /* Increase padding for better spacing */
+}
+
+.card-footer {
+  background-color: transparent; /* Make footer background transparent */
+  border-top: 1px solid var(--color-border); /* Subtle border at the top */
+  padding: 20px 30px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px; /* Space between buttons */
+  border-radius: 0 0 8px 8px; /* Consistent border-radius with card */
+}
+
+/* Form group spacing */
+.form-group {
+  margin-bottom: 20px; /* Increase space between form groups */
+}
+
+/* Form control styling */
+.form-control {
+  border: 1px solid var(--color-border);
+  border-radius: 6px; /* Slightly more rounded corners */
+  padding: 10px 15px; /* More padding */
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus {
+  border-color: var(--color-primary); /* Highlight on focus */
+  box-shadow: 0 0 0 0.2rem rgba(var(--color-primary-rgb), 0.25); /* Subtle focus shadow */
+  outline: none;
+}
+
+/* Labels */
+label {
+  font-weight: 600; /* Make labels slightly bolder */
+  color: #333;
+  margin-bottom: 8px; /* Space between label and input */
+  display: block; /* Ensure label takes full width */
+}
+
+/* Buttons */
+.btn {
+  border-radius: 6px; /* Match form control border-radius */
+  padding: 10px 20px;
+  font-weight: 500;
+}
+
+.btn-primary {
+  background-color: var(--color-primary); /* Use primary color */
+  border-color: var(--color-primary);
+}
+
+.btn-primary:hover {
+  background-color: darken(var(--color-primary), 5%); /* Darken on hover */
+  border-color: darken(var(--color-primary), 5%);
+}
+
+.btn-secondary {
+  background-color: #e0e0e0; /* Lighter secondary button */
+  border-color: #e0e0e0;
+  color: #333;
+}
+
+.btn-secondary:hover {
+  background-color: darken(#e0e0e0, 5%);
+  border-color: darken(#e0e0e0, 5%);
+}
+
+/* Header styling */
 .section-header {
-  margin-bottom: 40px;
+  margin-bottom: 30px;
+  text-align: center;
 }
 
 .section-header h1 {
   font-size: 2.5rem;
-  font-weight: bold;
-  color: var(--color-primary, #0f4c81);
+  color: var(--color-primary);
+  margin-bottom: 10px;
 }
 
-.form-container {
-  max-width: 800px;
-  margin: 0 auto;
+.section-header p.muted {
+  font-size: 1.1rem;
 }
 
-.card {
-  background-color: var(--color-surface, #fff);
-  border-radius: 12px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
-}
-
-.card-body {
-  padding: 30px;
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  display: block;
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: #333;
-}
-
-.form-control {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid var(--color-border, #e6e9ee);
-  border-radius: 8px;
-  transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-.form-control:focus {
-  outline: none;
-  border-color: var(--color-primary, #0f4c81);
-  box-shadow: 0 0 0 3px rgba(15, 76, 129, 0.1);
-}
-
-.card-footer {
-  padding: 20px 30px;
-  background-color: #f8f9fa;
-  border-top: 1px solid var(--color-border, #e6e9ee);
-  border-radius: 0 0 12px 12px;
-}
-
-.border-red-400 {
-  border-color: #f87171;
-}
-
-.text-red-700 {
-  color: #b91c1c;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .p-4 {
-    padding: 0.5rem;
-  }
-  
-  .grid-cols-2 {
-    grid-template-columns: 1fr;
-  }
-  
-  .flex.justify-end.space-x-2 {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  .btn {
-    width: 100%;
-    justify-content: center;
-  }
-}
-
-/* Agregar al crear-proyecto.component.css */
-
-/* Estilos para la lista de archivos */
+/* File input and list styles */
 .file-input {
-  border: 2px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 0.75rem;
+  border: 1px solid var(--color-border); /* Consistent border */
+  border-radius: 6px; /* Consistent border-radius */
+  padding: 10px 15px; /* Consistent padding */
   font-size: 1rem;
   transition: all 0.3s ease;
-  background-color: white;
+  background-color: var(--color-surface);
 }
 
 .file-input:focus {
   outline: none;
-  border-color: #0f4c81;
-  box-shadow: 0 0 0 3px rgba(15, 76, 129, 0.1);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
 }
 
-/* Estilos para los items de archivo */
-.bg-base-200 {
-  background-color: #f3f4f6;
+.file-list-item {
+  background-color: #f3f4f6; /* Light background for list items */
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.9rem;
 }
 
-/* Botón de eliminar */
-.btn-sm {
-  padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
+.file-list-item .file-name {
+  flex-grow: 1;
+  margin-right: 10px;
+}
+
+.file-list-item .btn-sm {
+  padding: 4px 8px;
+  font-size: 0.8rem;
 }
 
 .text-error {
@@ -129,20 +150,30 @@
   color: white;
 }
 
-/* Preview de imágenes */
+/* Image preview */
 .object-cover {
   object-fit: cover;
 }
 
-/* Responsive */
+/* Responsive adjustments */
 @media (max-width: 768px) {
-  .flex.items-center.justify-between {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
+  .admin-section {
+    padding: 20px 10px;
   }
-  
-  .flex.items-center.space-x-3 {
+  .card-body {
+    padding: 20px;
+  }
+  .card-footer {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .btn {
     width: 100%;
+  }
+  .section-header h1 {
+    font-size: 2rem;
+  }
+  .section-header p.muted {
+    font-size: 1rem;
   }
 }
