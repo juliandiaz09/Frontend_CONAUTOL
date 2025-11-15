@@ -60,12 +60,12 @@
               <!-- Categoría -->
               <div class="form-group">
                 <label for="categoria">Categoría</label>
-                <input
-                  type="text"
-                  id="categoria"
-                  formControlName="categoria"
-                  class="form-control"
-                />
+                <select id="categoria" formControlName="categoria" class="form-control">
+                  <option value="">Seleccione una categoría</option>
+                  <option *ngFor="let cat of categoriasDisponibles" [value]="cat">
+                    {{ cat }}
+                  </option>
+                </select>
               </div>
             </div>
             <div class="col-md-6">

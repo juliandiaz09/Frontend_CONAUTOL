@@ -26,6 +26,16 @@ export class CrearServicioComponent implements OnInit {
   isSubmitting = false;
   error: string | null = null;
   file?: File;
+  categoriasDisponibles = [
+  'Optimización de Líneas de Producción',
+  'Automatización Industrial',
+  'Tableros eléctricos',
+  'Pruebas eléctricas',
+  'Instalación de Redes de Datos',
+  'Mantenimiento',
+  'Atención a Emergencias'
+  ];
+
 
   // aquí guardaremos ids completos: 'material-symbols:home', etc.
   icons: string[] = [];

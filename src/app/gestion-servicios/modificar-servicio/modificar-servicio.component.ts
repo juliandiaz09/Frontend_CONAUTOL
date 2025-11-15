@@ -28,6 +28,15 @@ export class ModificarServicioComponent implements OnInit {
   error: string | null = null;
   servicioId!: number;
   file?: File;
+  categoriasDisponibles = [
+  'Optimización de Líneas de Producción',
+  'Automatización Industrial',
+  'Tableros eléctricos',
+  'Pruebas eléctricas',
+  'Instalación de Redes de Datos',
+  'Mantenimiento',
+  'Atención a Emergencias'
+  ];
 
   // 👇 Para selector de iconos
   icons: string[] = [];
