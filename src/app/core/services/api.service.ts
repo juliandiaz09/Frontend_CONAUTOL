@@ -113,21 +113,33 @@ getProyectos(): Observable<ProyectoResumen[]> {
   return this.http.get<any[]>(`${this.baseUrl}/api/proyectos`).pipe(
     map((proyectos: any[]) =>
       proyectos.map((p): ProyectoResumen => {
-        // 🔥 Migrar imagen_url a imagen_urls si es necesario
+        console.log('📦 Proyecto raw:', p);
+        
+        // 🔥 Parsear imagen_urls si es string JSON
         let imagenesArray: string[] = [];
         
-        // Agregar imagen_url antigua si existe
-        if (p.imagen_url) {
-          imagenesArray.push(p.imagen_url);
+        if (p.imagen_urls) {
+          if (typeof p.imagen_urls === 'string') {
+            try {
+              imagenesArray = JSON.parse(p.imagen_urls);
+            } catch (e) {
+              console.warn('Error parseando imagen_urls:', e);
+              imagenesArray = [];
+            }
+          } else if (Array.isArray(p.imagen_urls)) {
+            imagenesArray = p.imagen_urls;
+          }
         }
         
-        // Agregar imagen_urls si existe
-        if (Array.isArray(p.imagen_urls)) {
-          imagenesArray = [...imagenesArray, ...p.imagen_urls];
-        }
+        // 🔥 La primera imagen SIEMPRE es la principal
+        const imagenPrincipal = imagenesArray[0] || '';
         
-        // Eliminar duplicados
-        imagenesArray = [...new Set(imagenesArray)];
+        console.log('✅ Proyecto procesado:', {
+          id: p.id,
+          nombre: p.nombre,
+          imagenPrincipal,
+          totalImagenes: imagenesArray.length
+        });
         
         return {
           id: p.id ?? 0,
@@ -137,7 +149,7 @@ getProyectos(): Observable<ProyectoResumen[]> {
             ? p.descripcion.substring(0, 100) + '...'
             : '',
           imagen_urls: imagenesArray,
-          imagenUrl: imagenesArray[0] ?? '', // Primera imagen como principal
+          imagenUrl: imagenPrincipal, // 👈 Primera = principal
           estado: p.estado ?? 'activo',
           cliente: p.cliente ?? '',
         };
@@ -151,21 +163,23 @@ getProyecto(id: number): Observable<Proyecto> {
     map((p: any) => {
       console.log('🔍 Raw proyecto desde API:', p);
       
-      // 🔥 Migrar imagen_url a imagen_urls
+      // 🔥 Parsear imagen_urls si es string
       let imagenesArray: string[] = [];
       
-      if (p.imagen_url) {
-        console.log('📸 Encontrada imagen_url:', p.imagen_url);
-        imagenesArray.push(p.imagen_url);
+      if (p.imagen_urls) {
+        if (typeof p.imagen_urls === 'string') {
+          try {
+            imagenesArray = JSON.parse(p.imagen_urls);
+          } catch (e) {
+            console.warn('Error parseando imagen_urls:', e);
+            imagenesArray = [];
+          }
+        } else if (Array.isArray(p.imagen_urls)) {
+          imagenesArray = p.imagen_urls;
+        }
       }
       
-      if (Array.isArray(p.imagen_urls)) {
-        console.log('📸 Encontradas imagen_urls:', p.imagen_urls);
-        imagenesArray = [...imagenesArray, ...p.imagen_urls];
-      }
-      
-      imagenesArray = [...new Set(imagenesArray)];
-      console.log('✅ Array final de imágenes:', imagenesArray);
+      console.log('✅ Imágenes parseadas:', imagenesArray);
       
       const resultado = {
         ...p,
@@ -182,7 +196,7 @@ getProyecto(id: number): Observable<Proyecto> {
   );
 }
 
-// 🔥 NUEVO: Método para obtener detalle (alias de getProyecto)
+// 🔥 NUEVO: Método getDetalleProyecto simplificado
 getDetalleProyecto(id: number): Observable<ProyectoDetalle> {
   return this.getProyecto(id).pipe(
     map((proyecto: any) => {
@@ -196,6 +210,7 @@ getDetalleProyecto(id: number): Observable<ProyectoDetalle> {
     })
   );
 }
+
 
 crearProyecto(proyecto: ProyectoCreate | Proyecto | FormData): Observable<Proyecto> {
   const body = proyecto instanceof FormData

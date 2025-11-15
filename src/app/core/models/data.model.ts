@@ -12,11 +12,11 @@ export interface ProyectoResumen {
   descripcion: string;
   descripcionCorta: string;
 
-  // 🔥 Array de URLs (obligatorio)
+  // 🔥 Solo esto (array donde [0] = principal)
   imagen_urls: string[];
-
-  // 🔥 Computed: primera imagen para compatibilidad
-  imagenUrl?: string;
+  
+  // 🔥 Computed property para compatibilidad
+  imagenUrl?: string; // Se asigna como imagen_urls[0]
 
   estado: 'activo' | 'inactivo' | 'completado';
   cliente?: string;

@@ -14,6 +14,7 @@ interface ImagenPreview {
   url: string;
   isNew: boolean;
   file?: File;
+  isPrincipal?: boolean;
 }
 
 @Component({
@@ -29,11 +30,11 @@ export class ModificarProyectoComponent implements OnInit {
   error: string | null = null;
   proyectoId!: number;
   
-  // 🔥 NUEVO: Manejo de imágenes
-  imagenesExistentes: string[] = []; // URLs de la BD
-  imagenesNuevas: File[] = []; // Archivos nuevos a subir
-  imagenesAEliminar: string[] = []; // URLs marcadas para eliminar
-  imagenesPreviews: ImagenPreview[] = []; // Para mostrar en UI
+  // 🔥 Manejo de imágenes simplificado
+  imagenesNuevas: File[] = [];
+  imagenesAEliminar: string[] = [];
+  imagenesPreviews: ImagenPreview[] = [];
+  indicePrincipal: number = 0; // 👈 Índice en lugar de URL
 
   constructor(
     private fb: FormBuilder,
@@ -61,8 +62,6 @@ export class ModificarProyectoComponent implements OnInit {
     this.api.getProyecto(this.proyectoId).subscribe({
       next: (proyecto: Proyecto) => {
         console.log('🔍 Proyecto recibido:', proyecto);
-        console.log('📸 imagen_url:', proyecto.imagen_url);
-        console.log('📸 imagen_urls:', proyecto.imagen_urls);
         
         const fechaInicio = proyecto.fecha_inicio
           ? new Date(proyecto.fecha_inicio).toISOString().split('T')[0]
@@ -81,13 +80,18 @@ export class ModificarProyectoComponent implements OnInit {
           fecha_fin: fechaFin,
         });
 
-        // 🔥 Cargar imágenes existentes
-        this.imagenesExistentes = proyecto.imagen_urls || [];
-        console.log('✅ Imágenes existentes cargadas:', this.imagenesExistentes);
+        // 🔥 Cargar imágenes existentes (solo imagen_urls)
+        const imagenesExistentes = proyecto.imagen_urls || [];
         
-        this.imagenesPreviews = this.imagenesExistentes.map(url => ({
+        console.log('✅ Imágenes existentes:', imagenesExistentes);
+        
+        // La primera siempre es la principal
+        this.indicePrincipal = 0;
+        
+        this.imagenesPreviews = imagenesExistentes.map((url, index) => ({
           url,
-          isNew: false
+          isNew: false,
+          isPrincipal: index === 0 // 👈 La primera es principal
         }));
         
         console.log('✅ Previews generados:', this.imagenesPreviews.length);
@@ -105,7 +109,6 @@ export class ModificarProyectoComponent implements OnInit {
     if (input.files && input.files.length > 0) {
       const newFiles = Array.from(input.files);
       
-      // Validar tipos
       const validFiles = newFiles.filter(file => file.type.startsWith('image/'));
       
       if (validFiles.length !== newFiles.length) {
@@ -113,7 +116,6 @@ export class ModificarProyectoComponent implements OnInit {
         return;
       }
 
-      // Validar tamaño (5MB por archivo)
       const sizeValidFiles = validFiles.filter(file => file.size <= 5 * 1024 * 1024);
       
       if (sizeValidFiles.length !== validFiles.length) {
@@ -121,17 +123,16 @@ export class ModificarProyectoComponent implements OnInit {
         return;
       }
 
-      // Agregar a la lista
       this.imagenesNuevas.push(...sizeValidFiles);
       
-      // Generar previews
       sizeValidFiles.forEach(file => {
         const reader = new FileReader();
         reader.onload = (e) => {
           this.imagenesPreviews.push({
             url: e.target?.result as string,
             isNew: true,
-            file: file
+            file: file,
+            isPrincipal: false
           });
         };
         reader.readAsDataURL(file);
@@ -146,6 +147,12 @@ export class ModificarProyectoComponent implements OnInit {
   marcarParaEliminar(index: number): void {
     const imagen = this.imagenesPreviews[index];
     
+    // No permitir eliminar si es la única imagen
+    if (this.imagenesPreviews.length === 1) {
+      this.error = 'No puedes eliminar la única imagen del proyecto';
+      return;
+    }
+    
     if (imagen.isNew) {
       // Es una imagen nueva: remover del array de nuevas
       const fileIndex = this.imagenesNuevas.findIndex(f => f === imagen.file);
@@ -158,8 +165,32 @@ export class ModificarProyectoComponent implements OnInit {
       if (!this.imagenesAEliminar.includes(imagen.url)) {
         this.imagenesAEliminar.push(imagen.url);
       }
+      
       this.imagenesPreviews.splice(index, 1);
     }
+    
+    // Si eliminamos la principal, hacer que la primera restante sea principal
+    if (index === this.indicePrincipal) {
+      this.indicePrincipal = 0;
+      if (this.imagenesPreviews.length > 0) {
+        this.imagenesPreviews[0].isPrincipal = true;
+      }
+    } else if (index < this.indicePrincipal) {
+      // Si eliminamos una imagen antes de la principal, ajustar índice
+      this.indicePrincipal--;
+    }
+  }
+
+  // 🔥 Establecer imagen principal (guarda índice)
+  establecerComoPrincipal(index: number): void {
+    // Quitar marca de todas
+    this.imagenesPreviews.forEach(img => img.isPrincipal = false);
+    
+    // Marcar la seleccionada
+    this.imagenesPreviews[index].isPrincipal = true;
+    this.indicePrincipal = index;
+    
+    console.log('📸 Nueva imagen principal (índice):', this.indicePrincipal);
   }
 
   // 🔥 Calcular tamaño total de nuevas imágenes
@@ -188,32 +219,22 @@ export class ModificarProyectoComponent implements OnInit {
       presupuesto: v.presupuesto ?? 0,
       fecha_inicio: v.fecha_inicio || null,
       fecha_fin: v.fecha_fin || null,
-      imagenes_a_eliminar: this.imagenesAEliminar, // 🔥 URLs a eliminar
+      imagenes_a_eliminar: this.imagenesAEliminar,
+      indice_imagen_principal: this.indicePrincipal, // 👈 Enviamos índice
     };
 
     const fd = new FormData();
     fd.append('data', JSON.stringify(proyectoData));
     
-    // 🔥 Agregar nuevas imágenes
     console.log('📤 Enviando nuevas imágenes:', this.imagenesNuevas.length);
     this.imagenesNuevas.forEach((file, index) => {
       console.log(`  ${index + 1}. ${file.name} (${file.size} bytes)`);
       fd.append('imagenes', file);
     });
 
-    // Debug
     console.log('🗑️ Imágenes a eliminar:', this.imagenesAEliminar);
+    console.log('📸 Índice imagen principal:', this.indicePrincipal);
     console.log('📋 Datos del proyecto:', proyectoData);
-    
-    // Mostrar contenido del FormData
-    console.log('📦 FormData contenido:');
-    fd.forEach((value, key) => {
-      if (value instanceof File) {
-        console.log(`  ${key}: [File] ${value.name}`);
-      } else {
-        console.log(`  ${key}: ${value}`);
-      }
-    });
 
     this.api.actualizarProyecto(this.proyectoId, fd).subscribe({
       next: (response) => {

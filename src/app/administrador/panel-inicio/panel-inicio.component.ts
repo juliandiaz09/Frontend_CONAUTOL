@@ -228,4 +228,6 @@ export class PanelInicioComponent implements OnInit {
       });
     }
   }
+
+  
 }
