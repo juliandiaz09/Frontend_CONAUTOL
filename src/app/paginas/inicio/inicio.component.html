@@ -1,6 +1,7 @@
 <div class="inicio-container">
   <!-- Hero Section -->
   <section class="hero-section">
+    <div class="hero-background"></div> <!-- For potential background animations -->
     <div class="hero-content">
       <h1>CONAUTOL - Calidad e Innovación Industrial</h1>
       <p>
@@ -14,6 +15,29 @@
         <button class="btn-secondary" (click)="navegarAProyectos()">
           Ver Proyectos
         </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Acerca de (About) Preview Section -->
+  <section class="about-preview-section">
+    <div class="container">
+      <div class="about-content">
+        <div class="about-text">
+          <h2>Acerca de CONAUTOL</h2>
+          <p>
+            En CONAUTOL, somos líderes en ofrecer soluciones electromecánicas
+            innovadoras y de alta calidad. Con años de experiencia, nos
+            dedicamos a impulsar la eficiencia y la productividad de nuestros
+            clientes en diversos sectores industriales y comerciales.
+          </p>
+          <button class="btn-primary" routerLink="/nosotros">
+            Conoce Más
+          </button>
+        </div>
+        <div class="about-image">
+          <img src="assets/about-placeholder.jpg" alt="Acerca de CONAUTOL" />
+        </div>
       </div>
     </div>
   </section>
@@ -32,9 +56,7 @@
     </div>
   </section>
 
-
-
-  <!-- Proyectos Destacados -->
+  <!-- Proyectos -->
   <section class="proyectos-section">
     <div class="container">
       <h2>Nuestros Proyectos</h2>
@@ -67,6 +89,36 @@
       <div class="loading" *ngIf="cargando">
         <span class="material-icons rotating">refresh</span>
         Cargando proyectos...
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonios Section -->
+  <section class="testimonios-section">
+    <div class="container">
+      <h2>Lo que dicen nuestros clientes</h2>
+      <div class="testimonios-grid">
+        <div class="testimonio-card">
+          <p class="quote">
+            "CONAUTOL transformó nuestra operación con sus soluciones. Su
+            profesionalismo y calidad son inigualables."
+          </p>
+          <p class="author">- Cliente Satisfecho A</p>
+        </div>
+        <div class="testimonio-card">
+          <p class="quote">
+            "Excelente servicio y atención al detalle. Recomiendo CONAUTOL
+            para cualquier necesidad electromecánica."
+          </p>
+          <p class="author">- Cliente Satisfecho B</p>
+        </div>
+        <div class="testimonio-card">
+          <p class="quote">
+            "Innovación y eficiencia en cada proyecto. Un verdadero socio
+            estratégico para nuestra empresa."
+          </p>
+          <p class="author">- Cliente Satisfecho C</p>
+        </div>
       </div>
     </div>
   </section>
