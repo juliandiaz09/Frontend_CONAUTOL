@@ -10,6 +10,12 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { Proyecto } from '../../core/models/proyecto.model';
 
+interface ImagenPreview {
+  url: string;
+  isNew: boolean;
+  file?: File;
+}
+
 @Component({
   selector: 'app-modificar-proyecto',
   standalone: true,
@@ -22,7 +28,12 @@ export class ModificarProyectoComponent implements OnInit {
   isSubmitting = false;
   error: string | null = null;
   proyectoId!: number;
-  file?: File;
+  
+  // 🔥 NUEVO: Manejo de imágenes
+  imagenesExistentes: string[] = []; // URLs de la BD
+  imagenesNuevas: File[] = []; // Archivos nuevos a subir
+  imagenesAEliminar: string[] = []; // URLs marcadas para eliminar
+  imagenesPreviews: ImagenPreview[] = []; // Para mostrar en UI
 
   constructor(
     private fb: FormBuilder,
@@ -33,12 +44,11 @@ export class ModificarProyectoComponent implements OnInit {
     this.proyectoForm = this.fb.group({
       nombre: ['', [Validators.required, Validators.minLength(3)]],
       descripcion: ['', Validators.required],
-      estado: ['activo', Validators.required], // string, el back de proyectos lo espera así
+      estado: ['activo', Validators.required],
       cliente: ['', Validators.required],
       presupuesto: [null, [Validators.min(0)]],
       fecha_inicio: [null],
       fecha_fin: [null],
-      imagen_url: [''],
     });
   }
 
@@ -50,7 +60,10 @@ export class ModificarProyectoComponent implements OnInit {
   cargarProyecto(): void {
     this.api.getProyecto(this.proyectoId).subscribe({
       next: (proyecto: Proyecto) => {
-        // Formatear a YYYY-MM-DD para inputs date
+        console.log('🔍 Proyecto recibido:', proyecto);
+        console.log('📸 imagen_url:', proyecto.imagen_url);
+        console.log('📸 imagen_urls:', proyecto.imagen_urls);
+        
         const fechaInicio = proyecto.fecha_inicio
           ? new Date(proyecto.fecha_inicio).toISOString().split('T')[0]
           : null;
@@ -63,14 +76,21 @@ export class ModificarProyectoComponent implements OnInit {
           descripcion: proyecto.descripcion,
           estado: proyecto.estado || 'activo',
           cliente: proyecto.cliente,
-          presupuesto:
-            proyecto.presupuesto === null || proyecto.presupuesto === undefined
-              ? null
-              : proyecto.presupuesto,
+          presupuesto: proyecto.presupuesto ?? null,
           fecha_inicio: fechaInicio,
           fecha_fin: fechaFin,
-          imagen_url: proyecto.imagen_url || '',
         });
+
+        // 🔥 Cargar imágenes existentes
+        this.imagenesExistentes = proyecto.imagen_urls || [];
+        console.log('✅ Imágenes existentes cargadas:', this.imagenesExistentes);
+        
+        this.imagenesPreviews = this.imagenesExistentes.map(url => ({
+          url,
+          isNew: false
+        }));
+        
+        console.log('✅ Previews generados:', this.imagenesPreviews.length);
       },
       error: () => {
         this.error = 'Error al cargar el proyecto';
@@ -78,10 +98,75 @@ export class ModificarProyectoComponent implements OnInit {
     });
   }
 
-  onFile(ev: Event) {
-    const input = ev.target as HTMLInputElement;
-    const f = input.files && input.files[0];
-    if (f) this.file = f;
+  // 🔥 Manejar selección de nuevas imágenes
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    
+    if (input.files && input.files.length > 0) {
+      const newFiles = Array.from(input.files);
+      
+      // Validar tipos
+      const validFiles = newFiles.filter(file => file.type.startsWith('image/'));
+      
+      if (validFiles.length !== newFiles.length) {
+        this.error = 'Algunos archivos no son imágenes válidas';
+        return;
+      }
+
+      // Validar tamaño (5MB por archivo)
+      const sizeValidFiles = validFiles.filter(file => file.size <= 5 * 1024 * 1024);
+      
+      if (sizeValidFiles.length !== validFiles.length) {
+        this.error = 'Algunas imágenes superan el tamaño máximo de 5MB';
+        return;
+      }
+
+      // Agregar a la lista
+      this.imagenesNuevas.push(...sizeValidFiles);
+      
+      // Generar previews
+      sizeValidFiles.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.imagenesPreviews.push({
+            url: e.target?.result as string,
+            isNew: true,
+            file: file
+          });
+        };
+        reader.readAsDataURL(file);
+      });
+      
+      this.error = null;
+      input.value = '';
+    }
+  }
+
+  // 🔥 Marcar imagen para eliminar
+  marcarParaEliminar(index: number): void {
+    const imagen = this.imagenesPreviews[index];
+    
+    if (imagen.isNew) {
+      // Es una imagen nueva: remover del array de nuevas
+      const fileIndex = this.imagenesNuevas.findIndex(f => f === imagen.file);
+      if (fileIndex !== -1) {
+        this.imagenesNuevas.splice(fileIndex, 1);
+      }
+      this.imagenesPreviews.splice(index, 1);
+    } else {
+      // Es una imagen existente: marcar para eliminar
+      if (!this.imagenesAEliminar.includes(imagen.url)) {
+        this.imagenesAEliminar.push(imagen.url);
+      }
+      this.imagenesPreviews.splice(index, 1);
+    }
+  }
+
+  // 🔥 Calcular tamaño total de nuevas imágenes
+  getTotalFileSize(): string {
+    const totalBytes = this.imagenesNuevas.reduce((total, file) => total + file.size, 0);
+    const mb = totalBytes / (1024 * 1024);
+    return mb.toFixed(2) + ' MB';
   }
 
   onSubmit(): void {
@@ -95,44 +180,49 @@ export class ModificarProyectoComponent implements OnInit {
 
     const v = this.proyectoForm.value;
 
-    // Normalización antes de enviar
     const proyectoData: any = {
       nombre: v.nombre,
       descripcion: v.descripcion,
-      estado: v.estado || 'activo', // string
+      estado: v.estado || 'activo',
       cliente: v.cliente,
-      presupuesto: v.presupuesto ?? 0, // si viene null, lo mandamos 0 (o quita esta línea si tu back permite null)
-      // Convertimos '' a null para fechas si vienen vacías
-      fecha_inicio: v.fecha_inicio ? v.fecha_inicio : null,
-      fecha_fin: v.fecha_fin ? v.fecha_fin : null,
-      // imagen_url solo si NO hay archivo (para conservar o actualizar la URL manual)
-      ...(this.file ? {} : { imagen_url: v.imagen_url || '' }),
+      presupuesto: v.presupuesto ?? 0,
+      fecha_inicio: v.fecha_inicio || null,
+      fecha_fin: v.fecha_fin || null,
+      imagenes_a_eliminar: this.imagenesAEliminar, // 🔥 URLs a eliminar
     };
 
-    // Siempre multipart/form-data (consistencia con crear y servicios)
     const fd = new FormData();
     fd.append('data', JSON.stringify(proyectoData));
-    if (this.file) {
-      fd.append('imagen', this.file);
-    }
-
-    // (debug opcional) ver payload real
-    const out: Record<string, any> = {};
-    fd.forEach((val, key) => {
-      out[key] =
-        val instanceof File
-          ? { name: val.name, size: val.size, type: val.type }
-          : val;
+    
+    // 🔥 Agregar nuevas imágenes
+    console.log('📤 Enviando nuevas imágenes:', this.imagenesNuevas.length);
+    this.imagenesNuevas.forEach((file, index) => {
+      console.log(`  ${index + 1}. ${file.name} (${file.size} bytes)`);
+      fd.append('imagenes', file);
     });
-    console.log('FormData ->', out);
+
+    // Debug
+    console.log('🗑️ Imágenes a eliminar:', this.imagenesAEliminar);
+    console.log('📋 Datos del proyecto:', proyectoData);
+    
+    // Mostrar contenido del FormData
+    console.log('📦 FormData contenido:');
+    fd.forEach((value, key) => {
+      if (value instanceof File) {
+        console.log(`  ${key}: [File] ${value.name}`);
+      } else {
+        console.log(`  ${key}: ${value}`);
+      }
+    });
 
     this.api.actualizarProyecto(this.proyectoId, fd).subscribe({
-      next: () => {
+      next: (response) => {
+        console.log('✅ Respuesta del servidor:', response);
         this.isSubmitting = false;
         this.router.navigate(['/admin/proyectos']);
       },
       error: (err) => {
-        console.error('Error al actualizar el proyecto', err);
+        console.error('❌ Error al actualizar el proyecto', err);
         this.error = err?.error?.error || 'Error al actualizar el proyecto';
         this.isSubmitting = false;
       },

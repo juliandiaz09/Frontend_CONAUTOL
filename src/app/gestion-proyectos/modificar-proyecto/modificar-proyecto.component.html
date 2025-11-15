@@ -71,15 +71,6 @@
             proyectoForm.get('cliente')?.invalid
           "
         />
-        <div
-          *ngIf="
-            proyectoForm.get('cliente')?.touched &&
-            proyectoForm.get('cliente')?.invalid
-          "
-          class="text-red-500 text-sm mt-1"
-        >
-          El cliente es requerido
-        </div>
       </div>
 
       <!-- Estado -->
@@ -132,34 +123,72 @@
         </div>
       </div>
 
-      <!-- Imagen actual (preview si existe) -->
-      <div class="form-control" *ngIf="proyectoForm.get('imagen_url')?.value">
-        <label class="label">
-          <span class="label-text">Imagen actual</span>
-        </label>
-        <img
-          [src]="proyectoForm.get('imagen_url')?.value"
-          alt="Imagen actual del proyecto"
-          class="rounded border w-full max-h-64 object-contain"
-          referrerpolicy="no-referrer"
-        />
-      </div>
-
-      <!-- Nueva imagen (archivo) -->
+      <!-- 🔥 SECCIÓN DE IMÁGENES -->
       <div class="form-control">
         <label class="label">
-          <span class="label-text">Nueva imagen (opcional)</span>
+          <span class="label-text font-semibold">Imágenes del Proyecto</span>
         </label>
-        <input
-          type="file"
-          (change)="onFile($event)"
-          accept="image/*"
+
+        <!-- Imágenes actuales y nuevas -->
+        <div *ngIf="imagenesPreviews.length > 0" class="mb-4">
+          <h3 class="font-semibold text-sm mb-2">
+            Imágenes ({{ imagenesPreviews.length }}):
+          </h3>
+          
+          <div class="grid grid-cols-3 gap-3">
+            <div 
+              *ngFor="let img of imagenesPreviews; let i = index" 
+              class="relative group"
+            >
+              <img 
+                [src]="img.url" 
+                alt="Preview"
+                class="w-full h-24 object-cover rounded border"
+                [class.border-green-500]="img.isNew"
+                [class.border-gray-300]="!img.isNew"
+              >
+              
+              <!-- Badge para nuevas -->
+              <span 
+                *ngIf="img.isNew" 
+                class="absolute top-1 left-1 bg-green-500 text-white text-xs px-2 py-1 rounded"
+              >
+                Nueva
+              </span>
+              
+              <!-- Botón eliminar -->
+              <button
+                type="button"
+                (click)="marcarParaEliminar(i)"
+                class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Input para agregar más imágenes -->
+        <input 
+          type="file" 
+          (change)="onFileSelected($event)" 
+          accept="image/*" 
+          multiple
           class="file-input file-input-bordered w-full"
         />
-        <small class="text-gray-500">
-          Si seleccionas una nueva imagen, el backend generará la URL y se
-          ignorará la URL manual.
-        </small>
+        <span class="text-xs text-base-content/60 mt-1">
+          Puedes agregar más imágenes. Formatos: JPG, PNG, GIF. Máx. 5MB por imagen.
+        </span>
+
+        <!-- Resumen de cambios -->
+        <div *ngIf="imagenesNuevas.length > 0 || imagenesAEliminar.length > 0" class="mt-3 p-3 bg-blue-50 rounded text-sm">
+          <p *ngIf="imagenesNuevas.length > 0" class="text-green-700">
+            ✓ {{ imagenesNuevas.length }} imagen(es) nueva(s) - {{ getTotalFileSize() }}
+          </p>
+          <p *ngIf="imagenesAEliminar.length > 0" class="text-red-700">
+            ✗ {{ imagenesAEliminar.length }} imagen(es) se eliminará(n)
+          </p>
+        </div>
       </div>
 
       <!-- Error general -->

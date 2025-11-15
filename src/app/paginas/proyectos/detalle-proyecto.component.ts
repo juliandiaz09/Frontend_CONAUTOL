@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { ProyectoDetalle } from '../../core/models/data.model';
-import { Comentario } from '../../core/models/data.model';
 
 @Component({
   selector: 'app-detalle-proyecto',
@@ -15,13 +14,13 @@ import { Comentario } from '../../core/models/data.model';
 export class DetalleProyectoComponent implements OnInit {
   proyecto: ProyectoDetalle | undefined;
   isLoading: boolean = true;
-  imagenSeleccionada: string = ''; // Imagen mostrada en grande
+  imagenSeleccionada: string = '';
 
   constructor(private route: ActivatedRoute, private apiService: ApiService) {}
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
-      const id = +params['id']; // Obtiene el 'id' de la ruta
+      const id = +params['id'];
       if (id) {
         this.cargarDetalleProyecto(id);
       }
@@ -39,7 +38,6 @@ export class DetalleProyectoComponent implements OnInit {
       error: (error: any) => {
         console.error('Error al cargar detalle del proyecto', error);
         this.isLoading = false;
-        // Lógica de manejo de error o 404
       },
     });
   }
@@ -49,7 +47,6 @@ export class DetalleProyectoComponent implements OnInit {
   }
 
   contactar(): void {
-    // Implementa aquí la lógica de navegación al formulario de contacto
     alert(
       'Acción "Contactar" disparada. Podría redirigir a /contacto o mostrar un modal.'
     );

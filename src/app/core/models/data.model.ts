@@ -2,7 +2,7 @@ import { Proyecto } from './proyecto.model';
 
 export interface ProyectoDetalle extends Proyecto {
   imagenPrincipalUrl: string;
-  galeria?: string[];
+  galeria?: string[]; // Array de todas las imagen_urls
   detallesTecnicos?: string[];
 }
 
@@ -12,10 +12,10 @@ export interface ProyectoResumen {
   descripcion: string;
   descripcionCorta: string;
 
-  // la que ya existía y está causando el error
-  imagen_url: string;
+  // 🔥 Array de URLs (obligatorio)
+  imagen_urls: string[];
 
-  // opcional, para ir usando camelCase donde quieras
+  // 🔥 Computed: primera imagen para compatibilidad
   imagenUrl?: string;
 
   estado: 'activo' | 'inactivo' | 'completado';

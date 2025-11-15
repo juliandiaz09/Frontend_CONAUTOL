@@ -106,54 +106,97 @@ export class ApiService {
 
   /** --------------- LÓGICA PÚBLICA DE PROYECTOS Y SERVICIOS --------------- */
 
+// Agregar estos métodos en api.service.ts
+// Agregar estos métodos en api.service.ts
+
 getProyectos(): Observable<ProyectoResumen[]> {
-  return this.http.get<ProyectoResumen[]>(`${this.baseUrl}/api/proyectos`).pipe(
-    map((proyectos: ProyectoResumen[]) =>
-      proyectos.map((p): ProyectoResumen => ({
-        id: p.id ?? 0,
-        nombre: p.nombre,
-        descripcion: p.descripcion ?? '',
-        descripcionCorta: p.descripcion
-          ? p.descripcion.substring(0, 100) + '...'
-          : '',
-        // 👇 esta es la obligatoria según la interfaz
-        imagen_url: p.imagen_url ?? '',
-        // 👇 esta es la “bonita” para usar en otros lados
-        imagenUrl: p.imagen_url ?? '',
-        estado: p.estado ?? 'activo',
-        cliente: p.cliente ?? '',
-      }))
+  return this.http.get<any[]>(`${this.baseUrl}/api/proyectos`).pipe(
+    map((proyectos: any[]) =>
+      proyectos.map((p): ProyectoResumen => {
+        // 🔥 Migrar imagen_url a imagen_urls si es necesario
+        let imagenesArray: string[] = [];
+        
+        // Agregar imagen_url antigua si existe
+        if (p.imagen_url) {
+          imagenesArray.push(p.imagen_url);
+        }
+        
+        // Agregar imagen_urls si existe
+        if (Array.isArray(p.imagen_urls)) {
+          imagenesArray = [...imagenesArray, ...p.imagen_urls];
+        }
+        
+        // Eliminar duplicados
+        imagenesArray = [...new Set(imagenesArray)];
+        
+        return {
+          id: p.id ?? 0,
+          nombre: p.nombre,
+          descripcion: p.descripcion ?? '',
+          descripcionCorta: p.descripcion
+            ? p.descripcion.substring(0, 100) + '...'
+            : '',
+          imagen_urls: imagenesArray,
+          imagenUrl: imagenesArray[0] ?? '', // Primera imagen como principal
+          estado: p.estado ?? 'activo',
+          cliente: p.cliente ?? '',
+        };
+      })
     )
   );
 }
 
+getProyecto(id: number): Observable<Proyecto> {
+  return this.http.get<any>(`${this.baseUrl}/api/proyectos/${id}`).pipe(
+    map((p: any) => {
+      console.log('🔍 Raw proyecto desde API:', p);
+      
+      // 🔥 Migrar imagen_url a imagen_urls
+      let imagenesArray: string[] = [];
+      
+      if (p.imagen_url) {
+        console.log('📸 Encontrada imagen_url:', p.imagen_url);
+        imagenesArray.push(p.imagen_url);
+      }
+      
+      if (Array.isArray(p.imagen_urls)) {
+        console.log('📸 Encontradas imagen_urls:', p.imagen_urls);
+        imagenesArray = [...imagenesArray, ...p.imagen_urls];
+      }
+      
+      imagenesArray = [...new Set(imagenesArray)];
+      console.log('✅ Array final de imágenes:', imagenesArray);
+      
+      const resultado = {
+        ...p,
+        imagen_urls: imagenesArray
+      };
+      
+      console.log('📤 Proyecto mapeado:', resultado);
+      return resultado;
+    }),
+    catchError((error: any) => {
+      console.error(`❌ Error fetching proyecto ${id}:`, error);
+      return throwError(() => error);
+    })
+  );
+}
 
+// 🔥 NUEVO: Método para obtener detalle (alias de getProyecto)
+getDetalleProyecto(id: number): Observable<ProyectoDetalle> {
+  return this.getProyecto(id).pipe(
+    map((proyecto: any) => {
+      const imagenesArray = proyecto.imagen_urls || [];
+      
+      return {
+        ...proyecto,
+        imagenPrincipalUrl: imagenesArray[0] || '',
+        galeria: imagenesArray,
+      } as ProyectoDetalle;
+    })
+  );
+}
 
-  getProyecto(id: number): Observable<Proyecto> {
-    return this.http.get<Proyecto>(`${this.baseUrl}/api/proyectos/${id}`).pipe(
-      catchError((error: any) => {
-        console.error(`Error fetching proyecto ${id}:`, error);
-        return throwError(() => error);
-      })
-    );
-  }
-
-  getDetalleProyecto(id: number): Observable<ProyectoDetalle> {
-    return this.http
-      .get<ProyectoDetalle>(`${this.baseUrl}/api/proyectos/${id}`)
-      .pipe(
-        catchError((error: any) => {
-          console.error(`Error fetching detalle proyecto ${id}:`, error);
-          return throwError(() => error);
-        })
-      );
-  }
-
-  /**
-   * NOTA: Para compatibilidad con backends que usan multer/archivos,
-   * enviamos multipart/form-data por defecto (conversión automática),
-   * salvo que ya nos pasen un FormData.
-   */
 crearProyecto(proyecto: ProyectoCreate | Proyecto | FormData): Observable<Proyecto> {
   const body = proyecto instanceof FormData
     ? proyecto
@@ -173,24 +216,24 @@ crearProyecto(proyecto: ProyectoCreate | Proyecto | FormData): Observable<Proyec
     );
 }
 
-  actualizarProyecto(id: number, proyecto: ProyectoUpdate | FormData): Observable<Proyecto> {
-    const body = proyecto instanceof FormData
-      ? proyecto
-      : (() => {
-          const fd = new FormData();
-          fd.append('data', JSON.stringify(proyecto));
-          return fd;
-        })();
+actualizarProyecto(id: number, proyecto: ProyectoUpdate | FormData): Observable<Proyecto> {
+  const body = proyecto instanceof FormData
+    ? proyecto
+    : (() => {
+        const fd = new FormData();
+        fd.append('data', JSON.stringify(proyecto));
+        return fd;
+      })();
 
-    return this.http
-      .put<Proyecto>(`${this.baseUrl}/api/proyectos/${id}`, body, this.buildOptions({ isFormData: true }))
-      .pipe(
-        catchError((error: any) => {
-          console.error(`Error updating proyecto ${id}:`, error);
-          return throwError(() => error);
-        })
-      );
-  }
+  return this.http
+    .put<Proyecto>(`${this.baseUrl}/api/proyectos/${id}`, body, this.buildOptions({ isFormData: true }))
+    .pipe(
+      catchError((error: any) => {
+        console.error(`Error updating proyecto ${id}:`, error);
+        return throwError(() => error);
+      })
+    );
+}
 
   eliminarProyecto(id: number): Observable<void> {
     return this.http
@@ -369,3 +412,5 @@ isLoggedIn(): boolean {
   }
 
 }
+
+// Agregar estos métodos en api.service.ts

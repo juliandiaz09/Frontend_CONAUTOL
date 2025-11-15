@@ -65,20 +65,32 @@ export class PanelInicioComponent implements OnInit {
     this.isSubmittingProyecto = true;
     this.apiService.crearProyecto(proyecto).subscribe({
       next: (nuevo) => {
-        const resumen = {
+        // 🔥 CORREGIDO: Migrar imagen_url a imagen_urls
+        let imagenesArray: string[] = [];
+        
+        if (nuevo.imagen_url) {
+          imagenesArray.push(nuevo.imagen_url);
+        }
+        
+        if (Array.isArray(nuevo.imagen_urls)) {
+          imagenesArray = [...imagenesArray, ...nuevo.imagen_urls];
+        }
+        
+        imagenesArray = [...new Set(imagenesArray)];
+        
+        const resumen: ProyectoResumen = {
           id: nuevo.id,
           nombre: nuevo.nombre,
           descripcion: nuevo.descripcion || '',
           descripcionCorta: nuevo.descripcion
             ? nuevo.descripcion.substring(0, 100) + '...'
             : '',
-          // 👇 importante para que cumpla ProyectoResumen
-          imagen_url: nuevo.imagen_url || '',
-          // opcional, por si luego usas camelCase
-          imagenUrl: nuevo.imagen_url || '',
+          imagen_urls: imagenesArray, // 🔥 Array
+          imagenUrl: imagenesArray[0] || '', // 🔥 Primera imagen
           estado: nuevo.estado || 'activo',
           cliente: nuevo.cliente || '',
         };
+        
         this.proyectos.push(resumen);
         this.isSubmittingProyecto = false;
         this.navegarA('/admin/proyectos/nuevo');
@@ -95,18 +107,32 @@ export class PanelInicioComponent implements OnInit {
     this.isSubmittingProyecto = true;
     this.apiService.actualizarProyecto(id, proyecto).subscribe({
       next: (actualizado) => {
-        const resumen = {
+        // 🔥 CORREGIDO: Migrar imagen_url a imagen_urls
+        let imagenesArray: string[] = [];
+        
+        if (actualizado.imagen_url) {
+          imagenesArray.push(actualizado.imagen_url);
+        }
+        
+        if (Array.isArray(actualizado.imagen_urls)) {
+          imagenesArray = [...imagenesArray, ...actualizado.imagen_urls];
+        }
+        
+        imagenesArray = [...new Set(imagenesArray)];
+        
+        const resumen: ProyectoResumen = {
           id: actualizado.id,
           nombre: actualizado.nombre,
           descripcion: actualizado.descripcion || '',
           descripcionCorta: actualizado.descripcion
             ? actualizado.descripcion.substring(0, 100) + '...'
             : '',
-          imagen_url: actualizado.imagen_url || '',
-          imagenUrl: actualizado.imagen_url || '',
+          imagen_urls: imagenesArray, // 🔥 Array
+          imagenUrl: imagenesArray[0] || '', // 🔥 Primera imagen
           estado: actualizado.estado || 'activo',
           cliente: actualizado.cliente || '',
         };
+        
         this.proyectos = this.proyectos.map((p) => (p.id === id ? resumen : p));
         this.isSubmittingProyecto = false;
         this.navegarA('/admin/proyectos/editar/' + proyecto.id);
