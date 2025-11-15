@@ -140,7 +140,7 @@ getProyectos(): Observable<ProyectoResumen[]> {
 
   getDetalleProyecto(id: number): Observable<ProyectoDetalle> {
     return this.http
-      .get<ProyectoDetalle>(`${this.baseUrl}/api/proyectos/${id}/detalle`)
+      .get<ProyectoDetalle>(`${this.baseUrl}/api/proyectos/${id}`)
       .pipe(
         catchError((error: any) => {
           console.error(`Error fetching detalle proyecto ${id}:`, error);
