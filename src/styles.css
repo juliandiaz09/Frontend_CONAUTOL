@@ -15,6 +15,18 @@ app-root {
   height: 100%;
   margin: 0;
 }
+.icon-lg {
+  font-size: 32px; /* recomendado */
+}
+
+.icon-xl {
+  font-size: 48px;
+}
+
+.icon-md {
+  font-size: 24px;
+}
+
 
 /* Main layout wrapper: padding-top equals header height (adjust if changes) */
 .app-body {

@@ -72,6 +72,7 @@
               class="form-control"
               placeholder="Buscar por nombre..."
             />
+
             <div class="icon-grid mt-3">
               <div
                 *ngFor="let icon of filteredIcons"
@@ -79,12 +80,13 @@
                 (click)="selectIcon(icon)"
                 [class.selected]="servicioForm.get('icono')?.value === icon"
               >
-                <iconify-icon
-                  [icon]="'material-symbols:' + icon"
-                ></iconify-icon>
+                <!-- icon ya es 'material-symbols:home' -->
+                <iconify-icon [icon]="icon" class="icon-preview"></iconify-icon>
                 <span class="icon-name">{{ icon }}</span>
               </div>
             </div>
+
+            <!-- valor real que se envía -->
             <input type="hidden" formControlName="icono" />
           </div>
 

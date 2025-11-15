@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
@@ -11,6 +11,7 @@ import { RouterModule } from '@angular/router';
   imports: [CommonModule, RouterModule],
   templateUrl: './servicios.component.html',
   styleUrls: ['./servicios.component.css', '../../shared/styles/filters.css'],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA], // 👈 para poder usar <iconify-icon>
 })
 export class ServiciosComponent implements OnInit {
   servicios: ServicioResumen[] = [];

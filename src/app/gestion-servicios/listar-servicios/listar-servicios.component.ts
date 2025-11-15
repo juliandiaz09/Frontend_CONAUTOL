@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
@@ -11,6 +11,7 @@ import { BackButtonComponent } from '../../shared/back-button/back-button.compon
   imports: [CommonModule, RouterModule, BackButtonComponent],
   templateUrl: './listar-servicios.component.html',
   styleUrls: ['./listar-servicios.component.css', '../../shared/styles/filters.css'],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA], // 👈 para <iconify-icon>
 })
 export class ListarServiciosComponent implements OnInit {
   servicios: ServicioResumen[] = [];
@@ -39,7 +40,7 @@ export class ListarServiciosComponent implements OnInit {
         this.applyFilters();
         this.isLoading = false;
       },
-      error: (err) => {
+      error: () => {
         this.error = 'Error al cargar los servicios';
         this.isLoading = false;
       },
@@ -53,7 +54,7 @@ export class ListarServiciosComponent implements OnInit {
           this.servicios = this.servicios.filter((s) => s.id !== id);
           this.applyFilters();
         },
-        error: (err) => {
+        error: () => {
           alert('Error al eliminar el servicio');
         },
       });

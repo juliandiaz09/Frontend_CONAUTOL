@@ -17,7 +17,7 @@ import * as iconData from '@iconify-json/material-symbols/icons.json';
   selector: 'app-crear-servicio',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule, BackButtonComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA], // 👈 necesario para <iconify-icon>
   templateUrl: './crear-servicio.component.html',
   styleUrl: './crear-servicio.component.css',
 })
@@ -26,6 +26,8 @@ export class CrearServicioComponent implements OnInit {
   isSubmitting = false;
   error: string | null = null;
   file?: File;
+
+  // aquí guardaremos ids completos: 'material-symbols:home', etc.
   icons: string[] = [];
   filteredIcons: string[] = [];
   iconSearch = new FormControl('');
@@ -40,7 +42,7 @@ export class CrearServicioComponent implements OnInit {
       descripcion: ['', Validators.required],
       categoria: [''],
       activo: [true],
-      icono: [''],
+      icono: [''],          // aquí guardamos el id completo
       caracteristicas: [[]],
       imagen_url: [''],
       estado: ['activo', Validators.required],
@@ -48,17 +50,26 @@ export class CrearServicioComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.icons = Object.keys(iconData.icons);
-    this.filteredIcons = this.icons.slice(0, 100); // Show first 100 icons by default
+    const data: any = iconData;
+
+    // 🔴 ANTES: this.icons = Object.keys(data.icons);
+    // ✅ AHORA: ids completos de Iconify
+    this.icons = Object.keys(data.icons).map(
+      (name: string) => `material-symbols:${name}`
+    );
+
+    this.filteredIcons = this.icons.slice(0, 100);
+
     this.iconSearch.valueChanges.subscribe((value: string | null) => {
       const filterValue = (value || '').toLowerCase();
       this.filteredIcons = this.icons
         .filter((icon) => icon.toLowerCase().includes(filterValue))
-        .slice(0, 100); // Limit results for performance
+        .slice(0, 100);
     });
   }
 
   selectIcon(icon: string): void {
+    // icon ya viene como 'material-symbols:home'
     this.servicioForm.patchValue({ icono: icon });
   }
 
@@ -67,54 +78,54 @@ export class CrearServicioComponent implements OnInit {
     const f = input.files && input.files[0];
     if (f) this.file = f;
   }
- // === Reemplaza solo este método ===
-onSubmit(): void {
-  if (this.servicioForm.invalid) {
-    this.servicioForm.markAllAsTouched();
-    return;
+
+  onSubmit(): void {
+    if (this.servicioForm.invalid) {
+      this.servicioForm.markAllAsTouched();
+      return;
+    }
+
+    this.isSubmitting = true;
+    this.error = null;
+
+    const v = this.servicioForm.value;
+
+    const servicioData = {
+      nombre: v.nombre,
+      descripcion: v.descripcion,
+      categoria: v.categoria || '',
+      activo: v.activo ?? true,
+      icono: v.icono || '',  // 👈 aquí se va 'material-symbols:home'
+      caracteristicas: Array.isArray(v.caracteristicas) ? v.caracteristicas : [],
+    };
+
+    const fd = new FormData();
+    fd.append('data', JSON.stringify(servicioData));
+    if (this.file) {
+      fd.append('imagen', this.file);
+    }
+
+    const out: Record<string, any> = {};
+    fd.forEach((val, key) => {
+      out[key] =
+        val instanceof File
+          ? { name: val.name, size: val.size, type: val.type }
+          : val;
+    });
+    console.log('FormData ->', out);
+
+    this.api.crearServicio(fd).subscribe({
+      next: () => {
+        this.isSubmitting = false;
+        this.router.navigate(['/admin/servicios']);
+      },
+      error: (err) => {
+        console.error('Error al crear el servicio', err);
+        this.error = err?.error?.error || 'Error al crear el servicio';
+        this.isSubmitting = false;
+      },
+    });
   }
-
-  this.isSubmitting = true;
-  this.error = null;
-
-  const v = this.servicioForm.value;
-
-  // Normaliza campos y asegura array en caracteristicas
-  const servicioData = {
-    nombre: v.nombre,
-    descripcion: v.descripcion,
-    categoria: v.categoria || '',
-    activo: v.activo ?? true,
-    icono: v.icono || '',
-    caracteristicas: Array.isArray(v.caracteristicas) ? v.caracteristicas : [],
-    // NO mandamos imagen_url cuando subimos archivo; el back la generará.
-    // Si quieres conservarla cuando no hay archivo, puedes agregarla aquí.
-  };
-
-  // Siempre multipart/form-data (para que el back tenga request.form['data'])
-  const fd = new FormData();
-  fd.append('data', JSON.stringify(servicioData));
-  if (this.file) {
-    fd.append('imagen', this.file);
-  }
-
-  // (debug temporal) ver lo que realmente se envía
-  const out: Record<string, any> = {};
-   fd.forEach((val, key) => out[key] = val instanceof File ? {name: val.name, size: val.size, type: val.type} : val);
-   console.log('FormData ->', out);
-
-  this.api.crearServicio(fd).subscribe({
-    next: () => {
-      this.isSubmitting = false;
-      this.router.navigate(['/admin/servicios']);
-    },
-    error: (err) => {
-      console.error('Error al crear el servicio', err);
-      this.error = err?.error?.error || 'Error al crear el servicio';
-      this.isSubmitting = false;
-    },
-  });
-}
 
   agregarCaracteristica(event: any): void {
     event.preventDefault();

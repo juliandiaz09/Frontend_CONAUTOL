@@ -41,8 +41,11 @@
           <!-- 👇 ahora iteramos sobre 'filteredServicios' -->
           <div *ngFor="let servicio of filteredServicios" class="servicio-card">
             <div class="servicio-icono" *ngIf="servicio.icono">
-              <span class="material-icons">{{ servicio.icono }}</span>
-            </div>
+                <iconify-icon
+                  [icon]="servicio.icono"
+                  class="icon-xl"
+                ></iconify-icon>
+              </div>
 
             <!-- Título y descripción -->
             <h3>{{ servicio.nombre }}</h3>
