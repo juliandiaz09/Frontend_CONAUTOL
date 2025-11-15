@@ -9,10 +9,12 @@ import {
 import { Router, RouterModule } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 
+import { BackButtonComponent } from '../../shared/back-button/back-button.component';
+
 @Component({
   selector: 'app-crear-servicio',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, BackButtonComponent],
   templateUrl: './crear-servicio.component.html',
   styleUrl: './crear-servicio.component.css',
 })

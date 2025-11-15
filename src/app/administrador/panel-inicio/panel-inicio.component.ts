@@ -4,12 +4,14 @@ import { RouterModule, Router } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { ProyectoResumen, ServicioResumen } from '../../core/models/data.model';
 
+import { BackButtonComponent } from '../../shared/back-button/back-button.component';
+
 @Component({
   selector: 'app-panel-inicio',
   templateUrl: './panel-inicio.component.html',
   styleUrl: './panel-inicio.component.css',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, BackButtonComponent],
 })
 export class PanelInicioComponent implements OnInit {
   loading = false;

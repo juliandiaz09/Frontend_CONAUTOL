@@ -1,0 +1,36 @@
+<header class="admin-header">
+  <div class="container">
+    <div class="header-content">
+      <div class="logo">
+        <a routerLink="/admin">Admin Panel</a>
+      </div>
+      <nav class="main-nav">
+        <ul>
+          <li>
+            <a routerLink="/admin/panel" routerLinkActive="active">Dashboard</a>
+          </li>
+          <li>
+            <a routerLink="/admin/proyectos" routerLinkActive="active"
+              >Proyectos</a
+            >
+          </li>
+          <li>
+            <a routerLink="/admin/servicios" routerLinkActive="active"
+              >Servicios</a
+            >
+          </li>
+          <li>
+            <a routerLink="/admin/configuracion" routerLinkActive="active"
+              >Configuración</a
+            >
+          </li>
+        </ul>
+      </nav>
+      <div class="user-menu">
+        <button class="btn btn-secondary" (click)="logout()">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </div>
+    </div>
+  </div>
+</header>

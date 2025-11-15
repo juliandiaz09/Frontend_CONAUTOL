@@ -4,10 +4,12 @@ import { RouterModule } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { ServicioResumen } from '../../core/models/data.model';
 
+import { BackButtonComponent } from '../../shared/back-button/back-button.component';
+
 @Component({
   selector: 'app-listar-servicios',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, BackButtonComponent],
   templateUrl: './listar-servicios.component.html',
   styleUrl: './listar-servicios.component.css',
 })

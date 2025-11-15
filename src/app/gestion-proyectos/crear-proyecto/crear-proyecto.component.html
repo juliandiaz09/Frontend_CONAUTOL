@@ -1,175 +1,139 @@
-<div class="container mx-auto p-4">
-  <div class="max-w-2xl mx-auto">
-    <h1 class="text-2xl font-bold mb-6">Crear Nuevo Proyecto</h1>
+<div class="container admin-section">
+  <app-back-button></app-back-button>
+  <header class="section-header">
+    <h1>Crear Nuevo Proyecto</h1>
+    <p class="muted">
+      Completa el formulario para agregar un nuevo proyecto a la plataforma.
+    </p>
+  </header>
 
-    <form [formGroup]="proyectoForm" (ngSubmit)="onSubmit()" class="space-y-4">
-      <!-- Nombre -->
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">Nombre del Proyecto</span>
-        </label>
-        <input
-          type="text"
-          formControlName="nombre"
-          class="input input-bordered w-full"
-          [class.input-error]="
-            proyectoForm.get('nombre')?.touched &&
-            proyectoForm.get('nombre')?.invalid
-          "
-        />
-        <div
-          *ngIf="
-            proyectoForm.get('nombre')?.touched &&
-            proyectoForm.get('nombre')?.invalid
-          "
-          class="text-red-500 text-sm mt-1"
-        >
-          <span *ngIf="proyectoForm.get('nombre')?.errors?.['required']">
-            El nombre es requerido
-          </span>
-          <span *ngIf="proyectoForm.get('nombre')?.errors?.['minlength']">
-            El nombre debe tener al menos 3 caracteres
-          </span>
+  <div class="form-container">
+    <form [formGroup]="proyectoForm" (ngSubmit)="onSubmit()">
+      <div class="card">
+        <div class="card-body">
+          <!-- Nombre -->
+          <div class="form-group">
+            <label for="nombre">Nombre del Proyecto</label>
+            <input
+              type="text"
+              id="nombre"
+              formControlName="nombre"
+              class="form-control"
+            />
+          </div>
+
+          <!-- Descripción -->
+          <div class="form-group">
+            <label for="descripcion">Descripción</label>
+            <textarea
+              id="descripcion"
+              formControlName="descripcion"
+              class="form-control"
+              rows="4"
+            ></textarea>
+          </div>
+
+          <!-- Cliente -->
+          <div class="form-group">
+            <label for="cliente">Cliente</label>
+            <input
+              type="text"
+              id="cliente"
+              formControlName="cliente"
+              class="form-control"
+            />
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <!-- Estado -->
+              <div class="form-group">
+                <label for="estado">Estado</label>
+                <select
+                  id="estado"
+                  formControlName="estado"
+                  class="form-control"
+                >
+                  <option value="activo">Activo</option>
+                  <option value="inactivo">Inactivo</option>
+                  <option value="completado">Completado</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <!-- Presupuesto -->
+              <div class="form-group">
+                <label for="presupuesto">Presupuesto</label>
+                <input
+                  type="number"
+                  id="presupuesto"
+                  formControlName="presupuesto"
+                  class="form-control"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <!-- Fecha de Inicio -->
+              <div class="form-group">
+                <label for="fecha_inicio">Fecha de Inicio</label>
+                <input
+                  type="date"
+                  id="fecha_inicio"
+                  formControlName="fecha_inicio"
+                  class="form-control"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <!-- Fecha de Fin -->
+              <div class="form-group">
+                <label for="fecha_fin">Fecha de Fin</label>
+                <input
+                  type="date"
+                  id="fecha_fin"
+                  formControlName="fecha_fin"
+                  class="form-control"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Imagen -->
+          <div class="form-group">
+            <label for="imagen">Imagen del Proyecto</label>
+            <input
+              type="file"
+              id="imagen"
+              (change)="onFile($event)"
+              accept="image/*"
+              class="form-control"
+            />
+          </div>
         </div>
-      </div>
-
-      <!-- Descripción -->
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">Descripción</span>
-        </label>
-        <textarea
-          formControlName="descripcion"
-          class="textarea textarea-bordered h-24"
-          [class.textarea-error]="
-            proyectoForm.get('descripcion')?.touched &&
-            proyectoForm.get('descripcion')?.invalid
-          "
-        ></textarea>
-        <div
-          *ngIf="
-            proyectoForm.get('descripcion')?.touched &&
-            proyectoForm.get('descripcion')?.invalid
-          "
-          class="text-red-500 text-sm mt-1"
-        >
-          La descripción es requerida
+        <div class="card-footer">
+          <div *ngIf="error" class="alert alert-danger">
+            {{ error }}
+          </div>
+          <div class="form-actions">
+            <button
+              type="button"
+              routerLink="/admin/proyectos"
+              class="btn btn-secondary"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="isSubmitting || proyectoForm.invalid"
+            >
+              {{ isSubmitting ? "Guardando..." : "Guardar Proyecto" }}
+            </button>
+          </div>
         </div>
-      </div>
-
-      <!-- Cliente -->
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">Cliente</span>
-        </label>
-        <input
-          type="text"
-          formControlName="cliente"
-          class="input input-bordered w-full"
-          [class.input-error]="
-            proyectoForm.get('cliente')?.touched &&
-            proyectoForm.get('cliente')?.invalid
-          "
-        />
-        <div
-          *ngIf="
-            proyectoForm.get('cliente')?.touched &&
-            proyectoForm.get('cliente')?.invalid
-          "
-          class="text-red-500 text-sm mt-1"
-        >
-          El cliente es requerido
-        </div>
-      </div>
-
-      <!-- Estado -->
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">Estado</span>
-        </label>
-        <select formControlName="estado" class="select select-bordered w-full">
-          <option value="activo">Activo</option>
-          <option value="inactivo">Inactivo</option>
-          <option value="completado">Completado</option>
-        </select>
-      </div>
-
-      <!-- Presupuesto -->
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">Presupuesto</span>
-        </label>
-        <input
-          type="number"
-          formControlName="presupuesto"
-          class="input input-bordered w-full"
-          min="0"
-        />
-        <span class="text-xs text-base-content/60 mt-1">
-          Deja vacío si no aplica
-        </span>
-      </div>
-
-      <!-- Fechas -->
-      <div class="grid grid-cols-2 gap-4">
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text">Fecha de Inicio</span>
-          </label>
-          <input
-            type="date"
-            formControlName="fecha_inicio"
-            class="input input-bordered w-full"
-          />
-        </div>
-
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text">Fecha de Fin</span>
-          </label>
-          <input
-            type="date"
-            formControlName="fecha_fin"
-            class="input input-bordered w-full"
-          />
-        </div>
-      </div>
-
-      <!-- Imagen: archivo (recomendado) -->
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">Imagen del Proyecto</span>
-        </label>
-        <input type="file" (change)="onFile($event)" accept="image/*" />
-        <span class="text-xs text-base-content/60 mt-1">
-          Sube un archivo para que el backend genere la URL.
-        </span>
-      </div>
-
-      <!-- Error general -->
-      <div
-        *ngIf="error"
-        class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
-      >
-        {{ error }}
-      </div>
-
-      <!-- Acciones -->
-      <div class="flex justify-end space-x-2">
-        <button
-          type="button"
-          routerLink="/admin/proyectos"
-          class="btn btn-ghost"
-        >
-          Cancelar
-        </button>
-        <button
-          type="submit"
-          class="btn btn-primary"
-          [disabled]="isSubmitting || proyectoForm.invalid"
-        >
-          {{ isSubmitting ? "Guardando..." : "Guardar Proyecto" }}
-        </button>
       </div>
     </form>
   </div>

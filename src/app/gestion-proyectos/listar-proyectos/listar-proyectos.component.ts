@@ -4,10 +4,12 @@ import { RouterModule } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { Proyecto } from '../../core/models/proyecto.model';
 
+import { BackButtonComponent } from '../../shared/back-button/back-button.component';
+
 @Component({
   selector: 'app-listar-proyectos',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, BackButtonComponent],
   templateUrl: './listar-proyectos.component.html',
   styleUrl: './listar-proyectos.component.css',
 })

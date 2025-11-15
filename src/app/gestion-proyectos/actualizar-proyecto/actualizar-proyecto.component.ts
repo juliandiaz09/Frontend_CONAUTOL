@@ -10,10 +10,12 @@ import { CommonModule } from '@angular/common';
 import { ApiService } from '../../core/services/api.service';
 import { Proyecto } from '../../core/models/proyecto.model';
 
+import { BackButtonComponent } from '../../shared/back-button/back-button.component';
+
 @Component({
   selector: 'app-actualizar-proyecto',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, BackButtonComponent],
   templateUrl: './actualizar-proyecto.component.html',
   styleUrl: './actualizar-proyecto.component.css',
 })

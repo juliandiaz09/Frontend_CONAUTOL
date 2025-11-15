@@ -1,1 +1,161 @@
-<p>actualizar-servicio works!</p>
+<div class="container admin-section">
+  <app-back-button></app-back-button>
+  <header class="section-header">
+    <h1>Actualizar Servicio</h1>
+    <p class="muted">
+      Modifica la información del servicio seleccionado.
+    </p>
+  </header>
+
+  <div class="form-container">
+    <form [formGroup]="servicioForm" (ngSubmit)="onSubmit()">
+      <div class="card">
+        <div class="card-body">
+          <!-- Nombre -->
+          <div class="form-group">
+            <label for="nombre">Nombre del Servicio</label>
+            <input
+              type="text"
+              id="nombre"
+              formControlName="nombre"
+              class="form-control"
+            />
+          </div>
+
+          <!-- Descripción -->
+          <div class="form-group">
+            <label for="descripcion">Descripción</label>
+            <textarea
+              id="descripcion"
+              formControlName="descripcion"
+              class="form-control"
+              rows="4"
+            ></textarea>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <!-- Categoría -->
+              <div class="form-group">
+                <label for="categoria">Categoría</label>
+                <input
+                  type="text"
+                  id="categoria"
+                  formControlName="categoria"
+                  class="form-control"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <!-- Estado -->
+              <div class="form-group">
+                <label for="estado">Estado</label>
+                <select
+                  id="estado"
+                  formControlName="estado"
+                  class="form-control"
+                >
+                  <option value="activo">Activo</option>
+                  <option value="inactivo">Inactivo</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Icono -->
+          <div class="form-group">
+            <label for="icono">Icono (Material Icons)</label>
+            <input
+              type="text"
+              id="icono"
+              formControlName="icono"
+              class="form-control"
+              placeholder="Ej: build, code, settings"
+            />
+          </div>
+
+          <!-- Características -->
+          <div class="form-group">
+            <label>Características</label>
+            <div class="input-group">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Agregar característica"
+                #caracteristicaInput
+              />
+              <button
+                type="button"
+                class="btn btn-outline-secondary"
+                (click)="agregarCaracteristica($event)"
+              >
+                Agregar
+              </button>
+            </div>
+            <div class="tags-container">
+              <span
+                *ngFor="
+                  let carac of servicioForm.get('caracteristicas')?.value;
+                  let i = index
+                "
+                class="tag"
+              >
+                {{ carac }}
+                <button
+                  type="button"
+                  class="tag-close"
+                  (click)="eliminarCaracteristica(i)"
+                >
+                  &times;
+                </button>
+              </span>
+            </div>
+          </div>
+
+          <!-- Imagen URL -->
+          <div class="form-group">
+            <label for="imagen_url">URL de la Imagen</label>
+            <input
+              type="url"
+              id="imagen_url"
+              formControlName="imagen_url"
+              class="form-control"
+            />
+          </div>
+
+          <!-- Activo -->
+          <div class="form-check">
+            <input
+              type="checkbox"
+              id="activo"
+              formControlName="activo"
+              class="form-check-input"
+            />
+            <label for="activo" class="form-check-label">Activo</label>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div *ngIf="error" class="alert alert-danger">
+            {{ error }}
+          </div>
+          <div class="form-actions">
+            <button
+              type="button"
+              routerLink="/admin/servicios"
+              class="btn btn-secondary"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="isSubmitting || servicioForm.invalid"
+            >
+              {{ isSubmitting ? "Actualizando..." : "Actualizar Servicio" }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
