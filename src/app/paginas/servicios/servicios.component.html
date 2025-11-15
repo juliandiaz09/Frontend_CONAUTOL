@@ -11,12 +11,35 @@
   <!-- Servicios desde la API -->
   <section class="servicios-section">
     <div class="container">
+      <div class="filters-container">
+        <div class="search-bar">
+          <input
+            type="text"
+            placeholder="Buscar por nombre..."
+            (input)="onSearch($event)"
+          />
+          <i class="fas fa-search"></i>
+        </div>
+        <div class="filter-controls">
+          <select (change)="onCategoryChange($event)">
+            <option value="">Todas las categorías</option>
+            <option *ngFor="let categoria of categorias" [value]="categoria">
+              {{ categoria }}
+            </option>
+          </select>
+          <select (change)="onStatusChange($event)">
+            <option value="">Todos los estados</option>
+            <option value="activo">Activo</option>
+            <option value="inactivo">Inactivo</option>
+          </select>
+        </div>
+      </div>
 
       <!-- Mientras carga -->
       <ng-container *ngIf="!isLoading; else loadingTpl">
         <div class="servicios-grid">
-          <!-- 👇 ahora iteramos sobre 'servicios' -->
-          <div *ngFor="let servicio of servicios" class="servicio-card">
+          <!-- 👇 ahora iteramos sobre 'filteredServicios' -->
+          <div *ngFor="let servicio of filteredServicios" class="servicio-card">
             <div class="servicio-icono" *ngIf="servicio.icono">
               <span class="material-icons">{{ servicio.icono }}</span>
             </div>
@@ -42,6 +65,12 @@
               Ver detalles
             </a>
           </div>
+        </div>
+        <div
+          *ngIf="!isLoading && filteredServicios.length === 0"
+          class="empty-state"
+        >
+          <p>No se encontraron servicios con los filtros seleccionados.</p>
         </div>
       </ng-container>
 

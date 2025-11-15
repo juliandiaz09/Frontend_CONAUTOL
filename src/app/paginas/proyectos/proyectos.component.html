@@ -1,18 +1,33 @@
 <section class="servicios-banner">
   <div class="banner-content">
-    <h1>Servicios</h1>
-    <button class="btn-catalogo" routerLink="/brochure/flipbook">
-      Abrir catálogo
-    </button>
+    <h1>Nuestros Proyectos</h1>
+    <p>Explora los proyectos que hemos realizado</p>
   </div>
 </section>
 
 <section class="proyectos-seccion">
-  <h2 class="titulo-seccion">Proyectos</h2>
+  <div class="filters-container">
+    <div class="search-bar">
+      <input
+        type="text"
+        placeholder="Buscar por nombre o cliente..."
+        (input)="onSearch($event)"
+      />
+      <i class="fas fa-search"></i>
+    </div>
+    <div class="filter-controls">
+      <select (change)="onStatusChange($event)">
+        <option value="">Todos los estados</option>
+        <option value="activo">Activo</option>
+        <option value="inactivo">Inactivo</option>
+        <option value="completado">Completado</option>
+      </select>
+    </div>
+  </div>
 
   <div class="proyectos-grid">
     <div
-      *ngFor="let proyecto of proyectos"
+      *ngFor="let proyecto of filteredProyectos"
       class="tarjeta-proyecto"
       (click)="verDetalle(proyecto.id)"
     >
@@ -24,6 +39,13 @@
         <p>{{ proyecto.descripcionCorta }}</p>
       </div>
     </div>
+  </div>
+
+  <div
+    *ngIf="!isLoading && filteredProyectos.length === 0"
+    class="empty-state"
+  >
+    <p>No se encontraron proyectos con los filtros seleccionados.</p>
   </div>
 </section>
 
@@ -40,4 +62,3 @@
     allow="microphone; camera"
   ></iframe>
 </div>
-

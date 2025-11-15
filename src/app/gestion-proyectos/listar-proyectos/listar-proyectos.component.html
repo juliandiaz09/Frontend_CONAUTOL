@@ -10,6 +10,25 @@
     </a>
   </header>
 
+  <div class="filters-container">
+    <div class="search-bar">
+      <input
+        type="text"
+        placeholder="Buscar por nombre o cliente..."
+        (input)="onSearch($event)"
+      />
+      <i class="fas fa-search"></i>
+    </div>
+    <div class="filter-controls">
+      <select (change)="onStatusChange($event)">
+        <option value="">Todos los estados</option>
+        <option value="activo">Activo</option>
+        <option value="inactivo">Inactivo</option>
+        <option value="completado">Completado</option>
+      </select>
+    </div>
+  </div>
+
   <div *ngIf="isLoading" class="text-center py-4">
     <span class="loading loading-spinner loading-lg"></span>
   </div>
@@ -19,7 +38,7 @@
   </div>
 
   <div class="grid-cards">
-    <div *ngFor="let proyecto of proyectos" class="card">
+    <div *ngFor="let proyecto of filteredProyectos" class="card">
       <div class="card-image">
         <img
           [src]="proyecto.imagen_url || 'assets/img/placeholder.jpg'"
@@ -57,7 +76,10 @@
     </div>
   </div>
 
-  <div *ngIf="!isLoading && proyectos.length === 0" class="empty-state">
-    <p>No hay proyectos registrados</p>
+  <div
+    *ngIf="!isLoading && filteredProyectos.length === 0"
+    class="empty-state"
+  >
+    <p>No se encontraron proyectos con los filtros seleccionados.</p>
   </div>
 </div>

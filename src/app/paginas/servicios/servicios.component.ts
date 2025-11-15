@@ -10,12 +10,17 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './servicios.component.html',
-  styleUrls: ['./servicios.component.css'],
+  styleUrls: ['./servicios.component.css', '../../shared/styles/filters.css'],
 })
 export class ServiciosComponent implements OnInit {
-  // ✅ Ahora viene de la API
   servicios: ServicioResumen[] = [];
+  filteredServicios: ServicioResumen[] = [];
+  categorias: string[] = [];
   isLoading: boolean = true;
+
+  private searchTerm = '';
+  private categoryFilter = '';
+  private statusFilter = '';
 
   constructor(
     private apiService: ApiService,
@@ -31,7 +36,9 @@ export class ServiciosComponent implements OnInit {
     this.isLoading = true;
     this.apiService.getServicios().subscribe({
       next: (data) => {
-        this.servicios = data; // ya vienen mapeados como ServicioResumen
+        this.servicios = data;
+        this.categorias = [...new Set(data.map((s) => s.categoria).filter(Boolean) as string[])];
+        this.applyFilters();
         this.isLoading = false;
       },
       error: (err) => {
@@ -41,21 +48,43 @@ export class ServiciosComponent implements OnInit {
     });
   }
 
-  // (Opcional) si tienes ruta de detalle de servicio
   verDetalle(id: number): void {
     this.router.navigate(['/servicio', id]);
   }
 
-  // ================= CHATBOT =================
+  onSearch(event: Event): void {
+    this.searchTerm = (event.target as HTMLInputElement).value;
+    this.applyFilters();
+  }
 
-  // Estado del chatbot
+  onCategoryChange(event: Event): void {
+    this.categoryFilter = (event.target as HTMLSelectElement).value;
+    this.applyFilters();
+  }
+
+  onStatusChange(event: Event): void {
+    this.statusFilter = (event.target as HTMLSelectElement).value;
+    this.applyFilters();
+  }
+
+  private applyFilters(): void {
+    this.filteredServicios = this.servicios.filter((servicio) => {
+      const searchTermMatch = servicio.nombre
+        .toLowerCase()
+        .includes(this.searchTerm.toLowerCase());
+      const categoryMatch =
+        this.categoryFilter === '' || servicio.categoria === this.categoryFilter;
+      const statusMatch =
+        this.statusFilter === '' || servicio.estado === this.statusFilter;
+      return searchTermMatch && categoryMatch && statusMatch;
+    });
+  }
+
   isChatbotVisible = false;
 
-  // Función para toggle del chatbot
   toggleChatbot() {
     this.isChatbotVisible = !this.isChatbotVisible;
 
-    // Agregar un pequeño delay para asegurar que el DOM se actualizó
     setTimeout(() => {
       const chatbotContainer = document.getElementById('chatbot-container');
       const chatbotToggle = document.getElementById('chatbot-toggle');
@@ -73,7 +102,6 @@ export class ServiciosComponent implements OnInit {
   }
 
   initializeChatbot() {
-    // Asegurarse de que el chatbot empiece oculto
     setTimeout(() => {
       const chatbotContainer = document.getElementById('chatbot-container');
       const chatbotToggle = document.getElementById('chatbot-toggle');
@@ -81,7 +109,6 @@ export class ServiciosComponent implements OnInit {
       chatbotContainer?.classList.add('chatbot-hidden');
       chatbotToggle?.classList.remove('chatbot-active');
 
-      // Agregar event listener al botón
       chatbotToggle?.addEventListener('click', () => {
         this.toggleChatbot();
       });

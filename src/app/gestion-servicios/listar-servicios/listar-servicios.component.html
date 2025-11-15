@@ -10,6 +10,30 @@
     </a>
   </header>
 
+  <div class="filters-container">
+    <div class="search-bar">
+      <input
+        type="text"
+        placeholder="Buscar por nombre..."
+        (input)="onSearch($event)"
+      />
+      <i class="fas fa-search"></i>
+    </div>
+    <div class="filter-controls">
+      <select (change)="onCategoryChange($event)">
+        <option value="">Todas las categorías</option>
+        <option *ngFor="let categoria of categorias" [value]="categoria">
+          {{ categoria }}
+        </option>
+      </select>
+      <select (change)="onStatusChange($event)">
+        <option value="">Todos los estados</option>
+        <option value="activo">Activo</option>
+        <option value="inactivo">Inactivo</option>
+      </select>
+    </div>
+  </div>
+
   <div *ngIf="isLoading" class="text-center py-4">
     <span class="loading loading-spinner loading-lg"></span>
   </div>
@@ -19,7 +43,7 @@
   </div>
 
   <div class="grid-cards">
-    <div *ngFor="let servicio of servicios" class="card">
+    <div *ngFor="let servicio of filteredServicios" class="card">
       <div class="card-image" *ngIf="servicio.imagenUrl">
         <img [src]="servicio.imagenUrl" [alt]="servicio.nombre" />
       </div>
@@ -55,7 +79,10 @@
     </div>
   </div>
 
-  <div *ngIf="!isLoading && servicios.length === 0" class="empty-state">
-    <p>No hay servicios registrados</p>
+  <div
+    *ngIf="!isLoading && filteredServicios.length === 0"
+    class="empty-state"
+  >
+    <p>No se encontraron servicios con los filtros seleccionados.</p>
   </div>
 </div>
