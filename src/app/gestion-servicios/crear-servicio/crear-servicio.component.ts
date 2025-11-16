@@ -17,7 +17,7 @@ import * as iconData from '@iconify-json/material-symbols/icons.json';
   selector: 'app-crear-servicio',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule, BackButtonComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA], // 👈 necesario para <iconify-icon>
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './crear-servicio.component.html',
   styleUrl: './crear-servicio.component.css',
 })
@@ -25,19 +25,21 @@ export class CrearServicioComponent implements OnInit {
   servicioForm: FormGroup;
   isSubmitting = false;
   error: string | null = null;
-  file?: File;
+  
+  // 🔥 Gestión de múltiples imágenes
+  files: File[] = [];
+  selectedFiles: { name: string; size: number; preview?: string }[] = [];
+  
   categoriasDisponibles = [
-  'Optimización de Líneas de Producción',
-  'Automatización Industrial',
-  'Tableros eléctricos',
-  'Pruebas eléctricas',
-  'Instalación de Redes de Datos',
-  'Mantenimiento',
-  'Atención a Emergencias'
+    'Optimización de Líneas de Producción',
+    'Automatización Industrial',
+    'Tableros eléctricos',
+    'Pruebas eléctricas',
+    'Instalación de Redes de Datos',
+    'Mantenimiento',
+    'Atención a Emergencias'
   ];
 
-
-  // aquí guardaremos ids completos: 'material-symbols:home', etc.
   icons: string[] = [];
   filteredIcons: string[] = [];
   iconSearch = new FormControl('');
@@ -52,18 +54,14 @@ export class CrearServicioComponent implements OnInit {
       descripcion: ['', Validators.required],
       categoria: [''],
       activo: [true],
-      icono: [''],          // aquí guardamos el id completo
+      icono: [''],
       caracteristicas: [[]],
-      imagen_url: [''],
       estado: ['activo', Validators.required],
     });
   }
 
   ngOnInit(): void {
     const data: any = iconData;
-
-    // 🔴 ANTES: this.icons = Object.keys(data.icons);
-    // ✅ AHORA: ids completos de Iconify
     this.icons = Object.keys(data.icons).map(
       (name: string) => `material-symbols:${name}`
     );
@@ -79,14 +77,73 @@ export class CrearServicioComponent implements OnInit {
   }
 
   selectIcon(icon: string): void {
-    // icon ya viene como 'material-symbols:home'
     this.servicioForm.patchValue({ icono: icon });
   }
 
-  onFile(ev: Event) {
-    const input = ev.target as HTMLInputElement;
-    const f = input.files && input.files[0];
-    if (f) this.file = f;
+  // 🔥 Manejar selección de múltiples archivos
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    
+    if (input.files && input.files.length > 0) {
+      const newFiles = Array.from(input.files);
+      
+      // Validar tipos de archivo
+      const validFiles = newFiles.filter(file => 
+        file.type.startsWith('image/')
+      );
+      
+      if (validFiles.length !== newFiles.length) {
+        this.error = 'Algunos archivos no son imágenes válidas';
+        return;
+      }
+
+      // Validar tamaño (máximo 5MB por archivo)
+      const sizeValidFiles = validFiles.filter(file => 
+        file.size <= 5 * 1024 * 1024
+      );
+      
+      if (sizeValidFiles.length !== validFiles.length) {
+        this.error = 'Algunas imágenes superan el tamaño máximo de 5MB';
+        return;
+      }
+
+      // Agregar a la lista de archivos
+      this.files = [...this.files, ...sizeValidFiles];
+      
+      // Generar previews para las nuevas imágenes
+      this.generatePreviews(sizeValidFiles);
+      
+      // Limpiar error si todo está bien
+      this.error = null;
+      
+      // Resetear el input
+      input.value = '';
+    }
+  }
+
+  private generatePreviews(files: File[]): void {
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.selectedFiles.push({
+          name: file.name,
+          size: file.size,
+          preview: e.target?.result as string
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  removeFile(index: number): void {
+    this.files.splice(index, 1);
+    this.selectedFiles.splice(index, 1);
+  }
+
+  getTotalFileSize(): string {
+    const totalBytes = this.files.reduce((total, file) => total + file.size, 0);
+    const mb = totalBytes / (1024 * 1024);
+    return mb.toFixed(2) + ' MB';
   }
 
   onSubmit(): void {
@@ -105,15 +162,17 @@ export class CrearServicioComponent implements OnInit {
       descripcion: v.descripcion,
       categoria: v.categoria || '',
       activo: v.activo ?? true,
-      icono: v.icono || '',  // 👈 aquí se va 'material-symbols:home'
+      icono: v.icono || '',
       caracteristicas: Array.isArray(v.caracteristicas) ? v.caracteristicas : [],
     };
 
     const fd = new FormData();
     fd.append('data', JSON.stringify(servicioData));
-    if (this.file) {
-      fd.append('imagen', this.file);
-    }
+    
+    // 🔥 Agregar múltiples archivos con el nombre 'imagenes'
+    this.files.forEach((file) => {
+      fd.append('imagenes', file);
+    });
 
     const out: Record<string, any> = {};
     fd.forEach((val, key) => {
@@ -123,6 +182,7 @@ export class CrearServicioComponent implements OnInit {
           : val;
     });
     console.log('FormData ->', out);
+    console.log('Total de archivos:', this.files.length);
 
     this.api.crearServicio(fd).subscribe({
       next: () => {

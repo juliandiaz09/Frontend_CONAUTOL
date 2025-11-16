@@ -81,13 +81,11 @@
                 (click)="selectIcon(icon)"
                 [class.selected]="servicioForm.get('icono')?.value === icon"
               >
-                <!-- icon ya es 'material-symbols:home' -->
                 <iconify-icon [icon]="icon" class="icon-preview"></iconify-icon>
                 <span class="icon-name">{{ icon }}</span>
               </div>
             </div>
 
-            <!-- valor real que se envía -->
             <input type="hidden" formControlName="icono" />
           </div>
 
@@ -129,16 +127,69 @@
             </div>
           </div>
 
-          <!-- Imagen -->
-          <div class="form-group">
-            <label for="imagen">Imagen del Servicio</label>
-            <input
-              type="file"
-              id="imagen"
-              (change)="onFile($event)"
-              accept="image/*"
-              class="form-control"
+          <!-- 🔥 SECCIÓN DE MÚLTIPLES IMÁGENES -->
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">Imágenes del Servicio</span>
+            </label>
+            
+            <!-- Input para múltiples archivos -->
+            <input 
+              type="file" 
+              (change)="onFileSelected($event)" 
+              accept="image/*" 
+              multiple
+              class="file-input file-input-bordered w-full"
             />
+            <span class="text-xs text-base-content/60 mt-1">
+              Puedes seleccionar múltiples imágenes. La primera será la imagen principal. Formatos: JPG, PNG, GIF. Máx. 5MB por imagen.
+            </span>
+
+            <!-- Lista de archivos seleccionados -->
+            <div *ngIf="selectedFiles.length > 0" class="mt-4 space-y-3">
+              <h3 class="font-semibold text-sm">
+                Archivos seleccionados ({{ selectedFiles.length }}):
+              </h3>
+              
+              <div class="space-y-2">
+                <div 
+                  *ngFor="let file of selectedFiles; let i = index" 
+                  class="flex items-center justify-between p-3 bg-base-200 rounded-lg"
+                >
+                  <div class="flex items-center space-x-3">
+                    <!-- Preview de imagen -->
+                    <img 
+                      *ngIf="file.preview" 
+                      [src]="file.preview" 
+                      [alt]="file.name"
+                      class="w-12 h-12 object-cover rounded"
+                    >
+                    <div>
+                      <p class="text-sm font-medium">
+                        {{ file.name }}
+                        <span *ngIf="i === 0" class="badge badge-primary ml-2">Principal</span>
+                      </p>
+                      <p class="text-xs text-base-content/60">
+                        {{ (file.size / 1024).toFixed(2) }} KB
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <button 
+                    type="button" 
+                    (click)="removeFile(i)"
+                    class="btn btn-ghost btn-sm text-error hover:bg-error hover:text-error-content"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+
+              <!-- Resumen -->
+              <div class="text-xs text-base-content/60 border-t pt-2">
+                Total: {{ selectedFiles.length }} archivo(s) - {{ getTotalFileSize() }}
+              </div>
+            </div>
           </div>
 
           <!-- Activo -->
