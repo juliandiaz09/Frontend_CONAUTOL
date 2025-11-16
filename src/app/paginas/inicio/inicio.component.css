@@ -9,7 +9,7 @@
   --color-border-futuristic: var(--color-muted);
 }
 
-/* Asegurar que todo el componente use el tema oscuro */
+/* Asegurar que todo el componente use el tema */
 :host {
   display: block;
   background-color: var(--color-bg-dark);
@@ -23,8 +23,8 @@
 
 body {
   font-family: 'Inter', sans-serif; /* Modern font */
-  color: var(--color-text-light); /* Ensure body text is light */
-  background-color: var(--color-bg-dark); /* Ensure body background is dark */
+  color: var(--color-text-light);
+  background-color: var(--color-bg-dark);
 }
 
 .inicio-container {
@@ -44,7 +44,9 @@ section {
   padding: 0 20px;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   color: var(--color-text-light);
   font-weight: 700;
 }
@@ -68,99 +70,243 @@ h2::after {
 
 /* Keyframe Animations */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes slideInLeft {
-  from { opacity: 0; transform: translateX(-50px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 @keyframes slideInRight {
-  from { opacity: 0; transform: translateX(50px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 @keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
-/* Hero Section */
+/* ===========================
+   BOTONES BASE (INICIO)
+   =========================== */
+
+.btn-primary,
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.9rem 2.4rem;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.25s ease,
+    background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+/* Primario: relleno */
+.btn-primary {
+  background: var(--color-primary-futuristic);
+  color: var(--color-surface);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+  background: var(--color-accent-futuristic);
+}
+
+/* Secundario base (para otras secciones si lo usas solo) */
+.btn-secondary {
+  background: transparent;
+  color: var(--color-primary-futuristic);
+  border: 2px solid var(--color-primary-futuristic);
+}
+
+.btn-secondary:hover {
+  background: var(--color-primary-futuristic);
+  color: var(--color-bg-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* ===========================
+   HERO SECTION CON IMAGEN
+   =========================== */
+
 .hero-section {
-  height: 100vh;
+  position: relative;
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background-color: var(--color-bg-dark); /* fallback */
+}
+
+/* Fondo de imagen */
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+
+/* Capa oscura encima de la imagen */
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3); /* bien oscura */
+  z-index: 1;
+  pointer-events: none; /* no bloquea clics en botones */
+}
+
+/* Degradado inferior hacia la siguiente sección */
+.hero-bottom-gradient {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 30%;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--color-card-bg)
+  );
+  z-index: 2;
+}
+
+/* Contenido sobre las capas */
+.hero-inner {
+  position: relative;
+  z-index: 3;
+  padding: 4rem 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-  background-color: hwb(31 76% 15%);
 }
 
 .hero-content {
-  position: relative;
-  z-index: 1;
+  max-width: 720px;
+  text-align: center;
   animation: fadeIn 1s ease-out;
 }
 
 .hero-content h1 {
-  font-size: 4rem;
+  font-size: clamp(2.4rem, 4vw, 3.4rem);
   margin-bottom: 1.5rem;
-  line-height: 1.2;
-  color: var(--color-primary);
+  line-height: 1.15;
+  color: #ffffff;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .hero-content p {
-  font-size: 1.5rem;
-  margin-bottom: 3rem;
-  max-width: 800px;
+  font-size: 1.2rem;
+  margin-bottom: 2.5rem;
+  max-width: 640px;
   margin-left: auto;
   margin-right: auto;
-  opacity: 0.8;
+  opacity: 0.9;
+  color: #f7f7f7;
 }
 
+.hero-buttons {
+  display: inline-flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Botones del hero: mismos colores ambos */
 .hero-buttons .btn-primary,
 .hero-buttons .btn-secondary {
   padding: 15px 40px;
   border-radius: 50px;
   font-size: 1.1rem;
   font-weight: 600;
-  transition: all 0.3s ease;
   animation: fadeIn 1s ease-out 0.5s backwards;
-}
-
-.hero-buttons .btn-primary {
   background: var(--color-primary-futuristic);
-  color: var(--color-surface); /* button text white for primary background */
+  color: var(--color-surface);
   border: none;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
-.hero-buttons .btn-primary:hover {
-  background: var(--color-accent-futuristic);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0, 200, 220, 0.3);
-}
-
-.hero-buttons .btn-secondary {
-  background: transparent;
-  color: var(--color-primary);
-  border: 2px solid var(--color-primary-futuristic);
-}
-
+.hero-buttons .btn-primary:hover,
 .hero-buttons .btn-secondary:hover {
-  background: var(--color-primary-futuristic);
-  color: var(--color-surface); /* button text white for primary hover background */
+  background: var(--color-accent-futuristic);
+  color: var(--color-surface);
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0, 200, 220, 0.3);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+}
+
+/* En pantallas chicas, apilamos los botones */
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 90px 0 60px;
+    min-height: auto;
+  }
+
+  .hero-content h1 {
+    font-size: 2.2rem;
+  }
+
+  .hero-content p {
+    font-size: 1.05rem;
+  }
+
+  .hero-buttons {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .hero-buttons .btn-primary,
+  .hero-buttons .btn-secondary {
+    width: 100%;
+    max-width: 320px;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 /* About Preview Section */
 .about-preview-section {
-  background-color: var(--color-card-bg); /* Use dark card background */
-  color: var(--color-text-light); /* Ensure text is light */
+  background-color: var(--color-card-bg);
+  color: var(--color-text-light);
 }
 
 .about-content {
@@ -202,7 +348,7 @@ h2::after {
   max-width: 100%;
   height: auto;
   border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s ease;
 }
 
@@ -212,8 +358,8 @@ h2::after {
 
 /* Servicios Section */
 .servicios-section {
-  background-color: var(--color-bg-dark); /* Ensure dark background */
-  color: var(--color-text-light); /* Ensure text is light */
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-light);
 }
 
 .servicios-grid {
@@ -223,7 +369,7 @@ h2::after {
   scroll-behavior: smooth;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  padding: 20px 0; /* Add padding similar to proyectos-carrusel */
+  padding: 20px 0;
 }
 
 .servicios-grid::-webkit-scrollbar {
@@ -231,7 +377,7 @@ h2::after {
 }
 
 .servicio-card {
-  background: var(--color-card-bg); /* Use dark card background */
+  background: var(--color-card-bg);
   padding: 2.5rem;
   border-radius: 15px;
   text-align: center;
@@ -242,7 +388,7 @@ h2::after {
 
 .servicio-card:hover {
   transform: translateY(-10px) scale(1.02);
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
   border-color: var(--color-primary-futuristic);
 }
 
@@ -271,15 +417,15 @@ h2::after {
 
 /* Proyectos Section */
 .proyectos-section {
-  background-color: var(--color-card-bg); /* Use dark card background */
-  color: var(--color-text-light); /* Ensure text is light */
+  background-color: var(--color-card-bg);
+  color: var(--color-text-light);
 }
 
 .carrusel-container {
   position: relative;
   max-width: 100%;
   margin: 0 auto;
-  padding: 0 60px; /* More space for arrows */
+  padding: 0 60px;
 }
 
 .proyectos-carrusel {
@@ -298,7 +444,7 @@ h2::after {
 
 .proyecto-card {
   min-width: 320px;
-  background: var(--color-bg-dark); /* Use dark background for project cards */
+  background: var(--color-bg-dark);
   border-radius: 15px;
   overflow: hidden;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
@@ -309,7 +455,7 @@ h2::after {
 
 .proyecto-card:hover {
   transform: translateY(-10px) scale(1.02);
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
   border-color: var(--color-accent-futuristic);
 }
 
@@ -356,7 +502,7 @@ h2::after {
   height: 50px;
   border-radius: 50%;
   background: var(--color-primary-futuristic);
-  color: var(--color-bg-dark); /* arrow button text dark for light background */
+  color: var(--color-bg-dark);
   border: none;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   cursor: pointer;
@@ -396,8 +542,12 @@ h2::after {
 }
 
 @keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .rotating {
@@ -406,8 +556,8 @@ h2::after {
 
 /* Testimonios Section */
 .testimonios-section {
-  background-color: var(--color-bg-dark); /* Ensure dark background */
-  color: var(--color-text-light); /* Ensure text is light */
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-light);
 }
 
 .testimonios-grid {
@@ -417,7 +567,7 @@ h2::after {
 }
 
 .testimonio-card {
-  background: var(--color-card-bg); /* Use dark card background */
+  background: var(--color-card-bg);
   padding: 2.5rem;
   border-radius: 15px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
@@ -427,7 +577,7 @@ h2::after {
 
 .testimonio-card:hover {
   transform: translateY(-10px) scale(1.02);
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
   border-color: var(--color-accent-futuristic);
 }
 
@@ -448,7 +598,7 @@ h2::after {
 /* CTA Section */
 .cta-section {
   background-color: var(--color-primary);
-  color: var(--color-surface); /* Ensure text is white against gradient */
+  color: var(--color-surface);
   padding: 100px 0;
   text-align: center;
 }
@@ -471,13 +621,15 @@ h2::after {
 
 .cta-section .btn-primary {
   background: var(--color-accent);
-  color: var(--color-surface); /* button text white for accent background */
+  color: var(--color-surface);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+  border: none;
 }
 
 .cta-section .btn-primary:hover {
-  background:#fdf4d9;
-  color: var(--color-surface);
-  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.3);
+  background: #fdf4d9;
+  color: var(--color-primary);
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.45);
 }
 
 /* Responsive Adjustments */
@@ -532,7 +684,8 @@ h2::after {
   .about-text h2 {
     text-align: center;
   }
-  .servicios-grid, .testimonios-grid {
+  .servicios-grid,
+  .testimonios-grid {
     grid-template-columns: 1fr;
   }
   .proyecto-card {
@@ -556,7 +709,9 @@ h2::after {
   h2 {
     font-size: 1.8rem;
   }
-  .servicio-card, .testimonio-card, .proyecto-card {
+  .servicio-card,
+  .testimonio-card,
+  .proyecto-card {
     padding: 1.5rem;
   }
   .servicio-card h3 {
@@ -598,7 +753,8 @@ h2::after {
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
 }
 
-.chatbot-icon, .close-icon {
+.chatbot-icon,
+.close-icon {
   font-size: 28px;
   transition: all 0.3s ease;
   position: absolute;
@@ -668,34 +824,35 @@ h2::after {
     right: 2.5%;
     left: 2.5%;
   }
-  
+
   #chatbot-toggle {
     bottom: 20px;
     right: 20px;
     width: 60px;
     height: 60px;
   }
-  
-  .chatbot-icon, .close-icon {
+
+  .chatbot-icon,
+  .close-icon {
     font-size: 24px;
   }
 }
 
 /* Animación de pulso para el botón cuando hay mensajes nuevos */
-@keyframes pulse {
+@keyframes pulse-chatbot {
   0% {
-    box-shadow: 0 0 0 0 rgba(var(--color-accent), 0.7);
+    box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7);
   }
   70% {
-    box-shadow: 0 0 0 10px rgba(var(--color-accent), 0);
+    box-shadow: 0 0 0 10px rgba(255, 193, 7, 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(var(--color-accent), 0);
+    box-shadow: 0 0 0 0 rgba(255, 193, 7, 0);
   }
 }
 
 #chatbot-toggle.has-notification {
-  animation: pulse 2s infinite;
+  animation: pulse-chatbot 2s infinite;
 }
 
 .about-preview-section,
@@ -713,18 +870,6 @@ h2::after {
 .about-text p,
 .servicios-section h2,
 .proyectos-section h2,
-.testimonios-section h2,{
+.testimonios-section {
   color: var(--color-text-light) !important;
-}
-
-/* Botones específicos para el tema oscuro */
-.hero-buttons .btn-secondary {
-  background: transparent;
-  color: var(--color-primary-futuristic) !important;
-  border: 2px solid var(--color-primary-futuristic) !important;
-}
-
-.hero-buttons .btn-secondary:hover {
-  background: var(--color-primary-futuristic) !important;
-  color: var(--color-bg-dark) !important;
 }

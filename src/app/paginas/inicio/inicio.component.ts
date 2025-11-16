@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild, ElementRef, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule  } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../core/services/api.service';
 
 @Component({
   selector: 'app-inicio',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule], // 👈 AÑADIR RouterModule AQUÍ
   templateUrl: './inicio.component.html',
   styleUrls: ['./inicio.component.css'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA], // 👈 para <iconify-icon>

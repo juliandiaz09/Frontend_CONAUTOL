@@ -1,20 +1,37 @@
 <div class="inicio-container">
   <!-- Hero Section -->
   <section class="hero-section">
-    <div class="hero-background"></div> <!-- For potential background animations -->
-    <div class="hero-content">
-      <h1>CONAUTOL - Calidad e Innovación Industrial</h1>
-      <p>
-        Soluciones electromecánicas integrales para el sector industrial y
-        comercial
-      </p>
-      <div class="hero-buttons">
-        <button class="btn-primary" (click)="navegarAServicios()">
-          Nuestros Servicios
-        </button>
-        <button class="btn-secondary" (click)="navegarAProyectos()">
-          Ver Proyectos
-        </button>
+    <!-- Fondo con imagen -->
+    <div
+      class="hero-bg"
+      role="img"
+      aria-label="Soluciones integrales electromecánicas CONAUTOL"
+      style="background-image: url('assets/images/soluciones-integrales-eds.jpg');"
+    ></div>
+
+    <!-- Capa oscura encima de la imagen -->
+    <div class="hero-overlay"></div>
+
+    <!-- Degradado inferior para conectar con la siguiente sección -->
+    <div class="hero-bottom-gradient"></div>
+
+    <div class="container">
+      <div class="hero-inner">
+        <div class="hero-content">
+          <h1>CONAUTOL - Calidad e Innovación Industrial</h1>
+          <p>
+            Soluciones electromecánicas integrales para el sector industrial y
+            comercial.
+          </p>
+          <div class="hero-buttons">
+            <button class="btn-primary" (click)="navegarAServicios()">
+              Nuestros Servicios
+            </button>
+            <button class="btn-secondary" (click)="navegarAProyectos()">
+              Ver Proyectos
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -36,50 +53,52 @@
           </button>
         </div>
         <div class="about-image">
-          <img src="assets/about-placeholder.jpg" alt="Acerca de CONAUTOL" />
+          <img
+            src="assets/about-placeholder.jpg"
+            alt="Acerca de CONAUTOL"
+          />
         </div>
       </div>
     </div>
   </section>
 
   <!-- Servicios Destacados -->
-<section class="servicios-section">
-  <div class="container">
-    <h2>Nuestros Servicios</h2>
+  <section class="servicios-section">
+    <div class="container">
+      <h2>Nuestros Servicios</h2>
 
-    <div class="carrusel-container">
-      <!-- Botón izquierda -->
-      <button class="arrow-btn left" (click)="scrollServicios('left')">
-        <span class="material-icons">chevron_left</span>
-      </button>
+      <div class="carrusel-container">
+        <!-- Botón izquierda -->
+        <button class="arrow-btn left" (click)="scrollServicios('left')">
+          <span class="material-icons">chevron_left</span>
+        </button>
 
-      <!-- Carrusel: mantiene servicios-grid y servicio-card -->
-      <div #serviciosCarrusel class="servicios-grid">
-        <div
-          *ngFor="let servicio of serviciosDestacados"
-          class="servicio-card"
-          (click)="verDetalleServicio(servicio.id)"
-        >
-          <!-- Icono desde BD con Iconify -->
-          <iconify-icon
-            *ngIf="servicio.icono"
-            [icon]="servicio.icono"
-            class="icon-xl"
-          ></iconify-icon>
+        <!-- Carrusel: mantiene servicios-grid y servicio-card -->
+        <div #serviciosCarrusel class="servicios-grid">
+          <div
+            *ngFor="let servicio of serviciosDestacados"
+            class="servicio-card"
+            (click)="verDetalleServicio(servicio.id)"
+          >
+            <!-- Icono desde BD con Iconify -->
+            <iconify-icon
+              *ngIf="servicio.icono"
+              [icon]="servicio.icono"
+              class="icon-xl"
+            ></iconify-icon>
 
-          <h3>{{ servicio.nombre }}</h3>
-          <p>{{ servicio.descripcionCorta || servicio.descripcion }}</p>
+            <h3>{{ servicio.nombre }}</h3>
+            <p>{{ servicio.descripcionCorta || servicio.descripcion }}</p>
+          </div>
         </div>
+
+        <!-- Botón derecha -->
+        <button class="arrow-btn right" (click)="scrollServicios('right')">
+          <span class="material-icons">chevron_right</span>
+        </button>
       </div>
-
-      <!-- Botón derecha -->
-      <button class="arrow-btn right" (click)="scrollServicios('right')">
-        <span class="material-icons">chevron_right</span>
-      </button>
     </div>
-  </div>
-</section>
-
+  </section>
 
   <!-- Proyectos -->
   <section class="proyectos-section">
@@ -97,7 +116,10 @@
             (click)="verDetalleProyecto(proyecto.id)"
           >
             <div class="imagen-container">
-              <img [src]="proyecto.imagenUrl" [alt]="proyecto.nombre" />
+              <img
+                [src]="proyecto.imagenUrl"
+                [alt]="proyecto.nombre"
+              />
             </div>
             <div class="proyecto-info">
               <h3>{{ proyecto.nombre }}</h3>
@@ -160,7 +182,7 @@
   </section>
 </div>
 
-<!-- AGREGAR ESTO AL FINAL DEL BODY -->
+<!-- Botón del chatbot -->
 <button id="chatbot-toggle" class="chatbot-toggle-hidden">
   <span class="chatbot-icon">💬</span>
   <span class="close-icon">✕</span>
@@ -173,4 +195,3 @@
     allow="microphone; camera"
   ></iframe>
 </div>
-
