@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 
@@ -9,6 +9,16 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
   templateUrl: './flipbook.component.html',
   styleUrls: ['./flipbook.component.css'],
 })
-export class FlipbookComponent {
+export class FlipbookComponent implements OnInit {
   brochureUrl: string = 'assets/Brochure_servicios_CONAUTOL.pdf';
+  isChatbotVisible = false;
+
+  ngOnInit() {
+    // Inicializar el chatbot como oculto
+    this.isChatbotVisible = false;
+  }
+
+  toggleChatbot() {
+    this.isChatbotVisible = !this.isChatbotVisible;
+  }
 }
