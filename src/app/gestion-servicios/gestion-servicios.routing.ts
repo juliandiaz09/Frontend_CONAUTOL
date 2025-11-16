@@ -1,19 +1,25 @@
 import { Routes } from '@angular/router';
-import { ListarServiciosComponent } from './listar-servicios/listar-servicios.component';
-import { CrearServicioComponent } from './crear-servicio/crear-servicio.component';
-import { ModificarServicioComponent } from './modificar-servicio/modificar-servicio.component';
 
 export const gestionServiciosRoutes: Routes = [
   {
     path: '',
-    component: ListarServiciosComponent,
+    loadComponent: () =>
+      import('./listar-servicios/listar-servicios.component').then(
+        (m) => m.ListarServiciosComponent
+      ),
   },
   {
     path: 'nuevo',
-    component: CrearServicioComponent,
+    loadComponent: () =>
+      import('./crear-servicio/crear-servicio.component').then(
+        (m) => m.CrearServicioComponent
+      ),
   },
   {
     path: 'editar/:id',
-    component: ModificarServicioComponent,
+    loadComponent: () =>
+      import('./modificar-servicio/modificar-servicio.component').then(
+        (m) => m.ModificarServicioComponent
+      ),
   },
 ];

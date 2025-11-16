@@ -44,9 +44,14 @@ export interface ServicioResumen {
   nombre: string;
   descripcion: string;
   descripcionCorta: string;
-  imagen_url: string;
-  imagenUrl: string;
+  
+  // 🔥 Soporte para múltiples imágenes
+  imagen_urls?: string[]; // 👈 Array de URLs (nuevo)
+  imagen_url?: string; // 👈 Deprecated - para compatibilidad
+  imagenUrl?: string; // 👈 Computed: primera imagen o imagen_url
+  
   estado: 'activo' | 'inactivo' | 'completado';
   icono?: string | null;
   categoria?: string | null;
 }
+

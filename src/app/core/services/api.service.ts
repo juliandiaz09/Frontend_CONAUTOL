@@ -259,18 +259,53 @@ actualizarProyecto(id: number, proyecto: ProyectoUpdate | FormData): Observable<
   }
 
   // Servicios
-  getServicios(): Observable<ServicioResumen[]> {
-    return this.http.get<Servicio[]>(`${this.baseUrl}/api/servicios`).pipe(
-      map((servicios: Servicio[]) =>
-        servicios.map<ServicioResumen>((s) => ({
+getServicios(): Observable<ServicioResumen[]> {
+  return this.http.get<any[]>(`${this.baseUrl}/api/servicios`).pipe(
+    map((servicios: any[]) =>
+      servicios.map((s): ServicioResumen => {
+        console.log('📦 Servicio raw:', s);
+        
+        // 🔥 Parsear imagen_urls si es string JSON
+        let imagenesArray: string[] = [];
+        
+        if (s.imagen_urls) {
+          if (typeof s.imagen_urls === 'string') {
+            try {
+              imagenesArray = JSON.parse(s.imagen_urls);
+            } catch (e) {
+              console.warn('Error parseando imagen_urls:', e);
+              imagenesArray = [];
+            }
+          } else if (Array.isArray(s.imagen_urls)) {
+            imagenesArray = s.imagen_urls;
+          }
+        }
+        
+        // 🔥 Si no hay imagen_urls pero hay imagen_url, usar esa
+        if (imagenesArray.length === 0 && s.imagen_url) {
+          imagenesArray = [s.imagen_url];
+        }
+        
+        // 🔥 La primera imagen SIEMPRE es la principal
+        const imagenPrincipal = imagenesArray[0] || '';
+        
+        console.log('✅ Servicio procesado:', {
+          id: s.id,
+          nombre: s.nombre,
+          imagenPrincipal,
+          totalImagenes: imagenesArray.length
+        });
+        
+        return {
           id: s.id ?? 0,
           nombre: s.nombre,
           descripcion: s.descripcion ?? '',
           descripcionCorta: s.descripcion
             ? s.descripcion.substring(0, 100) + '...'
             : '',
-          imagen_url: s.imagen_url ?? '',
-          imagenUrl: s.imagen_url ?? '',
+          imagen_urls: imagenesArray, // 👈 Array completo
+          imagen_url: s.imagen_url ?? '', // 👈 Mantener para compatibilidad
+          imagenUrl: imagenPrincipal, // 👈 Primera = principal
           estado:
             s.activo === true
               ? 'activo'
@@ -279,21 +314,55 @@ actualizarProyecto(id: number, proyecto: ProyectoUpdate | FormData): Observable<
               : 'completado',
           icono: s.icono ?? null,
           categoria: s.categoria ?? null,
-        }))
-      )
-    );
-  }
-
-
-  getServicio(id: number): Observable<Servicio> {
-    return this.http.get<Servicio>(`${this.baseUrl}/api/servicios/${id}`).pipe(
-      catchError((error: any) => {
-        console.error(`Error fetching servicio ${id}:`, error);
-        return throwError(() => error);
+        };
       })
-    );
-  }
+    )
+  );
+}
 
+getServicio(id: number): Observable<Servicio> {
+  return this.http.get<any>(`${this.baseUrl}/api/servicios/${id}`).pipe(
+    map((s: any) => {
+      console.log('🔍 Raw servicio desde API:', s);
+      
+      // 🔥 Parsear imagen_urls si es string
+      let imagenesArray: string[] = [];
+      
+      if (s.imagen_urls) {
+        if (typeof s.imagen_urls === 'string') {
+          try {
+            imagenesArray = JSON.parse(s.imagen_urls);
+          } catch (e) {
+            console.warn('Error parseando imagen_urls:', e);
+            imagenesArray = [];
+          }
+        } else if (Array.isArray(s.imagen_urls)) {
+          imagenesArray = s.imagen_urls;
+        }
+      }
+      
+      // 🔥 Si no hay imagen_urls pero hay imagen_url, usar esa
+      if (imagenesArray.length === 0 && s.imagen_url) {
+        imagenesArray = [s.imagen_url];
+      }
+      
+      console.log('✅ Imágenes parseadas:', imagenesArray);
+      
+      const resultado = {
+        ...s,
+        imagen_urls: imagenesArray,
+        imagenUrl: imagenesArray[0] || s.imagen_url || ''
+      };
+      
+      console.log('📤 Servicio mapeado:', resultado);
+      return resultado;
+    }),
+    catchError((error: any) => {
+      console.error(`❌ Error fetching servicio ${id}:`, error);
+      return throwError(() => error);
+    })
+  );
+}
   /**
    * Crear Servicio: envía multipart/form-data (auto a partir de objeto) o usa el FormData recibido.
    */
