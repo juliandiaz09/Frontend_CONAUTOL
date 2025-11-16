@@ -40,8 +40,9 @@
   <div class="grid-cards">
     <div *ngFor="let proyecto of filteredProyectos" class="card">
       <div class="card-image">
+        <!-- ✅ CORREGIDO: Usar directamente el array imagen_urls -->
         <img
-          [src]="proyecto.imagen_url || 'assets/img/placeholder.jpg'"
+          [src]="proyecto.imagen_urls?.[0] || 'assets/img/placeholder.jpg'"
           [alt]="proyecto.nombre"
         />
         <div class="card-actions">
