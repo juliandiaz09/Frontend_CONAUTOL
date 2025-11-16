@@ -92,35 +92,4 @@ a {
 .muted {
   color: var(--color-muted);
 }
-
-
-/* Override global styles for home page compatibility */
-app-inicio {
-  --color-bg: #1a1a2e;
-  --color-surface: #2e2e4a;
-  --color-primary: #00bcd4;
-  --color-accent: #ff4081;
-  --color-muted: #a0a0c0;
-  --color-border: #4a4a6a;
-}
-
-app-inicio body {
-  background-color: var(--color-bg) !important;
-  color: #e0e0e0 !important;
-}
-
-app-inicio .app-body {
-  background: var(--color-bg) !important;
-  color: #e0e0e0 !important;
-}
-
-/* Ensure buttons in home page have proper contrast */
-app-inicio .btn-secondary {
-  color: #00bcd4 !important;
-  border-color: #00bcd4 !important;
-}
-
-app-inicio .btn-secondary:hover {
-  color: #1a1a2e !important;
-  background: #00bcd4 !important;
 }
