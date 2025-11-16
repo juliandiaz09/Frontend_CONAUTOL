@@ -97,10 +97,52 @@
   border-radius: 0.25rem;
   margin: 0 5px;
 }
+.detalle-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+/* Título más protagonista */
+.detalle-title {
+  font-size: clamp(2.4rem, 4vw, 3.2rem);
+  color: var(--color-primary);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: capitalize;
+  margin: 0 0 2.5rem;
+  position: relative;
+}
+
+.detalle-title::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -12px;
+  transform: translateX(-50%);
+  width: 90px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--color-primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+}
 
 .badge-categoria {
-  background-color: var(--color-accent);
-  color: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-top: 1.25rem;
+  padding: 0.55em 1.3em;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
 .badge-activo {
@@ -145,10 +187,188 @@
   padding: 50px;
 }
 
+/* ===== GALERÍA ===== */
+
+.detalle-galeria {
+  margin: 2rem 0;
+}
+
+/* Contenedor principal: área uniforme */
+.galeria-principal {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: zoom-in;
+  aspect-ratio: 16 / 9;              /* área uniforme */
+  background: #f3f3f3;               /* fondo neutro para bandas */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Imagen principal: que se vea completa (sin recortar) */
+.galeria-principal img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;                /* ✅ no recorta, adapta */
+  transition: transform 0.3s ease;
+}
+
+.galeria-principal img:hover {
+  transform: scale(1.02);
+}
+
+/* ===== MINIATURAS ===== */
+
+.galeria-thumbs {
+  display: flex;
+  justify-content: center;     /* 👉 CENTRAR */
+  flex-wrap: nowrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  overflow-x: auto;
+  width: 100%;
+  padding-bottom: 0.5rem;
+}
+/* Opcional: quitar scrollbars molestos */
+.galeria-thumbs::-webkit-scrollbar {
+  height: 6px;
+}
+.galeria-thumbs::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+.thumb-btn {
+  border: none;
+  padding: 0;
+  background: transparent;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  flex: 0 0 auto;
+  outline: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Todas las miniaturas del mismo tamaño */
+.thumb-btn img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;                  /* aquí sí recortamos un poco, pero es miniatura */
+  display: block;
+  opacity: 0.5;                       /* por defecto: apagadas */
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* Miniatura seleccionada */
+.thumb-btn.is-active img {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+.thumb-btn.is-active {
+  box-shadow: 0 0 0 2px #007bff;
+}
+
+/* ===== LIGHTBOX ===== */
+
+.lightbox-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.lightbox-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Imagen en lightbox: que se vea TODA, sin recorte */
+.lightbox-content img {
+  max-width: 100%;
+  max-height: 100%;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;                /* ✅ sin recortes, se adapta */
+  border-radius: 8px;
+  background: #000;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: -2.5rem;
+  right: 0;
+  border: none;
+  background: transparent;
+  color: #fff;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+/* Flechas de navegación */
+.lightbox-prev,
+.lightbox-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 2rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-prev {
+  left: -3rem;
+}
+
+.lightbox-next {
+  right: -3rem;
+}
+
+@media (max-width: 768px) {
+  .lightbox-prev {
+    left: 0.5rem;
+  }
+
+  .lightbox-next {
+    right: 0.5rem;
+  }
+}
+
+.badge-categoria::before {
+  content: '★';
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .detalle-title {
-    font-size: 2.2rem;
+    font-size: 2.1rem;
+    letter-spacing: 0.06em;
+  }
+  .badge-categoria {
+    font-size: 0.75rem;
+    padding: 0.45em 1.1em;
   }
   .detalle-section {
     padding: 20px;

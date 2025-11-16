@@ -6,20 +6,105 @@
 </div>
 
 <!-- ESTADO: servicio cargado -->
-<div class="detalle-servicio-page" *ngIf="!isLoading && servicio; else notFoundTpl">
+<!-- ESTADO: cargando -->
+<div class="detalle-servicio-page" *ngIf="isLoading">
   <div class="container">
-    <!-- 1. Título (arriba) -->
-    <h1 class="detalle-title">{{ servicio.nombre }}</h1>
+    <p>Cargando servicio...</p>
+  </div>
+</div>
 
-    <!-- 2. Imagen -->
-    <div class="detalle-imagen" *ngIf="servicio.imagenUrl || servicio.imagen_url">
+<!-- ESTADO: servicio cargado -->
+  <div class="detalle-servicio-page" *ngIf="!isLoading && servicio; else notFoundTpl">
+    <div class="container">
+      <!-- 1. Título (arriba) -->
+      <div class="detalle-header">
+        <h1 class="detalle-title">{{ servicio.nombre }}</h1>
+
+        <span *ngIf="servicio.categoria" class="badge badge-categoria">
+          {{ servicio.categoria }}
+        </span>
+</div>
+
+
+      <!-- 3. Galería de imágenes -->
+  <div
+    class="detalle-galeria"
+    *ngIf="allImages?.length"
+  >
+    <!-- Imagen principal -->
+    <div class="galeria-principal" *ngIf="selectedImage">
       <img
-        [src]="servicio.imagenUrl || servicio.imagen_url"
-        [alt]="servicio.nombre"
+        [src]="selectedImage"
+        [alt]="servicio?.nombre"
+        (click)="openLightbox(selectedImage)"
       />
     </div>
 
-    <!-- 3. Descripción -->
+    <!-- Miniaturas -->
+    <div class="galeria-thumbs" *ngIf="allImages.length > 1">
+      <button
+        type="button"
+        class="thumb-btn"
+        *ngFor="let img of allImages"
+        (click)="selectImage(img)"
+        [class.is-active]="img === selectedImage"
+      >
+        <img
+          [src]="img"
+          [alt]="servicio?.nombre"
+        />
+      </button>
+    </div>
+  </div>
+
+  <!-- Lightbox / imagen maximizada -->
+  <div
+    class="lightbox-backdrop"
+    *ngIf="lightboxOpen"
+    (click)="closeLightbox()"
+  >
+    <div
+      class="lightbox-content"
+      (click)="$event.stopPropagation()"
+    >
+      <button
+        type="button"
+        class="lightbox-close"
+        (click)="closeLightbox()"
+      >
+        &times;
+      </button>
+
+      <!-- Botón anterior -->
+      <button
+        type="button"
+        class="lightbox-prev"
+        (click)="prevImage()"
+        *ngIf="allImages.length > 1"
+      >
+        &#10094;
+      </button>
+
+      <!-- Botón siguiente -->
+      <button
+        type="button"
+        class="lightbox-next"
+        (click)="nextImage()"
+        *ngIf="allImages.length > 1"
+      >
+        &#10095;
+      </button>
+
+      <img
+        [src]="lightboxImage || selectedImage"
+        [alt]="servicio?.nombre"
+      />
+    </div>
+  </div>
+
+
+
+    <!-- 4. Descripción -->
     <div class="detalle-section">
       <h2>Descripción</h2>
       <p class="descripcion">
@@ -27,7 +112,7 @@
       </p>
     </div>
 
-    <!-- 4. Características -->
+    <!-- 5. Características (sin modificar el HTML) -->
     <div class="detalle-section" *ngIf="servicio.caracteristicas?.length">
       <h2>Características</h2>
       <ul class="caracteristicas-list">
@@ -36,23 +121,6 @@
           <span>{{ item }}</span>
         </li>
       </ul>
-    </div>
-
-    <!-- Meta: categoría y estado (can be placed subtly) -->
-    <div class="detalle-meta-container">
-      <span *ngIf="servicio.categoria" class="badge badge-categoria">
-        {{ servicio.categoria }}
-      </span>
-      <span
-        class="badge"
-        [ngClass]="{
-          'badge-activo': servicio.estado === 'activo',
-          'badge-inactivo': servicio.estado === 'inactivo',
-          'badge-completado': servicio.estado === 'completado'
-        }"
-      >
-        {{ servicio.estado | uppercase }}
-      </span>
     </div>
 
     <!-- Botón de Volver -->
@@ -72,7 +140,3 @@
   </div>
 </ng-template>
 
-<!-- TEMPLATE: sin resultados para el filtro -->
-<ng-template #noResultadosTpl>
-  <p>No se encontraron características que coincidan con el filtro.</p>
-</ng-template>
