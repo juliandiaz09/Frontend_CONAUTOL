@@ -38,7 +38,7 @@
             </thead>
             <tbody>
               <tr *ngFor="let proyecto of proyectos">
-                <td>{{ proyecto.nombre }}</td>
+                <td class="name-cell">{{ proyecto.nombre }}</td>
                 <td>
                   <span
                     class="badge"
@@ -52,18 +52,20 @@
                   </span>
                 </td>
                 <td>
-                  <button
-                    class="btn btn-sm btn-info"
-                    (click)="navegarA('/admin/proyectos/editar/' + proyecto.id)"
-                  >
-                    <i class="fas fa-edit"></i>
-                  </button>
-                  <button
-                    class="btn btn-sm btn-danger"
-                    (click)="eliminarProyecto(proyecto.id)"
-                  >
-                    <i class="fas fa-trash"></i>
-                  </button>
+                  <div class="action-buttons">
+                    <button
+                      class="btn btn-sm btn-info"
+                      (click)="navegarA('/admin/proyectos/editar/' + proyecto.id)"
+                    >
+                      <i class="fas fa-edit"></i> Editar
+                    </button>
+                    <button
+                      class="btn btn-sm btn-danger"
+                      (click)="eliminarProyecto(proyecto.id)"
+                    >
+                      <i class="fas fa-trash"></i> Eliminar
+                    </button>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -95,7 +97,7 @@
             </thead>
             <tbody>
               <tr *ngFor="let servicio of servicios">
-                <td>{{ servicio.nombre }}</td>
+                <td class="name-cell">{{ servicio.nombre }}</td>
                 <td>
                   <span
                     class="badge"
@@ -108,18 +110,20 @@
                   </span>
                 </td>
                 <td>
-                  <button
-                    class="btn btn-sm btn-info"
-                    (click)="navegarA('/admin/servicios/editar/' + servicio.id)"
-                  >
-                    <i class="fas fa-edit"></i>
-                  </button>
-                  <button
-                    class="btn btn-sm btn-danger"
-                    (click)="eliminarServicio(servicio.id)"
-                  >
-                    <i class="fas fa-trash"></i>
-                  </button>
+                  <div class="action-buttons">
+                    <button
+                      class="btn btn-sm btn-info"
+                      (click)="navegarA('/admin/servicios/editar/' + servicio.id)"
+                    >
+                      <i class="fas fa-edit"></i> Editar
+                    </button>
+                    <button
+                      class="btn btn-sm btn-danger"
+                      (click)="eliminarServicio(servicio.id)"
+                    >
+                      <i class="fas fa-trash"></i> Eliminar
+                    </button>
+                  </div>
                 </td>
               </tr>
             </tbody>

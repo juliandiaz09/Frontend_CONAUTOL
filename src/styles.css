@@ -69,18 +69,48 @@ body {
   transform: translateY(1px);
 }
 .btn-primary {
-  background: var(--color-accent);
-  color: white;
-  box-shadow: 0 6px 18px rgba(255, 107, 53, 0.12);
+  background: transparent;
+  color: var(--color-accent);
+  border: 1.5px solid var(--color-accent);
+  box-shadow: none;
 }
 .btn-primary:hover {
-  filter: brightness(0.96);
+  background: var(--color-accent);
+  color: white;
 }
 .btn-secondary {
   background: transparent;
-  color: var(--color-surface);
-  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  color: var(--color-primary);
+  border: 1.5px solid var(--color-primary);
 }
+
+.btn-secondary:hover {
+  background: var(--color-primary);
+  color: var(--color-surface);
+}
+
+.btn-danger {
+  background-color: transparent;
+  color: #dc3545 !important;
+  border: 1.5px solid #dc3545;
+}
+
+.btn-danger:hover {
+  background-color: #dc3545;
+  color: white !important;
+}
+
+.btn-info {
+  background-color: transparent;
+  color: #17a2b8;
+  border: 1.5px solid #17a2b8;
+}
+
+.btn-info:hover {
+  background-color: #17a2b8;
+  color: white;
+}
+
 
 /* Links */
 a {

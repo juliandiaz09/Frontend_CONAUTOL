@@ -58,8 +58,13 @@
 .table th,
 .table td {
   padding: 12px 15px;
-  text-align: left;
   border-bottom: 1px solid var(--color-border, #e6e9ee);
+}
+
+.name-cell {
+  max-width: 200px; /* Adjust as needed */
+  white-space: normal;
+  word-wrap: break-word;
 }
 
 .table th {
@@ -80,22 +85,26 @@
 }
 
 .bg-success {
-  background-color: #d4edda;
-  color: #155724;
+  background-color: #77dd77; /* Pastel Green */
+  color: white;
 }
 
 .bg-warning {
-  background-color: #fff3cd;
-  color: #856404;
+  background-color: #ffb347; /* Pastel Orange */
+  color: white;
 }
 
 .bg-info {
-  background-color: #d1ecf1;
-  color: #0c5460;
+  background-color: #aec6cf; /* Pastel Blue */
+  color: white;
 }
 
 .btn-sm {
   padding: 5px 10px;
   font-size: 0.9rem;
-  margin-right: 5px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 5px;
 }

@@ -235,6 +235,14 @@ h2::after {
   text-transform: uppercase;
 }
 
+.hero-content h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+  color: #ffffff;
+  font-weight: 600;
+}
+
 .hero-content p {
   font-size: 1.2rem;
   margin-bottom: 2.5rem;
@@ -242,7 +250,7 @@ h2::after {
   margin-left: auto;
   margin-right: auto;
   opacity: 0.9;
-  color: #f7f7f7;
+  color: #ffffff;
 }
 
 .hero-buttons {
@@ -864,8 +872,6 @@ h2::after {
 }
 
 /* Asegurar que el texto sea visible */
-.hero-content h1,
-.hero-content p,
 .about-text h2,
 .about-text p,
 .servicios-section h2,
