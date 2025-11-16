@@ -104,11 +104,6 @@ export class ApiService {
     return fd;
   }
 
-  /** --------------- LÓGICA PÚBLICA DE PROYECTOS Y SERVICIOS --------------- */
-
-// Agregar estos métodos en api.service.ts
-// Agregar estos métodos en api.service.ts
-
 getProyectos(): Observable<ProyectoResumen[]> {
   return this.http.get<any[]>(`${this.baseUrl}/api/proyectos`).pipe(
     map((proyectos: any[]) =>
@@ -210,6 +205,8 @@ getDetalleProyecto(id: number): Observable<ProyectoDetalle> {
     })
   );
 }
+
+
 
 
 crearProyecto(proyecto: ProyectoCreate | Proyecto | FormData): Observable<Proyecto> {

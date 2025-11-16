@@ -15,6 +15,7 @@ interface ImagenPreview {
   isNew: boolean;
   file?: File;
   isPrincipal?: boolean;
+  seleccionada?: boolean; // 👈 NUEVO: para marcar/desmarcar
 }
 
 @Component({
@@ -198,6 +199,43 @@ export class ModificarProyectoComponent implements OnInit {
     const totalBytes = this.imagenesNuevas.reduce((total, file) => total + file.size, 0);
     const mb = totalBytes / (1024 * 1024);
     return mb.toFixed(2) + ' MB';
+  }
+
+  // 🆕 Seleccionar todas las imágenes
+  toggleSeleccionarTodas(event: any): void {
+    const seleccionar = event.target.checked;
+    this.imagenesPreviews.forEach(img => img.seleccionada = seleccionar);
+  }
+
+  // 🆕 Obtener el número de imágenes seleccionadas
+  getImagenesSeleccionadas(): number {
+    return this.imagenesPreviews.filter(img => img.seleccionada).length;
+  }
+
+  // 🆕 Eliminar las imágenes seleccionadas
+  eliminarSeleccionadas(): void {
+    // Obtenemos los índices de las imágenes a eliminar
+    const indicesAEliminar = this.imagenesPreviews
+      .map((img, index) => (img.seleccionada ? index : -1))
+      .filter(index => index !== -1);
+
+    // No permitir eliminar si todas las imágenes están seleccionadas
+    if (indicesAEliminar.length === this.imagenesPreviews.length) {
+      this.error = 'No puedes eliminar todas las imágenes del proyecto.';
+      return;
+    }
+    
+    // Eliminamos desde el final para no afectar los índices
+    for (let i = indicesAEliminar.length - 1; i >= 0; i--) {
+      this.marcarParaEliminar(indicesAEliminar[i]);
+    }
+  }
+
+  // 🆕 Alternar la selección de una imagen
+  toggleSeleccion(index: number): void {
+    if (this.imagenesPreviews[index]) {
+      this.imagenesPreviews[index].seleccionada = !this.imagenesPreviews[index].seleccionada;
+    }
   }
 
   onSubmit(): void {

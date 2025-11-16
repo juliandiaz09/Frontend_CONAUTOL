@@ -12,24 +12,11 @@
           type="text"
           formControlName="nombre"
           class="input input-bordered w-full"
-          [class.input-error]="
-            proyectoForm.get('nombre')?.touched &&
-            proyectoForm.get('nombre')?.invalid
-          "
+          [class.input-error]="proyectoForm.get('nombre')?.touched && proyectoForm.get('nombre')?.invalid"
         />
-        <div
-          *ngIf="
-            proyectoForm.get('nombre')?.touched &&
-            proyectoForm.get('nombre')?.invalid
-          "
-          class="text-red-500 text-sm mt-1"
-        >
-          <span *ngIf="proyectoForm.get('nombre')?.errors?.['required']">
-            El nombre es requerido
-          </span>
-          <span *ngIf="proyectoForm.get('nombre')?.errors?.['minlength']">
-            El nombre debe tener al menos 3 caracteres
-          </span>
+        <div *ngIf="proyectoForm.get('nombre')?.touched && proyectoForm.get('nombre')?.invalid" class="text-red-500 text-sm mt-1">
+          <span *ngIf="proyectoForm.get('nombre')?.errors?.['required']">El nombre es requerido</span>
+          <span *ngIf="proyectoForm.get('nombre')?.errors?.['minlength']">El nombre debe tener al menos 3 caracteres</span>
         </div>
       </div>
 
@@ -41,18 +28,9 @@
         <textarea
           formControlName="descripcion"
           class="textarea textarea-bordered h-24"
-          [class.textarea-error]="
-            proyectoForm.get('descripcion')?.touched &&
-            proyectoForm.get('descripcion')?.invalid
-          "
+          [class.textarea-error]="proyectoForm.get('descripcion')?.touched && proyectoForm.get('descripcion')?.invalid"
         ></textarea>
-        <div
-          *ngIf="
-            proyectoForm.get('descripcion')?.touched &&
-            proyectoForm.get('descripcion')?.invalid
-          "
-          class="text-red-500 text-sm mt-1"
-        >
+        <div *ngIf="proyectoForm.get('descripcion')?.touched && proyectoForm.get('descripcion')?.invalid" class="text-red-500 text-sm mt-1">
           La descripción es requerida
         </div>
       </div>
@@ -66,10 +44,7 @@
           type="text"
           formControlName="cliente"
           class="input input-bordered w-full"
-          [class.input-error]="
-            proyectoForm.get('cliente')?.touched &&
-            proyectoForm.get('cliente')?.invalid
-          "
+          [class.input-error]="proyectoForm.get('cliente')?.touched && proyectoForm.get('cliente')?.invalid"
         />
       </div>
 
@@ -123,7 +98,7 @@
         </div>
       </div>
 
-      <!-- 🔥 SECCIÓN DE IMÁGENES -->
+      <!-- 🔥 SECCIÓN DE IMÁGENES CON SELECCIÓN -->
       <div class="form-control">
         <label class="label">
           <span class="label-text font-semibold">Imágenes del Proyecto</span>
@@ -131,40 +106,111 @@
 
         <!-- Imágenes actuales y nuevas -->
         <div *ngIf="imagenesPreviews.length > 0" class="mb-4">
-          <h3 class="font-semibold text-sm mb-2">
-            Imágenes ({{ imagenesPreviews.length }}):
-          </h3>
+          <!-- Header con acciones -->
+          <div class="flex justify-between items-center mb-3">
+            <h3 class="font-semibold text-sm">
+              Imágenes ({{ imagenesPreviews.length }})
+              <span *ngIf="getImagenesSeleccionadas() > 0" class="text-red-600">
+                - {{ getImagenesSeleccionadas() }} seleccionada(s)
+              </span>
+            </h3>
+            
+            <!-- Botones de acción -->
+            <div class="flex gap-2">
+              <button
+                type="button"
+                (click)="toggleSeleccionarTodas(true)"
+                class="btn btn-sm btn-ghost text-xs"
+                *ngIf="imagenesPreviews.length > 1"
+              >
+                Seleccionar todas
+              </button>
+              <button
+                type="button"
+                (click)="toggleSeleccionarTodas(false)"
+                class="btn btn-sm btn-ghost text-xs"
+                *ngIf="getImagenesSeleccionadas() > 0"
+              >
+                Deseleccionar todas
+              </button>
+              <button
+                type="button"
+                (click)="eliminarSeleccionadas()"
+                class="btn btn-sm btn-error text-xs text-white"
+                *ngIf="getImagenesSeleccionadas() > 0"
+              >
+                🗑️ Eliminar {{ getImagenesSeleccionadas() }}
+              </button>
+            </div>
+          </div>
           
+          <!-- Grid de imágenes -->
           <div class="grid grid-cols-3 gap-3">
             <div 
               *ngFor="let img of imagenesPreviews; let i = index" 
               class="relative group"
             >
+              <!-- Checkbox para seleccionar -->
+              <div 
+                *ngIf="!img.isPrincipal"
+                class="absolute top-2 left-2 z-10"
+              >
+                <input
+                  type="checkbox"
+                  [checked]="img.seleccionada"
+                  (change)="toggleSeleccion(i)"
+                  class="checkbox checkbox-sm bg-white"
+                />
+              </div>
+
+              <!-- Imagen -->
               <img 
                 [src]="img.url" 
                 alt="Preview"
-                class="w-full h-24 object-cover rounded border"
-                [class.border-green-500]="img.isNew"
-                [class.border-gray-300]="!img.isNew"
+                class="w-full h-24 object-cover rounded border cursor-pointer transition-all"
+                [class.border-blue-500]="img.isPrincipal"
+                [class.border-4]="img.isPrincipal"
+                [class.border-green-500]="img.isNew && !img.isPrincipal"
+                [class.border-2]="img.isNew && !img.isPrincipal"
+                [class.border-red-500]="img.seleccionada"
+                [class.border-2]="img.seleccionada"
+                [class.opacity-70]="img.seleccionada"
+                [class.border-gray-300]="!img.isNew && !img.isPrincipal && !img.seleccionada"
+                (click)="!img.seleccionada && establecerComoPrincipal(i)"
               >
+              
+              <!-- Badge para principal -->
+              <span 
+                *ngIf="img.isPrincipal" 
+                class="absolute top-1 right-1 bg-blue-500 text-white text-xs px-2 py-1 rounded font-semibold"
+              >
+                ⭐ Principal
+              </span>
               
               <!-- Badge para nuevas -->
               <span 
-                *ngIf="img.isNew" 
-                class="absolute top-1 left-1 bg-green-500 text-white text-xs px-2 py-1 rounded"
+                *ngIf="img.isNew && !img.isPrincipal" 
+                class="absolute bottom-1 left-1 bg-green-500 text-white text-xs px-2 py-1 rounded"
               >
                 Nueva
               </span>
               
-              <!-- Botón eliminar -->
+              <!-- Botón eliminar individual (solo al hover) -->
               <button
                 type="button"
                 (click)="marcarParaEliminar(i)"
                 class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                *ngIf="!img.isPrincipal"
               >
                 ✕
               </button>
             </div>
+          </div>
+          
+          <div class="mt-3 text-xs text-gray-600 space-y-1">
+            <p>💡 <strong>Haz clic</strong> en una imagen para establecerla como principal</p>
+            <p>☑️ <strong>Marca el checkbox</strong> para seleccionar imágenes a eliminar</p>
+            <p>⭐ La imagen principal <strong>no puede ser eliminada</strong> (selecciona otra primero)</p>
           </div>
         </div>
 
@@ -181,31 +227,24 @@
         </span>
 
         <!-- Resumen de cambios -->
-        <div *ngIf="imagenesNuevas.length > 0 || imagenesAEliminar.length > 0" class="mt-3 p-3 bg-blue-50 rounded text-sm">
+        <div *ngIf="imagenesNuevas.length > 0 || imagenesAEliminar.length > 0" class="mt-3 p-3 bg-blue-50 rounded text-sm space-y-1">
           <p *ngIf="imagenesNuevas.length > 0" class="text-green-700">
             ✓ {{ imagenesNuevas.length }} imagen(es) nueva(s) - {{ getTotalFileSize() }}
           </p>
           <p *ngIf="imagenesAEliminar.length > 0" class="text-red-700">
-            ✗ {{ imagenesAEliminar.length }} imagen(es) se eliminará(n)
+            ✗ {{ imagenesAEliminar.length }} imagen(es) se eliminará(n) al guardar
           </p>
         </div>
       </div>
 
       <!-- Error general -->
-      <div
-        *ngIf="error"
-        class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
-      >
+      <div *ngIf="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
         {{ error }}
       </div>
 
       <!-- Acciones -->
       <div class="flex justify-end space-x-2">
-        <button
-          type="button"
-          routerLink="/admin/proyectos"
-          class="btn btn-ghost"
-        >
+        <button type="button" routerLink="/admin/proyectos" class="btn btn-ghost">
           Cancelar
         </button>
         <button
