@@ -38,13 +38,14 @@
               <!-- Categoría -->
               <div class="form-group">
                 <label for="categoria">Categoría</label>
-                <input
-                  type="text"
-                  id="categoria"
-                  formControlName="categoria"
-                  class="form-control"
-                />
+                <select id="categoria" formControlName="categoria" class="form-control">
+                  <option value="">Seleccione una categoría</option>
+                  <option *ngFor="let cat of categoriasDisponibles" [value]="cat">
+                    {{ cat }}
+                  </option>
+                </select>
               </div>
+
             </div>
             <div class="col-md-6">
               <!-- Estado -->
@@ -72,6 +73,7 @@
               class="form-control"
               placeholder="Buscar por nombre..."
             />
+
             <div class="icon-grid mt-3">
               <div
                 *ngFor="let icon of filteredIcons"
@@ -79,12 +81,13 @@
                 (click)="selectIcon(icon)"
                 [class.selected]="servicioForm.get('icono')?.value === icon"
               >
-                <iconify-icon
-                  [icon]="'material-symbols:' + icon"
-                ></iconify-icon>
+                <!-- icon ya es 'material-symbols:home' -->
+                <iconify-icon [icon]="icon" class="icon-preview"></iconify-icon>
                 <span class="icon-name">{{ icon }}</span>
               </div>
             </div>
+
+            <!-- valor real que se envía -->
             <input type="hidden" formControlName="icono" />
           </div>
 

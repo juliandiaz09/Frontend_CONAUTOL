@@ -43,18 +43,43 @@
   </section>
 
   <!-- Servicios Destacados -->
-  <section class="servicios-section">
-    <div class="container">
-      <h2>Nuestros Servicios</h2>
-      <div class="servicios-grid">
-        <div *ngFor="let servicio of serviciosDestacados" class="servicio-card">
-          <span class="material-icons">{{ servicio.icono }}</span>
+<section class="servicios-section">
+  <div class="container">
+    <h2>Nuestros Servicios</h2>
+
+    <div class="carrusel-container">
+      <!-- Botón izquierda -->
+      <button class="arrow-btn left" (click)="scrollServicios('left')">
+        <span class="material-icons">chevron_left</span>
+      </button>
+
+      <!-- Carrusel: mantiene servicios-grid y servicio-card -->
+      <div #serviciosCarrusel class="servicios-grid">
+        <div
+          *ngFor="let servicio of serviciosDestacados"
+          class="servicio-card"
+          (click)="verDetalleServicio(servicio.id)"
+        >
+          <!-- Icono desde BD con Iconify -->
+          <iconify-icon
+            *ngIf="servicio.icono"
+            [icon]="servicio.icono"
+            class="icon-xl"
+          ></iconify-icon>
+
           <h3>{{ servicio.nombre }}</h3>
-          <p>{{ servicio.descripcion }}</p>
+          <p>{{ servicio.descripcionCorta || servicio.descripcion }}</p>
         </div>
       </div>
+
+      <!-- Botón derecha -->
+      <button class="arrow-btn right" (click)="scrollServicios('right')">
+        <span class="material-icons">chevron_right</span>
+      </button>
     </div>
-  </section>
+  </div>
+</section>
+
 
   <!-- Proyectos -->
   <section class="proyectos-section">

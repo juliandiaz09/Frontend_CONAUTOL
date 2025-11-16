@@ -139,6 +139,48 @@
   color: #003366;
 }
 
+/* Contenedor general de filtros */
+.filters-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;                  /* MÁS ESPACIO ENTRE ELEMENTOS */
+  margin-bottom: 2rem;          /* SEPARACIÓN VS. LA GRID DE SERVICIOS */
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Search bar */
+.search-bar {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;                  /* separa el ícono del input */
+  min-width: 250px;             /* evita que se aplaste */
+}
+
+/* Barra de búsqueda input */
+.search-bar input {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+/* Controles de filtro (selects) */
+.filter-controls {
+  display: flex;
+  gap: 1rem;                   /* ← aumenta distancia entre selects */
+  flex-wrap: wrap;
+}
+
+.filter-controls select {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  min-width: 180px;            /* evita que se achiquen demasiado */
+}
+
+
 /* ===== ESTILOS DEL CHATBOT CON BOTÓN DE ACTIVACIÓN ===== */
 
 /* Botón del chatbot */

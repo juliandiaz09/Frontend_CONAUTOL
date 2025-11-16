@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../core/services/api.service';
@@ -9,30 +9,14 @@ import { ApiService } from '../../core/services/api.service';
   imports: [CommonModule],
   templateUrl: './inicio.component.html',
   styleUrls: ['./inicio.component.css'],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA], // 👈 para <iconify-icon>
 })
 export class InicioComponent implements OnInit {
   @ViewChild('proyectosCarrusel') proyectosCarrusel!: ElementRef;
+  @ViewChild('serviciosCarrusel') serviciosCarrusel!: ElementRef; // 👈 nuevo
 
-  serviciosDestacados = [
-    {
-      id: 1,
-      nombre: 'Automatización Industrial',
-      descripcion: 'Soluciones integrales en automatización de procesos',
-      icono: 'settings',
-    },
-    {
-      id: 2,
-      nombre: 'Tableros Eléctricos',
-      descripcion: 'Diseño y fabricación de tableros de control',
-      icono: 'electric_bolt',
-    },
-    {
-      id: 3,
-      nombre: 'Mantenimiento',
-      descripcion: 'Mantenimiento predictivo y correctivo',
-      icono: 'build',
-    },
-  ];
+  serviciosDestacados: any[] = [];
+
   proyectosDestacados: any[] = [];
   cargando = true;
 
@@ -43,7 +27,10 @@ export class InicioComponent implements OnInit {
     this.initializeChatbot();
   }
   
-  cargarDatos() {
+    cargarDatos() {
+    this.cargando = true;
+
+    // Proyectos
     this.apiService.getProyectos().subscribe({
       next: (proyectos) => {
         this.proyectosDestacados = proyectos.slice(0, 6);
@@ -54,7 +41,40 @@ export class InicioComponent implements OnInit {
         this.cargando = false;
       },
     });
+
+    // Servicios destacados
+    this.apiService.getServicios().subscribe({
+      next: (servicios) => {
+        // Puedes filtrar por estado, o tomar los primeros 6
+        this.serviciosDestacados = (servicios || [])
+          .filter((s: any) => s.estado === 'activo')
+          .slice(0, 6);
+      },
+      error: (error) => {
+        console.error('Error al cargar servicios:', error);
+      },
+    });
   }
+
+    scrollServicios(direccion: 'left' | 'right') {
+    const elemento = this.serviciosCarrusel.nativeElement;
+    const scrollAmount = 300;
+    const scrollPos =
+      direccion === 'left'
+        ? elemento.scrollLeft - scrollAmount
+        : elemento.scrollLeft + scrollAmount;
+
+    elemento.scrollTo({
+      left: scrollPos,
+      behavior: 'smooth',
+    });
+  }
+
+    verDetalleServicio(id: number) {
+    this.router.navigate(['/servicios', id]);
+  }
+
+
 
   scrollProyectos(direccion: 'left' | 'right') {
     const elemento = this.proyectosCarrusel.nativeElement;
