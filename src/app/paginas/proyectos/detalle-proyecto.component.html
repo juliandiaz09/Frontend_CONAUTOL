@@ -1,86 +1,192 @@
-<!-- <div *ngIf="isLoading" class="loading">Cargando detalles del proyecto...</div>
-
-<div *ngIf="proyecto" class="detalle-proyecto-container">
-  <div class="info-top">
-    <span>{{ proyecto.nombre }}</span>
-    <span class="info">{{ proyecto.info }}</span>
+<!-- ESTADO: cargando -->
+<div class="detalle-proyecto-page" *ngIf="isLoading">
+  <div class="container">
+    <p>Cargando proyecto...</p>
   </div>
+</div>
 
-  <div class="seccion-principal">
-    <div class="galeria">
-      <div class="imagen-principal">
-        <img [src]="imagenSeleccionada" alt="Imagen principal del proyecto" />
-      </div>
-      <div class="miniaturas">
-        <div
-          class="miniatura"
-          (click)="seleccionarImagen(proyecto.imagenPrincipalUrl || '')"
-        >
-          <img [src]="proyecto.imagenPrincipalUrl" alt="Miniatura 1" />
-        </div>
-        <div
-          *ngFor="let url of proyecto?.imagenesSecundariasUrl || []"
-          class="miniatura"
-          (click)="seleccionarImagen(url)"
-        >
-          <img [src]="url" alt="Miniatura" />
-        </div>
-      </div>
+<!-- ESTADO: proyecto cargado -->
+<div
+  class="detalle-proyecto-page"
+  *ngIf="!isLoading && proyecto; else notFoundTpl"
+>
+  <div class="container">
+    <!-- HEADER: título + cliente -->
+    <div class="detalle-header">
+      <h1 class="detalle-title">{{ proyecto.nombre }}</h1>
+
+      <span
+        *ngIf="proyecto.cliente"
+        class="badge badge-proyecto-cliente"
+      >
+        {{ proyecto.cliente }}
+      </span>
     </div>
 
-    <div class="info-producto">
-      <h1>{{ proyecto.nombre }}</h1>
-
-      <div class="precio-variante">
-        <span class="precio">${{ proyecto.precio | number : "1.2-2" }}</span>
-        <select *ngIf="(proyecto.variantes?.length ?? 0) > 0">
-          <option
-            *ngFor="let variante of proyecto.variantes || []"
-            [value]="variante"
-          >
-            {{ variante }}
-          </option>
-        </select>
-      </div>
-
-      <p class="descripcion-corta">{{ proyecto.descripcion }}</p>
-
-      <button class="btn-contactar" (click)="contactar()">Contactar</button>
-    </div>
-  </div>
-
-  <hr class="separador" />
-
-  <h2 class="titulo-seccion">Más Productos</h2>
-  <div class="productos-relacionados">
+    <!-- GALERÍA -->
     <div
-      *ngFor="let prod of proyecto.productosRelacionados || []"
-      class="tarjeta-producto"
-      (click)="cargarDetalleProyecto(prod.id)"
+      class="detalle-galeria"
+      *ngIf="allImages?.length"
     >
-      <div class="imagen-placeholder">
-        <img [src]="prod.imageUrl" alt="{{ prod.name }}" />
+      <!-- Imagen principal -->
+      <div class="galeria-principal" *ngIf="selectedImage">
+        <img
+          [src]="selectedImage"
+          [alt]="proyecto?.nombre"
+          (click)="openLightbox(selectedImage)"
+        />
       </div>
-      <div class="texto-info">
-        <h3>{{ prod.name }}</h3>
-        <p>{{ prod.info }}</p>
+
+      <!-- Miniaturas -->
+      <div class="galeria-thumbs" *ngIf="allImages.length > 1">
+        <button
+          type="button"
+          class="thumb-btn"
+          *ngFor="let img of allImages"
+          (click)="selectImage(img)"
+          [class.is-active]="img === selectedImage"
+        >
+          <img
+            [src]="img"
+            [alt]="proyecto?.nombre"
+          />
+        </button>
       </div>
     </div>
-  </div>
 
-  <hr class="separador" />
-
-  <h2 class="titulo-seccion">Comentarios</h2>
-  <div class="lista-comentarios">
+    <!-- Lightbox / imagen maximizada -->
     <div
-      *ngFor="let comentario of proyecto.comentarios || []"
-      class="comentario-item"
+      class="lightbox-backdrop"
+      *ngIf="lightboxOpen"
+      (click)="closeLightbox()"
     >
-      <p class="autor-fecha">
-        <strong>{{ comentario.usuario }}</strong>
-        <span>{{ comentario.fecha }}</span>
+      <div
+        class="lightbox-content"
+        (click)="$event.stopPropagation()"
+      >
+        <button
+          type="button"
+          class="lightbox-close"
+          (click)="closeLightbox()"
+        >
+          &times;
+        </button>
+
+        <!-- Botón anterior -->
+        <button
+          type="button"
+          class="lightbox-prev"
+          (click)="prevImage()"
+          *ngIf="allImages.length > 1"
+        >
+          &#10094;
+        </button>
+
+        <!-- Botón siguiente -->
+        <button
+          type="button"
+          class="lightbox-next"
+          (click)="nextImage()"
+          *ngIf="allImages.length > 1"
+        >
+          &#10095;
+        </button>
+
+        <img
+          [src]="lightboxImage || selectedImage"
+          [alt]="proyecto?.nombre"
+        />
+      </div>
+    </div>
+
+    <!-- META: estado + presupuesto en una línea -->
+    <div class="proyecto-meta-row">
+      <span
+        class="badge"
+        [ngClass]="{
+          'badge-activo': proyecto.estado === 'activo',
+          'badge-inactivo': proyecto.estado === 'inactivo',
+          'badge-completado': proyecto.estado === 'completado'
+        }"
+      >
+        {{ proyecto.estado | uppercase }}
+      </span>
+
+      <div
+        class="proyecto-presupuesto"
+        *ngIf="proyecto.presupuesto != null"
+      >
+        <span class="presupuesto-label">Presupuesto</span>
+        <span class="presupuesto-valor">
+          {{ proyecto.presupuesto | currency }}
+        </span>
+      </div>
+    </div>
+
+    <!-- TIMELINE: fechas -->
+    <div
+      class="proyecto-fechas"
+      *ngIf="proyecto.fecha_inicio || proyecto.fecha_fin"
+    >
+      <div class="timeline">
+        <div
+          class="timeline-item"
+          *ngIf="proyecto.fecha_inicio"
+        >
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <span class="timeline-label">Inicio</span>
+            <span class="timeline-date">
+              {{ proyecto.fecha_inicio | date: 'longDate' }}
+            </span>
+          </div>
+        </div>
+
+        <div
+          class="timeline-item"
+          *ngIf="proyecto.fecha_fin"
+        >
+          <div class="timeline-dot timeline-dot-end"></div>
+          <div class="timeline-content">
+            <span class="timeline-label">Fin</span>
+            <span class="timeline-date">
+              {{ proyecto.fecha_fin | date: 'longDate' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DESCRIPCIÓN -->
+    <div class="detalle-section">
+      <h2>Descripción del proyecto</h2>
+      <p class="descripcion">
+        {{
+          proyecto.descripcion
+            || 'Este proyecto aún no tiene una descripción detallada.'
+        }}
       </p>
-      <p class="texto-comentario">{{ comentario.texto }}</p>
+    </div>
+
+    <!-- BOTÓN VOLVER -->
+    <div class="volver-container">
+      <a routerLink="/proyectos" class="btn-primary">
+        &larr; Volver a Proyectos
+      </a>
     </div>
   </div>
-</div> -->
+</div>
+
+<!-- TEMPLATE: proyecto no encontrado -->
+<ng-template #notFoundTpl>
+  <div class="detalle-proyecto-page">
+    <div class="container">
+      <p>Proyecto no encontrado.</p>
+      <div class="volver-container">
+        <a routerLink="/proyectos" class="btn-primary">
+          &larr; Volver a Proyectos
+        </a>
+      </div>
+    </div>
+  </div>
+</ng-template>

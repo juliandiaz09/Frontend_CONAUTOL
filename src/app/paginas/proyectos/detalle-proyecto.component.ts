@@ -1,22 +1,32 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router'; // 👈 AÑADIR RouterModule
+
 import { ApiService } from '../../core/services/api.service';
 import { ProyectoDetalle } from '../../core/models/data.model';
 
 @Component({
   selector: 'app-detalle-proyecto',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './detalle-proyecto.component.html',
   styleUrls: ['./detalle-proyecto.component.css'],
 })
 export class DetalleProyectoComponent implements OnInit {
-  proyecto: ProyectoDetalle | undefined;
-  isLoading: boolean = true;
-  imagenSeleccionada: string = '';
+  proyecto: ProyectoDetalle | null = null;
+  isLoading = true;
 
-  constructor(private route: ActivatedRoute, private apiService: ApiService) {}
+  // 🖼️ Galería
+  allImages: string[] = [];
+  selectedImage: string | null = null;
+  lightboxOpen = false;
+  lightboxImage: string | null = null;
+  currentImageIndex = 0;
+
+  constructor(
+    private route: ActivatedRoute,
+    private apiService: ApiService
+  ) {}
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
@@ -29,10 +39,11 @@ export class DetalleProyectoComponent implements OnInit {
 
   cargarDetalleProyecto(id: number): void {
     this.isLoading = true;
+
     this.apiService.getDetalleProyecto(id).subscribe({
       next: (data: ProyectoDetalle) => {
         this.proyecto = data;
-        this.imagenSeleccionada = data.imagenPrincipalUrl;
+        this.buildImagesFromProyecto(data);
         this.isLoading = false;
       },
       error: (error: any) => {
@@ -42,13 +53,104 @@ export class DetalleProyectoComponent implements OnInit {
     });
   }
 
-  seleccionarImagen(url: string): void {
-    this.imagenSeleccionada = url;
+  // =====================================================
+  // GALERÍA
+  // =====================================================
+
+  private buildImagesFromProyecto(proyecto: ProyectoDetalle): void {
+    const imagenes: string[] = [];
+
+    // array nuevo
+    if (proyecto.imagen_urls?.length) {
+      imagenes.push(...proyecto.imagen_urls);
+    }
+
+    // compatibilidad con una posible imagen principal previa
+    if ((proyecto as any).imagenPrincipalUrl) {
+      imagenes.push((proyecto as any).imagenPrincipalUrl);
+    }
+
+    this.allImages = Array.from(new Set(imagenes));
+
+    if (this.allImages.length) {
+      this.currentImageIndex = 0;
+      this.selectedImage = this.allImages[0];
+    } else {
+      this.currentImageIndex = 0;
+      this.selectedImage = null;
+    }
   }
 
-  contactar(): void {
-    alert(
-      'Acción "Contactar" disparada. Podría redirigir a /contacto o mostrar un modal.'
-    );
+  selectImage(img: string): void {
+    const idx = this.allImages.indexOf(img);
+    if (idx !== -1) {
+      this.currentImageIndex = idx;
+      this.selectedImage = img;
+    }
+  }
+
+  openLightbox(img?: string): void {
+    if (!this.allImages.length) return;
+
+    if (img) {
+      const idx = this.allImages.indexOf(img);
+      if (idx !== -1) {
+        this.currentImageIndex = idx;
+      }
+    } else if (this.selectedImage) {
+      const idx = this.allImages.indexOf(this.selectedImage);
+      if (idx !== -1) {
+        this.currentImageIndex = idx;
+      }
+    }
+
+    this.lightboxImage = this.allImages[this.currentImageIndex];
+    this.lightboxOpen = true;
+  }
+
+  closeLightbox(): void {
+    this.lightboxOpen = false;
+    this.lightboxImage = null;
+  }
+
+  nextImage(): void {
+    if (!this.allImages.length) return;
+
+    this.currentImageIndex =
+      (this.currentImageIndex + 1) % this.allImages.length;
+
+    this.updateSelectedFromIndex();
+  }
+
+  prevImage(): void {
+    if (!this.allImages.length) return;
+
+    this.currentImageIndex =
+      (this.currentImageIndex - 1 + this.allImages.length) %
+      this.allImages.length;
+
+    this.updateSelectedFromIndex();
+  }
+
+  private updateSelectedFromIndex(): void {
+    this.lightboxImage = this.allImages[this.currentImageIndex];
+    this.selectedImage = this.lightboxImage;
+  }
+
+  // =====================================================
+  // NAVEGACIÓN CON TECLADO EN LIGHTBOX
+  // =====================================================
+
+  @HostListener('window:keydown', ['$event'])
+  handleKeyboard(event: KeyboardEvent): void {
+    if (!this.lightboxOpen) return;
+
+    if (event.key === 'Escape') {
+      this.closeLightbox();
+    } else if (event.key === 'ArrowRight') {
+      this.nextImage();
+    } else if (event.key === 'ArrowLeft') {
+      this.prevImage();
+    }
   }
 }
