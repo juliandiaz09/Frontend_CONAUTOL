@@ -71,6 +71,7 @@
             <a [routerLink]="['editar', servicio.id]" class="btn btn-secondary"
               >Editar</a
             >
+            <button (click)="verDetalles(servicio)" class="btn btn-info">Detalles</button>
             <button
               (click)="eliminarServicio(servicio.id)"
               class="btn btn-danger"
@@ -90,3 +91,9 @@
     <p>No se encontraron servicios con los filtros seleccionados.</p>
   </div>
 </div>
+<app-detalles-servicio
+  *ngIf="selectedServicio"
+  [servicio]="selectedServicio"
+  (cerrar)="cerrarDetalles()"
+></app-detalles-servicio>
+

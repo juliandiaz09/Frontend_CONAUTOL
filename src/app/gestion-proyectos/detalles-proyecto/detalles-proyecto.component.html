@@ -1,0 +1,23 @@
+<div class="modal-backdrop" (click)="cerrar.emit()"></div>
+<div class="modal-content">
+  <div class="modal-header">
+    <h2 class="modal-title">Detalles del Proyecto</h2>
+    <button class="modal-close" (click)="cerrar.emit()">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="modal-body" *ngIf="proyecto">
+    <h3>{{ proyecto.nombre }}</h3>
+    <p><strong>Descripción:</strong> {{ proyecto.descripcion }}</p>
+    <p><strong>Cliente:</strong> {{ proyecto.cliente }}</p>
+    <p><strong>Estado:</strong> {{ proyecto.estado }}</p>
+    <p><strong>Fecha de Inicio:</strong> {{ proyecto.fecha_inicio | date:'short' }}</p>
+    <p><strong>Fecha de Fin:</strong> {{ proyecto.fecha_fin | date:'short' }}</p>
+    <p><strong>Presupuesto:</strong> {{ proyecto.presupuesto | currency }}</p>
+    <p><strong>Creado:</strong> {{ proyecto.created_at | date:'short' }}</p>
+    <p><strong>Actualizado:</strong> {{ proyecto.updated_at | date:'short' }}</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-secondary" (click)="cerrar.emit()">Cerrar</button>
+  </div>
+</div>

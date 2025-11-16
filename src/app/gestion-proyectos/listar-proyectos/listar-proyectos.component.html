@@ -73,6 +73,7 @@
         <a [routerLink]="['editar', proyecto.id]" class="btn btn-secondary"
           >Editar</a
         >
+        <button (click)="verDetalles(proyecto)" class="btn btn-info">Detalles</button>
       </div>
     </div>
   </div>
@@ -84,3 +85,9 @@
     <p>No se encontraron proyectos con los filtros seleccionados.</p>
   </div>
 </div>
+
+<app-detalles-proyecto
+  *ngIf="selectedProyecto"
+  [proyecto]="selectedProyecto"
+  (cerrar)="cerrarDetalles()"
+></app-detalles-proyecto>

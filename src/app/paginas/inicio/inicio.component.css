@@ -1,11 +1,24 @@
 /* General Styling & Animations */
-:root {
-  --color-bg-dark: #1a1a2e; /* Dark background for futuristic feel */
-  --color-text-light: #e0e0e0;
-  --color-primary-futuristic: #00bcd4; /* Cyan-like primary */
-  --color-accent-futuristic: #ff4081; /* Pink-like accent */
-  --color-card-bg: #2e2e4a; /* Darker card background */
-  --color-border-futuristic: #4a4a6a;
+/* Variables locales para el componente inicio */
+:host {
+  --color-bg-dark: var(--color-bg);
+  --color-text-light: #17202a; /* Align with global body text color */
+  --color-primary-futuristic: var(--color-primary);
+  --color-accent-futuristic: var(--color-accent);
+  --color-card-bg: var(--color-surface); /* Align with global surface color */
+  --color-border-futuristic: var(--color-muted);
+}
+
+/* Asegurar que todo el componente use el tema oscuro */
+:host {
+  display: block;
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-light);
+}
+
+.inicio-container {
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-light);
 }
 
 body {
@@ -82,26 +95,9 @@ h2::after {
   align-items: center;
   justify-content: center;
   text-align: center;
-  color: var(--color-text-light); /* Explicitly set hero text to light */
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, var(--color-bg-dark) 0%, #0f0f1a 100%);
-}
-
-.hero-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: url('https://www.transparenttextures.com/patterns/stardust.png'); /* Example futuristic texture */
-  opacity: 0.1;
-  animation: backgroundPan 60s linear infinite;
-}
-
-@keyframes backgroundPan {
-  from { background-position: 0% 0%; }
-  to { background-position: 100% 100%; }
+  background-color: hwb(31 76% 15%);
 }
 
 .hero-content {
@@ -114,9 +110,7 @@ h2::after {
   font-size: 4rem;
   margin-bottom: 1.5rem;
   line-height: 1.2;
-  background: linear-gradient(90deg, var(--color-primary-futuristic), var(--color-accent-futuristic));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--color-primary);
 }
 
 .hero-content p {
@@ -140,7 +134,7 @@ h2::after {
 
 .hero-buttons .btn-primary {
   background: var(--color-primary-futuristic);
-  color: var(--color-bg-dark); /* button text dark for light background */
+  color: var(--color-surface); /* button text white for primary background */
   border: none;
 }
 
@@ -152,13 +146,13 @@ h2::after {
 
 .hero-buttons .btn-secondary {
   background: transparent;
-  color: var(--color-primary-futuristic);
+  color: var(--color-primary);
   border: 2px solid var(--color-primary-futuristic);
 }
 
 .hero-buttons .btn-secondary:hover {
   background: var(--color-primary-futuristic);
-  color: var(--color-bg-dark); /* button text dark for light hover background */
+  color: var(--color-surface); /* button text white for primary hover background */
   transform: translateY(-3px);
   box-shadow: 0 8px 20px rgba(0, 200, 220, 0.3);
 }
@@ -223,9 +217,17 @@ h2::after {
 }
 
 .servicios-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  display: flex;
   gap: 30px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 20px 0; /* Add padding similar to proyectos-carrusel */
+}
+
+.servicios-grid::-webkit-scrollbar {
+  display: none;
 }
 
 .servicio-card {
@@ -445,8 +447,8 @@ h2::after {
 
 /* CTA Section */
 .cta-section {
-  background: linear-gradient(45deg, var(--color-primary-futuristic) 0%, var(--color-accent-futuristic) 100%);
-  color: white; /* Ensure text is white against gradient */
+  background-color: var(--color-primary);
+  color: var(--color-surface); /* Ensure text is white against gradient */
   padding: 100px 0;
   text-align: center;
 }
@@ -454,11 +456,11 @@ h2::after {
 .cta-section h2 {
   font-size: 3rem;
   margin-bottom: 1.5rem;
-  color: white;
+  color: var(--color-surface);
 }
 
 .cta-section h2::after {
-  background: white;
+  background: var(--color-surface);
 }
 
 .cta-section p {
@@ -468,13 +470,13 @@ h2::after {
 }
 
 .cta-section .btn-primary {
-  background: white;
-  color: var(--color-bg-dark); /* button text dark for light background */
+  background: var(--color-accent);
+  color: var(--color-surface); /* button text white for accent background */
 }
 
 .cta-section .btn-primary:hover {
-  background: var(--color-bg-dark);
-  color: white;
+  background:#fdf4d9;
+  color: var(--color-surface);
   box-shadow: 0 8px 20px rgba(255, 255, 255, 0.3);
 }
 
@@ -578,7 +580,7 @@ h2::after {
   right: 30px;
   width: 70px;
   height: 70px;
-  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, #0a3a63 100%);
   border: none;
   border-radius: 50%;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
@@ -609,7 +611,7 @@ h2::after {
 
 /* Estados del botón */
 #chatbot-toggle.chatbot-active {
-  background: linear-gradient(135deg, #ff6b35 0%, #e55a2b 100%);
+  background: linear-gradient(135deg, var(--color-accent) 0%, #e55a2b 100%);
 }
 
 #chatbot-toggle.chatbot-active .chatbot-icon {
@@ -682,16 +684,47 @@ h2::after {
 /* Animación de pulso para el botón cuando hay mensajes nuevos */
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.7);
+    box-shadow: 0 0 0 0 rgba(var(--color-accent), 0.7);
   }
   70% {
-    box-shadow: 0 0 0 10px rgba(255, 107, 53, 0);
+    box-shadow: 0 0 0 10px rgba(var(--color-accent), 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(255, 107, 53, 0);
+    box-shadow: 0 0 0 0 rgba(var(--color-accent), 0);
   }
 }
 
 #chatbot-toggle.has-notification {
   animation: pulse 2s infinite;
+}
+
+.about-preview-section,
+.servicios-section,
+.proyectos-section,
+.testimonios-section {
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-light);
+}
+
+/* Asegurar que el texto sea visible */
+.hero-content h1,
+.hero-content p,
+.about-text h2,
+.about-text p,
+.servicios-section h2,
+.proyectos-section h2,
+.testimonios-section h2,{
+  color: var(--color-text-light) !important;
+}
+
+/* Botones específicos para el tema oscuro */
+.hero-buttons .btn-secondary {
+  background: transparent;
+  color: var(--color-primary-futuristic) !important;
+  border: 2px solid var(--color-primary-futuristic) !important;
+}
+
+.hero-buttons .btn-secondary:hover {
+  background: var(--color-primary-futuristic) !important;
+  color: var(--color-bg-dark) !important;
 }
