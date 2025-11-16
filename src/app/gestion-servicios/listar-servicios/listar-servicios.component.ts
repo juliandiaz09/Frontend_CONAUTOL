@@ -3,12 +3,14 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { ServicioResumen } from '../../core/models/data.model';
+import { Servicio } from '../../core/models/servicio.model';
 import { BackButtonComponent } from '../../shared/back-button/back-button.component';
+import { DetallesServicioComponent } from '../detalles-servicio/detalles-servicio.component';
 
 @Component({
   selector: 'app-listar-servicios',
   standalone: true,
-  imports: [CommonModule, RouterModule, BackButtonComponent],
+  imports: [CommonModule, RouterModule, BackButtonComponent, DetallesServicioComponent],
   templateUrl: './listar-servicios.component.html',
   styleUrls: ['./listar-servicios.component.css', '../../shared/styles/filters.css'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA], // 👈 para <iconify-icon>
@@ -19,6 +21,7 @@ export class ListarServiciosComponent implements OnInit {
   categorias: string[] = [];
   isLoading = false;
   error: string | null = null;
+  selectedServicio: Servicio | null = null;
 
   private searchTerm = '';
   private categoryFilter = '';
@@ -59,6 +62,21 @@ export class ListarServiciosComponent implements OnInit {
         },
       });
     }
+  }
+
+  verDetalles(servicioResumen: ServicioResumen): void {
+    this.api.getServicio(servicioResumen.id).subscribe({
+      next: (servicioCompleto) => {
+        this.selectedServicio = servicioCompleto;
+      },
+      error: (err) => {
+        this.error = 'Error al cargar los detalles del servicio.';
+      }
+    });
+  }
+
+  cerrarDetalles(): void {
+    this.selectedServicio = null;
   }
 
   onSearch(event: Event): void {

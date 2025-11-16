@@ -1,0 +1,25 @@
+<div class="modal-backdrop" (click)="cerrar.emit()"></div>
+<div class="modal-content">
+  <div class="modal-header">
+    <h2 class="modal-title">Detalles del Servicio</h2>
+    <button class="modal-close" (click)="cerrar.emit()">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="modal-body" *ngIf="servicio">
+    <h3>{{ servicio.nombre }}</h3>
+    <p><strong>Descripción:</strong> {{ servicio.descripcion }}</p>
+    <p><strong>Categoría:</strong> {{ servicio.categoria }}</p>
+    <p><strong>Activo:</strong> {{ servicio.activo ? 'Sí' : 'No' }}</p>
+    <p><strong>Icono:</strong> <i [class]="'fas ' + servicio.icono"></i></p>
+    <div *ngIf="servicio.caracteristicas && servicio.caracteristicas.length > 0">
+      <strong>Características:</strong>
+      <ul>
+        <li *ngFor="let caracteristica of servicio.caracteristicas">{{ caracteristica }}</li>
+      </ul>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-secondary" (click)="cerrar.emit()">Cerrar</button>
+  </div>
+</div>

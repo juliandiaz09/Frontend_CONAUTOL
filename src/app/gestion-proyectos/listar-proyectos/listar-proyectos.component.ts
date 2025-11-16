@@ -4,11 +4,12 @@ import { RouterModule } from '@angular/router';
 import { ApiService } from '../../core/services/api.service';
 import { Proyecto } from '../../core/models/proyecto.model';
 import { BackButtonComponent } from '../../shared/back-button/back-button.component';
+import { DetallesProyectoComponent } from '../detalles-proyecto/detalles-proyecto.component';
 
 @Component({
   selector: 'app-listar-proyectos',
   standalone: true,
-  imports: [CommonModule, RouterModule, BackButtonComponent],
+  imports: [CommonModule, RouterModule, BackButtonComponent, DetallesProyectoComponent],
   templateUrl: './listar-proyectos.component.html',
   styleUrls: ['./listar-proyectos.component.css', '../../shared/styles/filters.css'],
 })
@@ -17,6 +18,7 @@ export class ListarProyectosComponent implements OnInit {
   filteredProyectos: Proyecto[] = [];
   isLoading = false;
   error: string | null = null;
+  selectedProyecto: Proyecto | null = null;
 
   private searchTerm = '';
   private statusFilter = '';
@@ -55,6 +57,21 @@ export class ListarProyectosComponent implements OnInit {
         },
       });
     }
+  }
+
+  verDetalles(proyecto: Proyecto): void {
+    this.api.getProyecto(proyecto.id).subscribe({
+      next: (proyectoCompleto) => {
+        this.selectedProyecto = proyectoCompleto;
+      },
+      error: (err) => {
+        this.error = 'Error al cargar los detalles del proyecto.';
+      }
+    });
+  }
+
+  cerrarDetalles(): void {
+    this.selectedProyecto = null;
   }
 
   onSearch(event: Event): void {
