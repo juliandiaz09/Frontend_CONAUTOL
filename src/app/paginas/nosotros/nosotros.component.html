@@ -38,14 +38,17 @@
     </div>
   </section>
 
-  <!-- Valores Section -->
   <section class="valores-section">
     <div class="container">
       <h2>Nuestros Valores</h2>
       <div class="valores-grid">
         <div *ngFor="let valor of valores" class="valor-card">
           <div class="valor-icono">
-            <span class="material-icons">{{ valor.icono }}</span>
+            <iconify-icon
+              *ngIf="valor.icono"
+              [icon]="valor.icono"
+              class="valor-icono-icon"
+            ></iconify-icon>
           </div>
           <h3>{{ valor.titulo }}</h3>
           <p>{{ valor.descripcion }}</p>

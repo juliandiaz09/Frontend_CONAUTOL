@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA  } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {RouterModule } from '@angular/router'; // 👈 AÑADIR RouterModule
 
@@ -9,6 +9,7 @@ import {RouterModule } from '@angular/router'; // 👈 AÑADIR RouterModule
   imports: [CommonModule,RouterModule],
   templateUrl: './nosotros.component.html',
   styleUrls: ['./nosotros.component.css'],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA], // 👈 IMPORTANTE
 })
 export class NosotrosComponent {
   valores = [
@@ -16,19 +17,19 @@ export class NosotrosComponent {
       titulo: 'Calidad',
       descripcion:
         'Trabajamos con los más altos estándares de calidad en todos nuestros proyectos.',
-      icono: 'verified',
+      icono: 'mdi:shield-check', // ✅ nombre Iconify
     },
     {
       titulo: 'Innovación',
       descripcion:
         'Implementamos las últimas tecnologías y metodologías en soluciones electromecánicas.',
-      icono: 'innovation',
+      icono: 'mdi:lightbulb-on-outline', // ✅ ejemplo Iconify
     },
     {
       titulo: 'Compromiso',
       descripcion:
         'Nos comprometemos con el éxito de cada proyecto y la satisfacción de nuestros clientes.',
-      icono: 'commitment',
+      icono: 'mdi:handshake', // ✅ ejemplo Iconify
     },
   ];
 

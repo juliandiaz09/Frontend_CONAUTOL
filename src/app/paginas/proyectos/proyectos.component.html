@@ -6,48 +6,51 @@
 </section>
 
 <section class="proyectos-seccion">
-  <div class="filters-container">
-    <div class="search-bar">
-      <input
-        type="text"
-        placeholder="Buscar por nombre o cliente..."
-        (input)="onSearch($event)"
-      />
-      <i class="fas fa-search"></i>
+  <div class="container">
+    <div class="filters-container">
+      <div class="search-bar">
+        <input
+          type="text"
+          placeholder="Buscar por nombre o cliente..."
+          (input)="onSearch($event)"
+        />
+        <i class="fas fa-search"></i>
+      </div>
+      <div class="filter-controls">
+        <select (change)="onStatusChange($event)">
+          <option value="">Todos los estados</option>
+          <option value="activo">Activo</option>
+          <option value="inactivo">Inactivo</option>
+          <option value="completado">Completado</option>
+        </select>
+      </div>
     </div>
-    <div class="filter-controls">
-      <select (change)="onStatusChange($event)">
-        <option value="">Todos los estados</option>
-        <option value="activo">Activo</option>
-        <option value="inactivo">Inactivo</option>
-        <option value="completado">Completado</option>
-      </select>
-    </div>
-  </div>
 
-  <div class="proyectos-grid">
+    <div class="proyectos-grid">
+      <div
+        *ngFor="let proyecto of filteredProyectos"
+        class="tarjeta-proyecto"
+        (click)="verDetalle(proyecto.id)"
+      >
+        <div class="imagen-placeholder">
+          <img [src]="proyecto.imagenUrl" alt="{{ proyecto.nombre }}" />
+        </div>
+        <div class="texto-info">
+          <h3>{{ proyecto.nombre }}</h3>
+          <p>{{ proyecto.descripcionCorta }}</p>
+        </div>
+      </div>
+    </div>
+
     <div
-      *ngFor="let proyecto of filteredProyectos"
-      class="tarjeta-proyecto"
-      (click)="verDetalle(proyecto.id)"
+      *ngIf="!isLoading && filteredProyectos.length === 0"
+      class="empty-state"
     >
-      <div class="imagen-placeholder">
-        <img [src]="proyecto.imagenUrl" alt="{{ proyecto.nombre }}" />
-      </div>
-      <div class="texto-info">
-        <h3>{{ proyecto.nombre }}</h3>
-        <p>{{ proyecto.descripcionCorta }}</p>
-      </div>
+      <p>No se encontraron proyectos con los filtros seleccionados.</p>
     </div>
-  </div>
-
-  <div
-    *ngIf="!isLoading && filteredProyectos.length === 0"
-    class="empty-state"
-  >
-    <p>No se encontraron proyectos con los filtros seleccionados.</p>
   </div>
 </section>
+
 
 <!-- AGREGAR ESTO AL FINAL DEL BODY -->
 <button id="chatbot-toggle" class="chatbot-toggle-hidden">
