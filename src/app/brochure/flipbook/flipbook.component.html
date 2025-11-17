@@ -1,5 +1,6 @@
 <div class="flipbook-container">
   <ngx-extended-pdf-viewer 
+    *ngIf="brochureUrl"      
     [src]="brochureUrl"
     [textLayer]="true"
     [showHandToolButton]="true"
@@ -14,6 +15,7 @@
     height="90vh">
   </ngx-extended-pdf-viewer>
 </div>
+
 
 <!-- Botón del chatbot -->
 <button id="chatbot-toggle" 

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
+import { PdfService } from '../../pdf.service';
 
 @Component({
   selector: 'app-flipbook',
@@ -10,13 +11,20 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
   styleUrls: ['./flipbook.component.css'],
 })
 export class FlipbookComponent implements OnInit {
-  brochureUrl: string = 'assets/Brochure_servicios_CONAUTOL.pdf';
+  
+  brochureUrl: string | null = null;
   isChatbotVisible = false;
 
-  ngOnInit() {
-    // Inicializar el chatbot como oculto
-    this.isChatbotVisible = false;
-  }
+  constructor(private pdfService: PdfService) {}
+
+async ngOnInit() {
+  this.isChatbotVisible = false;
+
+  this.brochureUrl = await this.pdfService.getPublicPdfUrl(
+    'Brochure_servicios_CONAUTOL.pdf'
+  );
+}
+
 
   toggleChatbot() {
     this.isChatbotVisible = !this.isChatbotVisible;
