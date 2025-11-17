@@ -16,6 +16,7 @@ export class InicioComponent implements OnInit {
   @ViewChild('proyectosCarrusel') proyectosCarrusel!: ElementRef;
   @ViewChild('serviciosCarrusel') serviciosCarrusel!: ElementRef; // 👈 nuevo
   imageUrl: string = '';
+  imageAboutUs: string = '';
 
   serviciosDestacados: any[] = [];
 
@@ -27,10 +28,15 @@ export class InicioComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.cargarDatos();
     this.initializeChatbot();
-        this.imageUrl = await this.storage.getPublicUrl(
+      this.imageUrl = await this.storage.getPublicUrl(
       'Imagenes',
       'soluciones-integrales-eds.jpg'    
     );
+    this.imageAboutUs = await this.storage.getPublicUrl(
+      'Imagenes',
+      'about-us-conautol.jpg'    
+    );
+    console.log("👉 URL AboutUs generada:", this.imageAboutUs);
   }
   
     cargarDatos() {

@@ -44,3 +44,15 @@
     gap: 18px;
   }
 }
+
+.footer-col ul li a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.footer-col ul li a i {
+  font-size: 20px;
+}

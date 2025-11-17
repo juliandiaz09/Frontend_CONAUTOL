@@ -733,6 +733,16 @@ h2::after {
   }
 }
 
+.about-image {
+  width: 100%;
+  height: 350px; /* Puedes ajustar */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 12px;
+}
+
+
 /* Chatbot styles (keep existing) */
 /* ===== ESTILOS DEL CHATBOT CON BOTÓN DE ACTIVACIÓN ===== */
 
