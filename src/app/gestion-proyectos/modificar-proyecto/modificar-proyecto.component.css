@@ -88,7 +88,7 @@
   text-decoration: none;
 }
 
-.btn-primary {
+:host .btn-primary {
   background: linear-gradient(135deg, #0f4c81 0%, #1a6ca8 100%);
   color: white;
 }

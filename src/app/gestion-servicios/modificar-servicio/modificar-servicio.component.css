@@ -60,14 +60,15 @@ label {
   font-weight: 500;
 }
 
-.btn-primary {
+:host .btn-primary {
   background-color: var(--color-primary); /* Use primary color */
   border-color: var(--color-primary);
+  color: white;
 }
 
-.btn-primary:hover {
-  background-color: darken(var(--color-primary), 5%); /* Darken on hover */
-  border-color: darken(var(--color-primary), 5%);
+:host .btn-primary:hover {
+  background-color: #0c3b61; /* Darker shade of --color-primary */
+  border-color: #0c3b61;
 }
 
 .btn-secondary {
