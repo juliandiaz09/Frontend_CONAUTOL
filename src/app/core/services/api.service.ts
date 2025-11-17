@@ -105,10 +105,9 @@ export class ApiService {
   }
 
 getProyectos(): Observable<ProyectoResumen[]> {
-  return this.http.get<any[]>(`${this.baseUrl}/api/proyectos`).pipe(
+  return this.http.get<any[]>(`${this.baseUrl}/api/proyectos/`).pipe(
     map((proyectos: any[]) =>
       proyectos.map((p): ProyectoResumen => {
-        console.log('📦 Proyecto raw:', p);
         
         // 🔥 Parsear imagen_urls si es string JSON
         let imagenesArray: string[] = [];
@@ -129,12 +128,7 @@ getProyectos(): Observable<ProyectoResumen[]> {
         // 🔥 La primera imagen SIEMPRE es la principal
         const imagenPrincipal = imagenesArray[0] || '';
         
-        console.log('✅ Proyecto procesado:', {
-          id: p.id,
-          nombre: p.nombre,
-          imagenPrincipal,
-          totalImagenes: imagenesArray.length
-        });
+
         
         return {
           id: p.id ?? 0,
@@ -156,7 +150,6 @@ getProyectos(): Observable<ProyectoResumen[]> {
 getProyecto(id: number): Observable<Proyecto> {
   return this.http.get<any>(`${this.baseUrl}/api/proyectos/${id}`).pipe(
     map((p: any) => {
-      console.log('🔍 Raw proyecto desde API:', p);
       
       // 🔥 Parsear imagen_urls si es string
       let imagenesArray: string[] = [];
@@ -174,14 +167,12 @@ getProyecto(id: number): Observable<Proyecto> {
         }
       }
       
-      console.log('✅ Imágenes parseadas:', imagenesArray);
       
       const resultado = {
         ...p,
         imagen_urls: imagenesArray
       };
       
-      console.log('📤 Proyecto mapeado:', resultado);
       return resultado;
     }),
     catchError((error: any) => {
@@ -260,10 +251,9 @@ actualizarProyecto(id: number, proyecto: ProyectoUpdate | FormData): Observable<
 
   // Servicios
 getServicios(): Observable<ServicioResumen[]> {
-  return this.http.get<any[]>(`${this.baseUrl}/api/servicios`).pipe(
+  return this.http.get<any[]>(`${this.baseUrl}/api/servicios/`).pipe(
     map((servicios: any[]) =>
       servicios.map((s): ServicioResumen => {
-        console.log('📦 Servicio raw:', s);
         
         // 🔥 Parsear imagen_urls si es string JSON
         let imagenesArray: string[] = [];
@@ -289,12 +279,7 @@ getServicios(): Observable<ServicioResumen[]> {
         // 🔥 La primera imagen SIEMPRE es la principal
         const imagenPrincipal = imagenesArray[0] || '';
         
-        console.log('✅ Servicio procesado:', {
-          id: s.id,
-          nombre: s.nombre,
-          imagenPrincipal,
-          totalImagenes: imagenesArray.length
-        });
+
         
         return {
           id: s.id ?? 0,
@@ -323,7 +308,6 @@ getServicios(): Observable<ServicioResumen[]> {
 getServicio(id: number): Observable<Servicio> {
   return this.http.get<any>(`${this.baseUrl}/api/servicios/${id}`).pipe(
     map((s: any) => {
-      console.log('🔍 Raw servicio desde API:', s);
       
       // 🔥 Parsear imagen_urls si es string
       let imagenesArray: string[] = [];
@@ -346,7 +330,6 @@ getServicio(id: number): Observable<Servicio> {
         imagenesArray = [s.imagen_url];
       }
       
-      console.log('✅ Imágenes parseadas:', imagenesArray);
       
       const resultado = {
         ...s,
@@ -354,7 +337,6 @@ getServicio(id: number): Observable<Servicio> {
         imagenUrl: imagenesArray[0] || s.imagen_url || ''
       };
       
-      console.log('📤 Servicio mapeado:', resultado);
       return resultado;
     }),
     catchError((error: any) => {
@@ -411,7 +393,6 @@ getServicio(id: number): Observable<Servicio> {
       catchError((err) => {
         if (err && err.status === 404) {
           console.warn('Contacto endpoint no encontrado en backend, usando fallback mock.');
-          console.log('Datos de contacto enviados (MOCK):', data);
           return of({ success: true });
         }
         console.error('Error al enviar contacto:', err);
@@ -445,7 +426,6 @@ getServicio(id: number): Observable<Servicio> {
       .pipe(
         catchError((err) => {
           console.warn('recoverPassword endpoint no disponible, usando fallback mock.');
-          console.log('Solicitada recuperación de contraseña para:', email);
           return of({ success: true, message: 'Email de recuperación enviado (mock).' });
         })
       );
