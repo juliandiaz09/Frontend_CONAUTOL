@@ -4,11 +4,11 @@ import { supabase } from './supabase';
 @Injectable({
   providedIn: 'root',
 })
-export class PdfService {
-  async getPublicPdfUrl(path: string): Promise<string | null> {
-    // Para bucket público basta con:
+export class StorageService {
+
+  async getPublicUrl(bucket: string, path: string): Promise<string> {
     const { data } = supabase.storage
-      .from('documents')
+      .from(bucket)
       .getPublicUrl(path);
 
     return data.publicUrl;

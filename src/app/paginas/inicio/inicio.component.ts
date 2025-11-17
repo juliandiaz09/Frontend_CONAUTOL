@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, CUSTOM_ELEMENTS_SCHEMA } from
 import { Router, RouterModule  } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../core/services/api.service';
+import { StorageService } from '../../storage.service';
 
 @Component({
   selector: 'app-inicio',
@@ -14,17 +15,22 @@ import { ApiService } from '../../core/services/api.service';
 export class InicioComponent implements OnInit {
   @ViewChild('proyectosCarrusel') proyectosCarrusel!: ElementRef;
   @ViewChild('serviciosCarrusel') serviciosCarrusel!: ElementRef; // 👈 nuevo
+  imageUrl: string = '';
 
   serviciosDestacados: any[] = [];
 
   proyectosDestacados: any[] = [];
   cargando = true;
 
-  constructor(private router: Router, private apiService: ApiService) {}
+  constructor(private router: Router, private apiService: ApiService,private storage: StorageService) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.cargarDatos();
     this.initializeChatbot();
+        this.imageUrl = await this.storage.getPublicUrl(
+      'Imagenes',
+      'soluciones-integrales-eds.jpg'    
+    );
   }
   
     cargarDatos() {

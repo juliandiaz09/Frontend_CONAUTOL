@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
+import { StorageService } from '../../storage.service';
 
 @Component({
   selector: 'app-header',
@@ -10,8 +11,16 @@ import { Router, RouterModule } from '@angular/router';
 })
 export class HeaderComponent {
   isMenuOpen = false;
+  logoUrl: string = '';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router,private storage: StorageService) {}
+
+    async ngOnInit() {
+    this.logoUrl = await this.storage.getPublicUrl(
+      'Imagenes',
+      'conautol_logo.png'    
+    );
+  }
 
   toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;
