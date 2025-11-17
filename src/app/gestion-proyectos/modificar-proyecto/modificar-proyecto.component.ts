@@ -15,7 +15,7 @@ interface ImagenPreview {
   isNew: boolean;
   file?: File;
   isPrincipal?: boolean;
-  seleccionada?: boolean; // 👈 NUEVO: para marcar/desmarcar
+  seleccionada?: boolean;
 }
 
 @Component({
@@ -35,7 +35,7 @@ export class ModificarProyectoComponent implements OnInit {
   imagenesNuevas: File[] = [];
   imagenesAEliminar: string[] = [];
   imagenesPreviews: ImagenPreview[] = [];
-  indicePrincipal: number = 0; // 👈 Índice en lugar de URL
+  indicePrincipal: number = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -81,18 +81,17 @@ export class ModificarProyectoComponent implements OnInit {
           fecha_fin: fechaFin,
         });
 
-        // 🔥 Cargar imágenes existentes (solo imagen_urls)
+        // 🔥 Cargar imágenes existentes
         const imagenesExistentes = proyecto.imagen_urls || [];
         
         console.log('✅ Imágenes existentes:', imagenesExistentes);
         
-        // La primera siempre es la principal
         this.indicePrincipal = 0;
         
         this.imagenesPreviews = imagenesExistentes.map((url, index) => ({
           url,
           isNew: false,
-          isPrincipal: index === 0 // 👈 La primera es principal
+          isPrincipal: index === 0
         }));
         
         console.log('✅ Previews generados:', this.imagenesPreviews.length);
@@ -148,21 +147,18 @@ export class ModificarProyectoComponent implements OnInit {
   marcarParaEliminar(index: number): void {
     const imagen = this.imagenesPreviews[index];
     
-    // No permitir eliminar si es la única imagen
     if (this.imagenesPreviews.length === 1) {
       this.error = 'No puedes eliminar la única imagen del proyecto';
       return;
     }
     
     if (imagen.isNew) {
-      // Es una imagen nueva: remover del array de nuevas
       const fileIndex = this.imagenesNuevas.findIndex(f => f === imagen.file);
       if (fileIndex !== -1) {
         this.imagenesNuevas.splice(fileIndex, 1);
       }
       this.imagenesPreviews.splice(index, 1);
     } else {
-      // Es una imagen existente: marcar para eliminar
       if (!this.imagenesAEliminar.includes(imagen.url)) {
         this.imagenesAEliminar.push(imagen.url);
       }
@@ -170,24 +166,19 @@ export class ModificarProyectoComponent implements OnInit {
       this.imagenesPreviews.splice(index, 1);
     }
     
-    // Si eliminamos la principal, hacer que la primera restante sea principal
     if (index === this.indicePrincipal) {
       this.indicePrincipal = 0;
       if (this.imagenesPreviews.length > 0) {
         this.imagenesPreviews[0].isPrincipal = true;
       }
     } else if (index < this.indicePrincipal) {
-      // Si eliminamos una imagen antes de la principal, ajustar índice
       this.indicePrincipal--;
     }
   }
 
-  // 🔥 Establecer imagen principal (guarda índice)
+  // 🔥 Establecer imagen principal
   establecerComoPrincipal(index: number): void {
-    // Quitar marca de todas
     this.imagenesPreviews.forEach(img => img.isPrincipal = false);
-    
-    // Marcar la seleccionada
     this.imagenesPreviews[index].isPrincipal = true;
     this.indicePrincipal = index;
     
@@ -201,39 +192,39 @@ export class ModificarProyectoComponent implements OnInit {
     return mb.toFixed(2) + ' MB';
   }
 
-  // 🆕 Seleccionar todas las imágenes
-  toggleSeleccionarTodas(event: any): void {
-    const seleccionar = event.target.checked;
-    this.imagenesPreviews.forEach(img => img.seleccionada = seleccionar);
+  // 🔥 Seleccionar/deseleccionar todas (CORREGIDO: recibe boolean directamente)
+  toggleSeleccionarTodas(seleccionar: boolean): void {
+    this.imagenesPreviews.forEach(img => {
+      if (!img.isPrincipal) {
+        img.seleccionada = seleccionar;
+      }
+    });
   }
 
-  // 🆕 Obtener el número de imágenes seleccionadas
+  // 🔥 Obtener el número de imágenes seleccionadas
   getImagenesSeleccionadas(): number {
     return this.imagenesPreviews.filter(img => img.seleccionada).length;
   }
 
-  // 🆕 Eliminar las imágenes seleccionadas
+  // 🔥 Eliminar las imágenes seleccionadas
   eliminarSeleccionadas(): void {
-    // Obtenemos los índices de las imágenes a eliminar
     const indicesAEliminar = this.imagenesPreviews
       .map((img, index) => (img.seleccionada ? index : -1))
       .filter(index => index !== -1);
 
-    // No permitir eliminar si todas las imágenes están seleccionadas
     if (indicesAEliminar.length === this.imagenesPreviews.length) {
       this.error = 'No puedes eliminar todas las imágenes del proyecto.';
       return;
     }
     
-    // Eliminamos desde el final para no afectar los índices
     for (let i = indicesAEliminar.length - 1; i >= 0; i--) {
       this.marcarParaEliminar(indicesAEliminar[i]);
     }
   }
 
-  // 🆕 Alternar la selección de una imagen
+  // 🔥 Alternar la selección de una imagen
   toggleSeleccion(index: number): void {
-    if (this.imagenesPreviews[index]) {
+    if (this.imagenesPreviews[index] && !this.imagenesPreviews[index].isPrincipal) {
       this.imagenesPreviews[index].seleccionada = !this.imagenesPreviews[index].seleccionada;
     }
   }
@@ -258,7 +249,7 @@ export class ModificarProyectoComponent implements OnInit {
       fecha_inicio: v.fecha_inicio || null,
       fecha_fin: v.fecha_fin || null,
       imagenes_a_eliminar: this.imagenesAEliminar,
-      indice_imagen_principal: this.indicePrincipal, // 👈 Enviamos índice
+      indice_imagen_principal: this.indicePrincipal,
     };
 
     const fd = new FormData();

@@ -12,6 +12,14 @@ import { ApiService } from '../../core/services/api.service';
 
 import { BackButtonComponent } from '../../shared/back-button/back-button.component';
 
+interface ImagenPreview {
+  url: string;
+  isNew: boolean;
+  file?: File;
+  isPrincipal?: boolean;
+  seleccionada?: boolean;
+}
+
 @Component({
   selector: 'app-crear-proyecto',
   standalone: true,
@@ -23,8 +31,11 @@ export class CrearProyectoComponent {
   proyectoForm: FormGroup;
   isSubmitting = false;
   error: string | null = null;
-  files: File[] = []; // Cambiar de File a File[]
-  selectedFiles: { name: string; size: number; preview?: string }[] = []; // Para mostrar preview
+  
+  // 🔥 Sistema de imágenes igual que modificar
+  imagenesNuevas: File[] = [];
+  imagenesPreviews: ImagenPreview[] = [];
+  indicePrincipal: number = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -39,73 +50,129 @@ export class CrearProyectoComponent {
       presupuesto: [null, [Validators.min(0)]],
       fecha_inicio: [null],
       fecha_fin: [null],
-      // Eliminamos imagen_url ya que ahora manejamos múltiples imágenes
     });
   }
 
+  // 🔥 Manejar selección de nuevas imágenes
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     
     if (input.files && input.files.length > 0) {
       const newFiles = Array.from(input.files);
       
-      // Validar tipos de archivo
-      const validFiles = newFiles.filter(file => 
-        file.type.startsWith('image/')
-      );
+      const validFiles = newFiles.filter(file => file.type.startsWith('image/'));
       
       if (validFiles.length !== newFiles.length) {
         this.error = 'Algunos archivos no son imágenes válidas';
         return;
       }
 
-      // Validar tamaño (ejemplo: máximo 5MB por archivo)
-      const sizeValidFiles = validFiles.filter(file => 
-        file.size <= 5 * 1024 * 1024
-      );
+      const sizeValidFiles = validFiles.filter(file => file.size <= 5 * 1024 * 1024);
       
       if (sizeValidFiles.length !== validFiles.length) {
         this.error = 'Algunas imágenes superan el tamaño máximo de 5MB';
         return;
       }
 
-      // Agregar a la lista de archivos
-      this.files = [...this.files, ...sizeValidFiles];
+      this.imagenesNuevas.push(...sizeValidFiles);
       
-      // Generar previews para las nuevas imágenes
-      this.generatePreviews(sizeValidFiles);
+      sizeValidFiles.forEach((file, index) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const isPrimera = this.imagenesPreviews.length === 0 && index === 0;
+          this.imagenesPreviews.push({
+            url: e.target?.result as string,
+            isNew: true,
+            file: file,
+            isPrincipal: isPrimera
+          });
+          
+          if (isPrimera) {
+            this.indicePrincipal = 0;
+          }
+        };
+        reader.readAsDataURL(file);
+      });
       
-      // Limpiar error si todo está bien
       this.error = null;
-      
-      // Resetear el input para permitir seleccionar los mismos archivos otra vez
       input.value = '';
     }
   }
 
-  private generatePreviews(files: File[]): void {
-    files.forEach(file => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        this.selectedFiles.push({
-          name: file.name,
-          size: file.size,
-          preview: e.target?.result as string
-        });
-      };
-      reader.readAsDataURL(file);
+  // 🔥 Marcar imagen para eliminar
+  marcarParaEliminar(index: number): void {
+    const imagen = this.imagenesPreviews[index];
+    
+    if (this.imagenesPreviews.length === 1) {
+      this.error = 'No puedes eliminar la única imagen del proyecto';
+      return;
+    }
+    
+    const fileIndex = this.imagenesNuevas.findIndex(f => f === imagen.file);
+    if (fileIndex !== -1) {
+      this.imagenesNuevas.splice(fileIndex, 1);
+    }
+    this.imagenesPreviews.splice(index, 1);
+    
+    if (index === this.indicePrincipal) {
+      this.indicePrincipal = 0;
+      if (this.imagenesPreviews.length > 0) {
+        this.imagenesPreviews[0].isPrincipal = true;
+      }
+    } else if (index < this.indicePrincipal) {
+      this.indicePrincipal--;
+    }
+  }
+
+  // 🔥 Establecer imagen principal
+  establecerComoPrincipal(index: number): void {
+    this.imagenesPreviews.forEach(img => img.isPrincipal = false);
+    this.imagenesPreviews[index].isPrincipal = true;
+    this.indicePrincipal = index;
+  }
+
+  // 🔥 Calcular tamaño total
+  getTotalFileSize(): string {
+    const totalBytes = this.imagenesNuevas.reduce((total, file) => total + file.size, 0);
+    const mb = totalBytes / (1024 * 1024);
+    return mb.toFixed(2) + ' MB';
+  }
+
+  // 🔥 Seleccionar/deseleccionar todas
+  toggleSeleccionarTodas(seleccionar: boolean): void {
+    this.imagenesPreviews.forEach(img => {
+      if (!img.isPrincipal) {
+        img.seleccionada = seleccionar;
+      }
     });
   }
 
-  removeFile(index: number): void {
-    this.files.splice(index, 1);
-    this.selectedFiles.splice(index, 1);
+  // 🔥 Obtener número de seleccionadas
+  getImagenesSeleccionadas(): number {
+    return this.imagenesPreviews.filter(img => img.seleccionada).length;
   }
 
-  getTotalFileSize(): string {
-    const totalBytes = this.files.reduce((total, file) => total + file.size, 0);
-    const mb = totalBytes / (1024 * 1024);
-    return mb.toFixed(2) + ' MB';
+  // 🔥 Eliminar seleccionadas
+  eliminarSeleccionadas(): void {
+    const indicesAEliminar = this.imagenesPreviews
+      .map((img, index) => (img.seleccionada ? index : -1))
+      .filter(index => index !== -1);
+
+    if (indicesAEliminar.length === this.imagenesPreviews.length) {
+      this.error = 'No puedes eliminar todas las imágenes del proyecto.';
+      return;
+    }
+    
+    for (let i = indicesAEliminar.length - 1; i >= 0; i--) {
+      this.marcarParaEliminar(indicesAEliminar[i]);
+    }
+  }
+
+  // 🔥 Toggle selección individual
+  toggleSeleccion(index: number): void {
+    if (this.imagenesPreviews[index] && !this.imagenesPreviews[index].isPrincipal) {
+      this.imagenesPreviews[index].seleccionada = !this.imagenesPreviews[index].seleccionada;
+    }
   }
 
   onSubmit(): void {
@@ -119,7 +186,6 @@ export class CrearProyectoComponent {
 
     const formValue = this.proyectoForm.value;
 
-    // Preparar datos del proyecto
     const proyectoData = {
       nombre: formValue.nombre,
       descripcion: formValue.descripcion,
@@ -130,26 +196,15 @@ export class CrearProyectoComponent {
       fecha_fin: formValue.fecha_fin || null,
     };
 
-    // Crear FormData
     const formData = new FormData();
     formData.append('data', JSON.stringify(proyectoData));
     
-    // Agregar múltiples archivos
-    this.files.forEach((file, index) => {
-      formData.append('imagenes', file); // Cambiar de 'imagen' a 'imagenes'
+    this.imagenesNuevas.forEach((file) => {
+      formData.append('imagenes', file);
     });
 
-    // Debug opcional
-    const debugData: Record<string, any> = {};
-    formData.forEach((val, key) => 
-      debugData[key] = val instanceof File
-        ? { name: val.name, size: val.size, type: val.type }
-        : val
-    );
-    console.log('FormData enviado ->', debugData);
-    console.log('Total de archivos:', this.files.length);
+    console.log('📤 Total de archivos:', this.imagenesNuevas.length);
 
-    // Llamar al servicio
     this.api.crearProyecto(formData).subscribe({
       next: () => {
         this.isSubmitting = false;
