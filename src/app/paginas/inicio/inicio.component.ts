@@ -36,7 +36,6 @@ export class InicioComponent implements OnInit {
       'Imagenes',
       'about-us-conautol.jpg'    
     );
-    console.log("👉 URL AboutUs generada:", this.imageAboutUs);
   }
   
     cargarDatos() {
@@ -103,7 +102,7 @@ export class InicioComponent implements OnInit {
   }
 
   verDetalleProyecto(id: number) {
-    this.router.navigate(['/proyectos', id]);
+    this.router.navigate(['/proyecto', id]);
   }
 
   navegarAServicios(): void {
